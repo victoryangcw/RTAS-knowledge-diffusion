@@ -5,6 +5,58 @@ config, data, or code that could affect downstream numbers.
 
 ---
 
+## [v1.0-cand.2] — 2026-09-04 — External-review P0 remediation (no frozen number changes in existing analyses)
+
+### Withdrawn
+- **Circular Matthew-effect logistic (RETRACTED):** the v0.9 cross-sectional
+  `logit P(national) ~ Top5%-supervisor indicator` (OR=6.085, p=2.31e-65) was
+  tautological — the Top5% group was defined BY cumulative national-project
+  attainment. Removed from manuscript §5.5 and from the Figure 2 roadmap box.
+- **RI-CLPM demoted to future work (manuscript §7):** the lavaan model was never
+  estimated (no R runtime; no coefficients exist), and the designed 2021/2023/2025
+  waves used CUMULATIVE nested windows plus a 2025 wave with no underlying data.
+  No RI-CLPM result is cited anywhere; a valid future version requires
+  non-overlapping annual waves (e.g. 2020/2022/2024) or ≥5 waves.
+- **Fabricated model-selection table removed:** manuscript §2.2 previously listed
+  per-variant C1 values 0.405/0.388/0.372/0.351/0.334 that exist in no frozen
+  file. C1 is embedding-level (direct title-pair cosine vs human scores, n=150,
+  r=0.4055, p=2.64e-7) and is therefore shared by all 5 aggregation variants.
+
+### Added (real re-runs, seed 42, frozen in private analysis repo)
+- **Lagged path-dependence logistic on the advisor-year panel** (`08_matthew_effect.py`
+  provenance block): `P(nat_t) ~ nat_{t-1} + log(1+load_{t-1}) + year FE`, SE clustered
+  by advisor. Sample A (active in t-1 AND t): n=736 cells / 491 advisors, raw
+  persistence 35.2% vs 20.7%, adjusted **OR=2.25, 95% CI [1.57, 3.22], p=1.0e-5**.
+  Robustness sample B (inactive t zero-filled): n=2,302 / 1,621 advisors,
+  **OR=2.28 [1.68, 3.09], p=1.4e-7**.
+- **Quadrant threshold sensitivity (15/20/25%)** recomputed from frozen
+  `topic_quadrants_aggregate.csv` (K=886): HRLT = 128/173/224, LRHT = 10/10/8,
+  HRHT = 5/5/7; all 29 lag-defined topics stay HRLT/HRHT at every cutoff (29/29).
+- `rtas_selection_composite_v1.csv`: pre-registered composite (0.45·C2 eta2 +
+  0.30·C4 stability + 0.25·C3 K-stability, min-max normalized; Top-K only within
+  95% of best) — mean 0.742 chosen; top5/top10/top20/centroid = 0.480/0.447/0.398/0.300.
+
+### Corrected text/disclosures (no result numbers altered)
+- C1 renamed "construct validity" → **pairwise semantic validity**; annotation
+  source disclosed as human+LLM mixed, annotator1 only (1–4 scale), annotator2
+  entirely NaN → no inter-rater reliability reported; C4 college ICC column empty
+  (singular fit); C5 is a SBERT proxy (BGE-M3 inter-model check still deferred).
+- "Research frontier" operationalized explicitly as observable proxy = the
+  college's concurrent published-paper portfolio (RTAS does not measure novelty
+  or impact; no citation-network / journal-tier data in titles).
+- Threshold reading fix: paper quadrant cutoff Top-20% = 0.0879% ≈ **~50
+  lifetime papers/topic** (~178 topics enter the high-research tail); earlier
+  text misread an audit string as "≥177 papers/topic".
+- Caveats added: 38.47% BERTopic outlier rate — quadrant/diffusion findings
+  condition on the 886 clustered topics (61.5% of docs); Figure 5 champion
+  college (Chinese Antarctic Center, RTAS=0.360) has n=8 projects → small-n warning.
+- Figure 2 roadmap regenerated (ICC 0.762→0.739 HLM MixedLM 39 colleges;
+  OR=6.08***→lag-OR=2.25***; RI-CLPM marked "panel built, not estimated";
+  diffusion box now "29/886 defined"). Figure 9 already regenerated under the
+  single-year non-trivial-presence rule (no cumulative-threshold wording).
+
+---
+
 ## [v0.9] — 2026-09-03 — MAIN ANALYSIS FROZEN (v0.9 stage ①–⑥ regenerated end-to-end on frozen Primary RTAS)
 
 Milestone status: ✅ **FROZEN.** All 6 main-analysis modules regenerated on the

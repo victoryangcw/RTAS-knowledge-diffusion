@@ -203,7 +203,7 @@
 
 <header>
   <h1>RTAS v0.9.1 — 57K 池官方图册 + 数据审计画廊</h1>
-  <p>56,901 OpenAlex papers × 3,714 projects · ICC=0.7624 · K=886 (+1 OUTLIER) · All figures single-source from `03_FINAL_ANALYSIS/`</p>
+  <p>56,901 OpenAlex papers × 3,714 projects · HLM ICC=0.7393 · K=886 (+1 OUTLIER) · All figures single-source from `03_FINAL_ANALYSIS/`</p>
 
   <div class="tab-bar">
     <button class="tab-btn active" onclick="switchTab('cards', this)">📇 数据审计卡片视图</button>
@@ -221,7 +221,7 @@
   <div class="stat-item"><div class="num">3,714</div><div class="label">Projects</div></div>
   <div class="stat-item"><div class="num">40</div><div class="label">Colleges (SIE n=1 RTAS=0)</div></div>
   <div class="stat-item"><div class="num">887</div><div class="label">Topics (886+1 OUTLIER)</div></div>
-  <div class="stat-item"><div class="num">ICC 0.762</div><div class="label">HLM college RE</div></div>
+  <div class="stat-item"><div class="num">ICC 0.739</div><div class="label">HLM MixedLM (1|college)</div></div>
   <div class="stat-item"><div class="num">G=0.767</div><div class="label">Nat. Project Gini</div></div>
   <div class="stat-item"><div class="num">33,312</div><div class="label">Papers Matched (58.5%)</div></div>
 </div>
@@ -232,7 +232,7 @@
     <ul>
       <li>❌ 旧「Tukey: 省-国 *** 严格单调」 → 真实 <b>Tukey P-N p-adj=0.082 ns</b>；严格结论 <b>U &lt; P ≤ N</b>（Figure 4 bracket + §1.1 + §4.4 已同步）</li>
       <li>❌ 旧 Table 6 HLM β (国家级 0.022** / 年份 0.0076** / 被引 −1.93e-6**) 全是 12K 池假阳性 → 真实 v0.9.1 <b>国家级/年份/被引全部 ns</b>，只有「导师近3年发文量 β=+0.0085, p=4.5e-7 ***」干净强显著（§4.4 整块重写 + 黄色警告并列）</li>
-      <li>❌ 旧 §6.2/Fig9 写「LRHT n=8, med=−1.5 yr」→ 真实 LRHT 10+LRLT 698 全部 <b>lag_defined=False (by construction 永远跨不过 paper Top-20% 阈值)</b> → Fig9 新图 LRHT/LRLT 用灰色斜纹 N/A 面板 + §6.2 撤回声明 RETRACTED</li>
+      <li>❌ 旧 §6.2/Fig9 写「LRHT n=8, med=−1.5 yr」→ 真实 LRHT 10+LRLT 698 全部 <b>lag_defined=False</b>（lag 规则 = 单年非平凡出现：论文端单年 ≥3 篇且 ≥0.2%/年；实测 0/10、0/698 达标，是本语料经验事实而非逻辑恒等）→ Fig9 新图 LRHT/LRLT 用灰色斜纹 N/A 面板 + §6.2 撤回声明 RETRACTED</li>
       <li>❌ SIE n=1 项目写 "有效 RTAS" 未给数值 → 真实 <b>SIE RTAS mean=0.0000, rank=40/40</b>（是真实 0，非 NaN）→ §1.1.5 表格末尾特别说明 + Figure S1 最底 40. School of International Education 0.000</li>
     </ul>
   </div>
@@ -292,10 +292,10 @@
   <div class="figure-card">
     <img src="main/Figure6_HLM_Forest.png" onclick="document.getElementById('lb').src=this.src;document.querySelector('.lightbox').style.display='flex'">
     <div class="figure-info">
-      <h2>Figure 6: HLM 森林图（β/CI/p 表格移到图下方独立信息区）</h2>
-      <div class="source">← hlm_coefficients.csv (Table 6 唯一数据源) → 10_generate_figures.py</div>
-      <p>图内只保留: 蓝点=β, 水平误差棒=95% CI (绿=*** / 橙=* / 灰=ns), 点右侧小星号; 淡绿底=β>0 有利区, 淡红底=β<0。<b>图下方灰框</b>=完整 6 行系数表 (Predictor | β | 95% CI | p | sig); 再下方黄框=读图规则 + 12K→57K 国家级假阳性纠正</p>
-      <div class="key-finding">Advisor recent-3y works 唯一***(绿误差棒 β=+0.0085, p=4.5e-7), Provincial *(橙), 国家级/年份/导师数/被引全 ns(灰); 与 Table 6 逐行数值完全一致</div>
+      <h2>Figure 6: HLM v2.0 随机截距混合模型森林图（β/CI/p 表格移到图下方独立信息区）</h2>
+      <div class="source">← hlm_mixedlm_v2_primary_coefficients.csv (statsmodels MixedLM, (1|college)) → 10_generate_figures.py</div>
+      <p>图内只保留: 蓝点=β, 水平误差棒=95% CI (绿=***/红=**/灰=ns), 点右侧星号; 淡绿底=β>0 有利区, 淡红底=β<0。<b>图下方灰框</b>=完整 5 行系数表; 黄框=读图规则 + 数据血缘撤回声明。导师协变量均为<b>立项前窗口 [t-3, t-1]</b>（2017-2024 池），未匹配导师=NA 不是 0；Primary n=3,231 / 39 学院，高置信匹配 sensitivity n=2,750 方向与显著性完全一致</p>
+      <div class="key-finding">导师立项前 3 年发文量 log(1+x) β=+0.0043 *** (p=3.2e-9); 导师累计指导项目数 log(1+x) β=−0.0065 *** (p=1.1e-4，"包工头"负效应); 年份 β=+0.0018 **; 省级/国家级 ns; ICC=0.7393。<b>[撤回]</b> v0.9 "recent-3y β=+0.0085 p=4.5e-7" 为数据血缘假象（3,714 值中 3,712 为零）</div>
     </div>
   </div>
 
@@ -324,8 +324,8 @@
     <div class="figure-info">
       <h2>Figure 9: 分象限扩散滞后箱线图（v0.9.1 硬纠正；N/A 斜纹面板 + 小 n 标注 + 统计表在图下方）</h2>
       <div class="source">← topic_first_year_adoption.csv (lag_defined=True 29/886 topics) + quadrant_overall_summary.csv → 10_generate_figures.py</div>
-      <p>横轴固定 4 列：HRLT/HRHT = 箱线 + jitter 散点（HRHT n=5 上方白框直接标出 "4 at lag 0 (synchronized) / 1 at lag −2"，避免平箱线被误读为数据缺失）；<b>LRHT/LRLT 改为灰色斜纹 N/A 面板</b>（不再像"坏掉的箱线图"），中央灰字说明 by design 无 lag。淡红/淡绿正负 lag 区 + 0 同步虚线。<b>图下方信息区</b>: HRLT/HRHT 两个色边框 = 9 行摘要；红边大框 = Welch/MWU 组间检验 + 读图规则 + RETRACTED 撤回声明</p>
-      <div class="key-finding">🔴 LRHT(10)+LRLT(698) 全部 lag_defined=False (by construction)；仅 HRLT n=24 (med=+0.5y, 50% 正/38% 零/12% 负) 与 HRHT n=5 (med=0, 80% 零)。<b>HRLT vs HRHT: Welch p=0.054 (ns), MWU p=0.095 (ns), d=+0.78</b>; 旧 "LRHT med=-1.5 yr" 为 12K 池遗留假值 RETRACTED</div>
+      <p>横轴固定 4 列：HRLT/HRHT = 箱线 + jitter 散点（HRHT n=5 上方白框直接标出 "4 at lag 0 (synchronized) / 1 at lag −2"，避免平箱线被误读为数据缺失）；<b>LRHT/LRLT 改为灰色斜纹 N/A 面板</b>（不再像"坏掉的箱线图"），中央灰字写明 "lag undefined in this corpus (0/10)/(0/698)"，口径为单年非平凡出现（≥3 papers & ≥0.2%/yr）。淡红/淡绿正负 lag 区 + 0 同步虚线。<b>图下方信息区</b>: HRLT/HRHT 两个色边框 = 9 行摘要；红边大框 = Welch/MWU 组间检验 + 读图规则 + RETRACTED 撤回声明</p>
+      <div class="key-finding">🔴 LRHT(10)+LRLT(698) 在单年非平凡出现规则下均 lag_defined=False（经验 0/10、0/698，非逻辑恒等）；仅 HRLT n=24 (med=+0.5y, 50% 正/38% 零/12% 负) 与 HRHT n=5 (med=0, 80% 零)。<b>HRLT vs HRHT: Welch p=0.054 (ns), MWU p=0.095 (ns), d=+0.78</b>; 旧 "LRHT med=-1.5 yr" 为 12K 池遗留假值 RETRACTED</div>
     </div>
   </div>
 
@@ -518,26 +518,34 @@
 <!-- ============ FIG 6 ============ -->
 <div class="fb-page">
   <div class="fb-head">
-    <h2>Figure 6 — HLM Forest Plot (numeric table moved BELOW the axes)</h2>
-    <span class="badge">Figure6_HLM_Forest.pdf | 9.8×7.6 inch | ICC=0.7624, N=3,714 obs × 40 colleges</span>
+    <h2>Figure 6 — HLM v2.0 Random-Intercept Mixed Model Forest Plot</h2>
+    <span class="badge">Figure6_HLM_Forest.pdf | 9.8×7.6 inch | MixedLM (1|college), ICC=0.7393, n=3,231 projects × 39 colleges</span>
   </div>
   <div class="fb-figure-wrap"><img src="main/Figure6_HLM_Forest.png" onclick="document.getElementById('lb').src=this.src;document.querySelector('.lightbox').style.display='flex'"></div>
   <div class="fb-caption">
-    <div class="src">SOURCE: hlm/hlm_coefficients.csv (6 predictors, Table 6 唯一来源) + hlm/hlm_fit_summary.txt (动态读取 ICC/nobs/ngroups) → fig6_hlm_forest()</div>
+    <div class="src">SOURCE: hlm/hlm_mixedlm_v2_primary_coefficients.csv (statsmodels MixedLM, REML) + hlm_mixedlm_v2_primary_summary.txt (动态读取 ICC/n/groups) → fig6_hlm_forest()</div>
+
+    <h3>模型规格（v2.0 数据血缘审计后重跑）</h3>
+    <ul>
+      <li>两层随机截距混合模型：RTAS ~ Provincial + National + Year(centered 2022) + log(1+导师立项前3年发文) + log(1+导师累计指导项目数) + (1|学院)。</li>
+      <li>导师协变量全部使用<b>立项前窗口 [t−3, t−1]</b>，论文池扩展为 <b>2017–2024 OpenAlex 共 79,339 篇</b>（补抓 2017–2019 共 22,438 篇），无未来信息泄漏；未匹配导师记 <b>NA 而非 0</b>（matched 2,750 / ambiguous 748 / unmatched 216 项目）。</li>
+      <li>Primary = 完整案例 n=3,231；Sensitivity = 仅高置信匹配 n=2,750 —— 两模型符号与显著性完全一致（hlm_mixedlm_v2_sensitivity_only_*.csv）。</li>
+    </ul>
 
     <h3>上半部分（axes 内，刻意保持干净）</h3>
     <ul>
-      <li>纵轴 = 6 个预测变量友好标签（按 β 升序）。横轴 = 系数估计值 β；右半淡绿底 = 正贡献区（β&gt;0，对齐有利），左半淡红底 = 负贡献区；0 处黑色虚线。</li>
-      <li>深蓝实心点 = β 点估计；水平误差棒 + cap = 95% CI。<b>误差棒颜色按显著性编码</b>：绿 = *** (p&lt;0.001) / 橙 = * (p&lt;0.05) / 灰 = ns。点右侧同色小星号 = 显著性标记。CI 不跨 0 = 显著。</li>
+      <li>纵轴 = 5 个预测变量标签（按 β 升序）。横轴 = β；右半淡绿底 = 正贡献区，左半淡红底 = 负贡献区；0 处黑色虚线。</li>
+      <li>深蓝点 = β 点估计；水平误差棒 = 95% CI。<b>误差棒颜色</b>：绿 = *** (p&lt;0.001) / 红 = ** (p&lt;0.01) / 灰 = ns。CI 不跨 0 = 显著。</li>
     </ul>
 
     <h3>下半部分（图下方独立信息区）</h3>
     <ul>
-      <li><b>灰色等宽字体表</b>：6 行 × Predictor / β / 95% CI [low, high] / p-value / sig。极小系数量级自动切换科学计数法（如被引 β = −9.8e-07），避免显示成误导性的 "−0.0000"。</li>
-      <li><b>橙色黄框</b>：读图规则 + 12K→57K 假阳性纠正说明。</li>
+      <li><b>灰色等宽字体表</b>：5 行 × Predictor / β / 95% CI / p / sig。</li>
+      <li><b>橙色黄框</b>：读图规则 + 撤回声明。</li>
     </ul>
 
-    <div class="alert-err"><b>🔴 12K 池 → 57K 池关键假阳性纠正：</b>v0.2 12K 池旧表：国家级 β=+0.022 **、年份 β=+0.0076 **、被引 β=−1.93e-6 ** 全部显著；在 57K 全量（本图）三个全部 ns。唯一干净强显著：<b>Advisor recent-3y works β=+0.0085, p=4.53×10⁻⁷, ***（绿色误差棒）</b>；Provincial β=+0.0035 *（橙色）。</div>
+    <div class="alert-ok"><b>� v2.0 结果：</b>导师<b>立项前</b> 3 年发文 log(1+x) β=+0.0043, p=3.2×10⁻⁹ *** —— 导师科研活跃真实提升选题对齐（因果方向干净）；导师累计指导项目数 log(1+x) β=−0.0065, p=1.1×10⁻⁴ *** —— "包工头"式多项目并行负效应；年份 β=+0.0018, p=0.0014 **（对齐逐年上升）；省级 β=+0.0009 ns、国家级 β=−0.0014 ns —— 控制学院结构后等级效应消失；ICC=0.7393（约 74% 方差在学院层）。</div>
+    <div class="alert-err"><b>🔴 撤回（数据血缘 bug）：</b>v0.9 表与森林图的 "Advisor recent-3y works β=+0.0085, p=4.5×10⁻⁷ ***" 来自一个几乎全零的脏列（3,714 个项目中 3,712 个为 0，仅 2 个非零值 4.0/11.0），该显著性由 2 个观测驱动，<b>正式撤回</b>。旧 advisor_cited_by（2026 快照引用，含未来信息）从模型中移除。</div>
   </div>
 </div>
 
@@ -585,14 +593,14 @@
 
     <h3>颜色语义（与 Figure 9 正负区底色一致）</h3>
     <ul>
-      <li>正 lag 红色 = 研究前沿先出，培养项目后续才追上（课程更新需求）。</li>
-      <li>零 lag 浅灰色 = paper 与 project 在同一年首次同时破阈值（同步）。</li>
-      <li>负 lag 绿色 = 培养先破阈值，但科研侧早已冷退出（可能 = 教学内容已经过时）。</li>
+      <li>正 lag 红色 = 研究组合先达到单年非平凡规模，培养项目后续才追上（课程更新需求）。</li>
+      <li>零 lag 浅灰色 = paper 与 project 在同一年首次同时达到非平凡规模（同步）。</li>
+      <li>负 lag 绿色 = 培养先达规模，但科研侧早已冷退出（可能 = 教学内容已经过时）。</li>
     </ul>
 
     <p>每柱顶标签："count (占 29 的百分比)"。标题动态从 aggregate_stats OVERALL 行拼出："(29/886 topics with defined lag, median={X:.1f}, mean={Y:+.2f} yr)"。<b>标题中所有数字都由 CSV 计算写入，禁止硬编码，避免出现旧版 69/307 的假数字错误。</b></p>
 
-    <div class="alert-warn">注意：只有 HRLT 24 + HRHT 5 = 29 个主题在此直方图中出现。LRHT 10 / LRLT 698 因按 lag 硬定义 <b>永远无法满足 paper-side Top-20% 先破阈值的条件</b>，所以不出现在图中（合计 886-29=857 个主题未出现）。这也是为什么 total count 只有 29（而不是旧 12K 池的 69）。</div>
+    <div class="alert-warn">注意：只有 HRLT 24 + HRHT 5 = 29 个主题在此直方图中出现。LRHT 10 / LRLT 698 在 <b>单年非平凡出现</b>规则下（论文端单年 ≥3 篇且 ≥0.2%/年）实测无一达标（0/10、0/698，经验事实而非逻辑恒等），所以不出现在图中（合计 886-29=857 个主题未出现）。这也是为什么 total count 只有 29（而不是旧 12K 池的 69）。</div>
   </div>
 </div>
 
@@ -600,7 +608,7 @@
 <div class="fb-page">
   <div class="fb-head">
     <h2>Figure 9 — Diffusion Lag by Quadrant (N/A hatched panels + small-n annotation; stat tables below)</h2>
-    <span class="badge">Figure9_DiffusionByQuadrant.pdf | 11.5×9.6 inch | LRHT/LRLT = grey hatched "lag undefined by design" panels</span>
+    <span class="badge">Figure9_DiffusionByQuadrant.pdf | 11.5×9.6 inch | LRHT/LRLT = grey hatched "lag undefined in this corpus (0/10, 0/698)" panels</span>
   </div>
   <div class="fb-figure-wrap"><img src="main/Figure9_DiffusionByQuadrant.png" onclick="document.getElementById('lb').src=this.src;document.querySelector('.lightbox').style.display='flex'"></div>
   <div class="fb-caption">
@@ -608,9 +616,9 @@
 
     <h3>上半部分（axes 内，刻意保持干净）</h3>
     <ul>
-      <li><b>横轴 = 固定 4 列</b>：HRLT / HRHT 有箱线 + jitter 散点；<b>LRHT / LRLT 改为浅灰斜纹 N/A 面板</b>（不再是虚线"警告框"，视觉上明确表达"这一列有意不画数据"），面板中央灰字写明原因（paper side never crosses Top-20% / neither side crosses 20%）。</li>
+      <li><b>横轴 = 固定 4 列</b>：HRLT / HRHT 有箱线 + jitter 散点；<b>LRHT / LRLT 改为浅灰斜纹 N/A 面板</b>（不再是虚线"警告框"，视觉上明确表达"这一列有意不画数据"），面板中央灰字写明 "lag undefined in this corpus (0/10) / (0/698)"，并标注 lag 口径 "single-year non-trivial presence (&gt;=3 papers &amp; &gt;=0.2%/yr)"（单年非平凡出现规则，与四象限累积阈值无关）。</li>
       <li><b>HRHT n=5 小样本标注</b>：箱线因 4/5 主题 lag=0 而退化为 0 处平线，上方白框直接写明 "n=5 topics, 4 at lag 0 (synchronized), 1 at lag −2 (training first)"，避免读者把退化箱线误读为数据缺失。</li>
-      <li><b>纵轴 = lag（年）</b>，范围 [−5.1, +5.1] = year(project-first-high) − year(paper-first-high)。<b>y&gt;0 淡红区 = 科研先破 20% 阈值（课程更新需求）；y&lt;0 淡绿区 = 培养先破；y=0 黑色虚线 = 同步。</b></li>
+      <li><b>纵轴 = lag（年）</b>，范围 [−5.1, +5.1] = year(project-first-presence) − year(paper-first-presence)，"presence" 指达到单年非平凡规模（非四象限累积阈值）。<b>y&gt;0 淡红区 = 科研先达规模（课程更新需求）；y&lt;0 淡绿区 = 培养先达；y=0 黑色虚线 = 同步。</b></li>
       <li>箱元素同 Figure 4b：半透明彩箱 Q1–Q3、粗黑中值线、白菱形均值、1.5·IQR 须、彩色散点 = 单个主题。</li>
     </ul>
 
@@ -621,7 +629,7 @@
     </ul>
 
     <div class="alert-ok"><b>冻结真值（本次重算复核）：</b>HRLT n=24，mean=+0.79 yr，med=+0.5，50% 正 / 38% 零 / 12% 负；HRHT n=5，mean=−0.40 yr，med=0，80% 零。<b>HRLT vs HRHT：Welch t=+2.11, p=0.054 (ns)；Mann–Whitney p=0.095 (ns)；Cohen d=+0.78（大效应方向一致，但 HRHT n=5 功效不足，不作显著结论）。</b></div>
-    <div class="alert-err"><b>🔴 RETRACTED：</b>旧 12K 池 K=307 时 "LRHT n=8, median=−1.5 yr" 在 57K 池 K=886 下撤回——LRHT(10)/LRLT(698) 按 lag 硬定义 paper side 永远跨不过 Top-20% 阈值，lag 在这两个象限 by construction 不可定义，不是数据缺失。</div>
+    <div class="alert-err"><b>🔴 RETRACTED：</b>旧 12K 池 K=307 时 "LRHT n=8, median=−1.5 yr" 在 57K 池 K=886 下撤回——LRHT(10)/LRLT(698) 在单年非平凡出现规则下（论文端单年 ≥3 篇且 ≥0.2%/年）实测无一达标（0/10、0/698），lag 在这两个象限不可定义；这是本语料的经验事实（低研象限状态使其高度可预期），而非逻辑恒等，更不是数据缺失。</div>
   </div>
 </div>
 
@@ -650,7 +658,7 @@
       <li>水平黑色虚线 y=5 = Equal share 基准线（如 Pareto 公平，Top-5% 切片应持有正好 5% 份额；实际持有 34.0% = 基准的 6.8×）。</li>
     </ul>
 
-    <div class="alert-ok"><b>冻结权威值（matthew_effect_audit.json 验证）：</b>Gini(national projects) = 0.766658 ≈ 0.767 ✅；Top-5% share = 34.0176% ≈ 34.0% ✅；Top 20% share = 76.83%。Logistic regression OR(top5%) = 6.085 (p = 2.31e-65, n_obs=3,714, §8.1 权威表) — top-5% 导师获得国家级项目的机会是其余导师 6.08 倍。</div>
+    <div class="alert-ok"><b>冻结权威值（matthew_effect_audit.json 验证）：</b>Gini(national projects) = 0.766658 ≈ 0.767 ✅；Top-5% share = 34.0176% ≈ 34.0% ✅；Top 20% share = 76.83%。<b>路径依赖检验（v1.0 替换循环截面回归）：</b>滞后 t−1→t Logit（导师-年份面板，P(nat_t) ~ nat_{t−1} + log(1+load_{t−1}) + 年份 FE，按导师聚类 SE）——主样本 736 单元/491 导师：<b>OR(nat_lag)=2.25，95%CI [1.57, 3.22]，p=1.0×10⁻⁵</b>；稳健性样本 B（2,302 单元/1,621 导师）：OR=2.28 [1.68, 3.09]，p=1.4×10⁻⁷。旧截面 OR(top5%)=6.085 因分组由累计国家级数定义（循环论证）已撤回（§5.5）。</div>
   </div>
 </div>
 

@@ -194,11 +194,11 @@ def fig2_roadmap():
         # Tier 2 (analyses): 5 boxes
         (0.40, R2, 1.95, BH, 'Heterogeneity (RQ1)\nF(2,3711)=35.7\nη²=1.89%\nd=0.352', COLORS['blue']),
         (2.60, R2, 1.95, BH, 'BERTopic (RQ2)\nUMAP+HDBSCAN\nK=886 topics\n4-quadrant', COLORS['orange']),
-        (4.80, R2, 1.95, BH, 'HLM (RQ3)\n2-level RE model\nICC=0.762\n40 colleges', COLORS['purple']),
-        (7.00, R2, 1.95, BH, 'Matthew (RQ4)\nGini=0.767\nTop5%=34.0%\nOR=6.08***', COLORS['red']),
-        (9.20, R2, 1.95, BH, 'RI-CLPM (RQ5)\n3-wave panel\n40 colleges\n2021/23/25', COLORS['teal']),
+        (4.80, R2, 1.95, BH, 'HLM (RQ3)\nMixedLM RE\nICC=0.739\n39 colleges', COLORS['purple']),
+        (7.00, R2, 1.95, BH, 'Matthew (RQ4)\nGini=0.767\nTop5%=34.0%\nlag-OR=2.25***', COLORS['red']),
+        (9.20, R2, 1.95, BH, 'RI-CLPM (future)\npanel built\nnot estimated\n(see MS sec.7)', COLORS['teal']),
         # Tier 3 (downstream): 1 box, aligned under BERTopic
-        (2.60, R3, 1.95, BH, 'Diffusion Lag (RQ2)\nhard-cutoff topics\nHRLT median +0.5 yr', COLORS['gray']),
+        (2.60, R3, 1.95, BH, 'Diffusion Lag (RQ2)\n29/886 defined\nHRLT median +0.5 yr', COLORS['gray']),
     ]
     edges = {}
     for x, y, w, h, text, color in boxes:
@@ -488,39 +488,41 @@ def fig5_top20_colleges():
 # Figure 6: HLM Forest Plot (SINGLE SOURCE = hlm_coefficients.csv = Table 6)
 # ================================================================
 def fig6_hlm_forest():
-    inp = 'hlm/hlm_coefficients.csv'
-    provenance(6, 'HLM Forest Plot (numeric table moved below axes)', inp)
-    d = pd.read_csv(DATA / 'hlm' / 'hlm_coefficients.csv')
-    # Exclude intercept from forest plot (intercept on different scale)
-    d_plot = d[d['term'] != 'const'].copy()
+    inp = 'hlm/hlm_mixedlm_v2_primary_coefficients.csv'
+    provenance(6, 'HLM v2.0 Random-Intercept MixedLM Forest Plot', inp)
+    d = pd.read_csv(DATA / 'hlm' / 'hlm_mixedlm_v2_primary_coefficients.csv')
+    # Exclude intercept and Group Var (variance component, not a predictor)
+    d_plot = d[~d['term'].isin(['Intercept', 'Group Var', 'const'])].copy()
     # Friendly labels
     label_map = {
         'is_provincial': 'Provincial (vs. University)',
         'is_national': 'National (vs. University)',
-        'year_centered': 'Year (centered)',
+        'year_centered': 'Year (per year, centered at 2022)',
+        'log_prior3y': 'Advisor pre-project 3y works  log(1+x)',
+        'log_supervision': 'Advisor total supervised projects  log(1+x)',
         'advisor_count': 'Advisor count',
         'advisor_recent_3y_works_mean': 'Advisor recent-3y works (mean)',
         'advisor_cited_by_count_all_mean': 'Advisor cited-by count (mean)',
     }
     d_plot['label'] = d_plot['term'].map(label_map).fillna(d_plot['term'])
-    d_plot = d_plot.sort_values('estimate', ascending=True).reset_index(drop=True)
+    d_plot = d_plot.sort_values('coef', ascending=True).reset_index(drop=True)
 
-    # Parse ICC / nobs / ngroups dynamically from hlm_fit_summary.txt (single source)
+    # Parse ICC / nobs / ngroups from v2 summary (single source)
     icc_val, nobs_val, ngrp_val = 'NA', 'NA', 'NA'
-    m = re.search(r'ICC:\s*([\d.]+)', (DATA / 'hlm' / 'hlm_fit_summary.txt').read_text(encoding='utf-8'))
+    summ = (DATA / 'hlm' / 'hlm_mixedlm_v2_primary_summary.txt').read_text(encoding='utf-8')
+    m = re.search(r'ICC=([\d.]+)', summ)
     if m: icc_val = m.group(1)
-    m = re.search(r'n_projects \(obs\):\s*([\d,]+)', (DATA / 'hlm' / 'hlm_fit_summary.txt').read_text(encoding='utf-8'))
-    if m: nobs_val = m.group(1)
-    m = re.search(r'n_colleges \(groups\):\s*(\d+)', (DATA / 'hlm' / 'hlm_fit_summary.txt').read_text(encoding='utf-8'))
-    if m: ngrp_val = m.group(1)
+    m = re.search(r'n=([\d,]+),\s*colleges=(\d+)', summ)
+    if m:
+        nobs_val, ngrp_val = m.group(1), m.group(2)
 
     fig = plt.figure(figsize=(9.8, 7.6))
     ax = fig.add_axes([0.30, 0.46, 0.66, 0.44])  # wide left margin for labels; bottom zone = table
     y_pos = np.arange(len(d_plot))
-    x_range_min = min(d_plot['ci_95_lo'].min(), 0)
-    x_range_max = max(d_plot['ci_95_hi'].max(), 0.001)
+    x_range_min = min(d_plot['ci_low'].min(), 0)
+    x_range_max = max(d_plot['ci_high'].max(), 0.001)
     x_span = x_range_max - x_range_min
-    ax.set_xlim(x_range_min - 0.18 * x_span, x_range_max + 0.18 * x_span)
+    ax.set_xlim(x_range_min - 0.18 * x_span, x_range_max + 0.22 * x_span)
 
     def _sig_color(sig):
         return (COLORS['green'] if sig == '***'
@@ -529,15 +531,15 @@ def fig6_hlm_forest():
                 else COLORS['gray'])
 
     for i, (_, row) in enumerate(d_plot.iterrows()):
-        sig = row['significance_mark']
+        sig = row['stars']
         color = _sig_color(sig)
-        ax.errorbar(row['estimate'], i,
-                    xerr=[[row['estimate'] - row['ci_95_lo']],
-                          [row['ci_95_hi'] - row['estimate']]],
+        ax.errorbar(row['coef'], i,
+                    xerr=[[row['coef'] - row['ci_low']],
+                          [row['ci_high'] - row['coef']]],
                     fmt='o', color=COLORS['navy'], ecolor=color, capsize=5,
                     markersize=9, linewidth=2.0, zorder=3)
-        # Small significance star just right of the point (no numeric block inside axes)
-        ax.text(row['ci_95_hi'] + 0.03 * x_span, i, sig, ha='left', va='center',
+        # Small significance star just right of the CI cap
+        ax.text(row['ci_high'] + 0.03 * x_span, i, sig, ha='left', va='center',
                 fontsize=11, fontweight='bold', color=color)
     ax.axvline(x=0, color='#333333', linestyle='--', linewidth=1.0, alpha=0.6)
     ax.axvspan(0, ax.get_xlim()[1], facecolor=COLORS['green'], alpha=0.05, zorder=0)
@@ -546,36 +548,37 @@ def fig6_hlm_forest():
     ax.set_yticklabels(d_plot['label'].values, fontsize=10)
     ax.set_xlabel('Coefficient (β) ± 95% CI   (green zone = positive alignment, red zone = negative)',
                   fontweight='bold', fontsize=9.5)
-    fig.suptitle('HLM (2-level: projects nested in colleges)  —  forest plot\n'
+    fig.suptitle('Two-level mixed model (projects nested in colleges, random intercept)\n'
                  f'ICC = {icc_val}   |   n = {nobs_val} projects   |   {ngrp_val} college groups   |   '
                  'exact β, 95% CI, p-values in the table below',
                  fontweight='bold', fontsize=11, y=0.97)
 
     # ---- Numeric table BELOW the axes (figure coords, stable) ----
-    header = ('Predictor                                β            95% CI [low , high]               p-value          sig\n'
-              '──────────────────────────────────────────────────────────────────────────────────────────────────────────')
+    header = ('Predictor                                      β            95% CI [low , high]               p-value        sig\n'
+              '──────────────────────────────────────────────────────────────────────────────────────────────────────────────')
     rows = [header]
     def _fmt(v):
-        # adaptive: tiny coefficients (e.g. cited-by β≈-9.8e-7) use scientific notation
         return f'{v:+.1e}' if abs(v) < 1e-3 else f'{v:+.4f}'
     for _, row in d_plot.iterrows():
-        sig = row['significance_mark']
+        sig = row['stars']
         try:
-            pv = float(row['p_value'])
+            pv = float(row['p'])
             pstr = 'p ≈ 0' if pv < 1e-99 else (f'{pv:.2e}' if pv < 0.0001 else f'{pv:.4f}')
         except (ValueError, TypeError):
-            pstr = str(row['p_value'])
-        rows.append(f"{row['label']:<38}  {_fmt(row['estimate']):>8}     [{_fmt(row['ci_95_lo']):>9} , {_fmt(row['ci_95_hi']):>9}]   {pstr:>10}        {sig}")
-    fig.text(0.5, 0.385, '\n'.join(rows), ha='center', va='top', fontsize=8.4, family='Consolas',
+            pstr = str(row['p'])
+        rows.append(f"{row['label']:<44}  {_fmt(row['coef']):>8}    [{_fmt(row['ci_low']):>9} , {_fmt(row['ci_high']):>9}]  {pstr:>10}     {sig}")
+    fig.text(0.5, 0.385, '\n'.join(rows), ha='center', va='top', fontsize=8.0, family='Consolas',
              color='#111', linespacing=1.5,
              bbox=dict(boxstyle='round,pad=0.55', facecolor='#f7f7f7', alpha=0.95,
                        edgecolor='#666', linewidth=1.0))
 
-    how = ("How to read:  • = point estimate β, horizontal bar = 95% CI; bar colour: green = *** (p<0.001), orange = * (p<0.05), grey = ns.  "
-           "CI not crossing 0 → significant.\n"
-           "Strongest predictor: Advisor recent-3y works (β=+0.0085, p=4.5e-7, ***).  "
-           "National-level dummy was 'significant' in the 12K-pool v0.9 → FALSE POSITIVE; in 57K-pool v0.9.1 it is ns (p=0.315).")
-    fig.text(0.5, 0.075, how, ha='center', va='top', fontsize=8.0, color='#332200',
+    how = ("How to read:  dot = point estimate β, horizontal bar = 95% CI; bar colour: green = *** (p<0.001), red = ** (p<0.01), grey = ns.  "
+           "CI not crossing 0 → significant.  Advisor covariates use PRE-PROJECT windows [t-3, t-1] over the 2017-2024 OpenAlex pool; unmatched advisors = NA, not zero.\n"
+           "Advisor research activity BEFORE the project raises alignment (β=+0.0043, ***); supervising MANY projects lowers it (β=−0.0065, ***).  "
+           "Tier dummies are ns after controlling for college context; alignment drifts up over years (β=+0.0018, **).  "
+           "Sensitivity on n=2,750 high-confidence matches gives the same signs and significance.\n"
+           "[Retracted: v0.9 'recent-3y works β=+0.0085, p=4.5e-7' was a data-lineage artifact (3,712 of 3,714 values were zero).]")
+    fig.text(0.5, 0.075, how, ha='center', va='top', fontsize=7.4, color='#332200',
              linespacing=1.5,
              bbox=dict(boxstyle='round,pad=0.5', facecolor='#fff7e6', alpha=0.95,
                        edgecolor='#d46b08', linewidth=1.0))
@@ -658,11 +661,13 @@ def fig9_diffusion_by_quadrant():
     provenance(9, 'Diffusion Lag by Quadrant (stat tables moved below axes)', inp)
     d = pd.read_csv(DATA / 'diffusion_lag' / 'topic_first_year_adoption.csv')
     d = d[d['lag_defined']].copy()
-    # CRITICAL AUDIT FINDING (v0.9.1): LRHT (10 topics) and LRLT (698 topics) have
-    # ZERO topics with lag_defined=True. Lag is only defined for topics that crossed
-    # BOTH the paper AND the project high-adoption threshold at some point in 2020-2024,
-    # which for LRLT means never, and for LRHT means paper-side never reached 20%.
-    # So only HRLT and HRHT appear as boxplots; LRHT/LRLT stay as explicit ⚠ placeholders.
+    # FROZEN DEFINITION (diffusion_lag/_build.py + audit JSON): lag uses the SINGLE-YEAR
+    # non-trivial-presence rule — paper side: n_paper(y) >= 3 AND pct_paper(y) >= 0.2%
+    # of that year's papers (~20+ papers in one year); project side: n_project(y) >= 2
+    # AND pct_project(y) >= 0.2%. This is deliberately NOT the cumulative Top-20% quadrant
+    # threshold. Empirically 0/10 LRHT and 0/698 LRLT topics ever satisfy the paper-side
+    # yearly bar in 2020-2024 (expected from their low-research quadrant status; 0/708).
+    # So only HRLT (24) and HRHT (5) appear as boxplots; LRHT/LRLT stay as hatched N/A panels.
     # ALL numeric stat blocks moved to a clean info panel BELOW the axes (round-6 user request).
     fig = plt.figure(figsize=(11.5, 9.6))
     ax = fig.add_axes([0.08, 0.42, 0.90, 0.48])
@@ -747,9 +752,9 @@ def fig9_diffusion_by_quadrant():
                                    facecolor='#f4f4f4', hatch='////', edgecolor='#cfcfcf',
                                    linewidth=0.9, zorder=0.6))
             if q.startswith('LRHT'):
-                na_text = ("lag undefined\nby design\n\npaper side never\ncrosses the Top-20%\nthreshold")
+                na_text = ("lag undefined\nin this corpus (0/10)\n\npaper side never reaches\nnon-trivial yearly presence\n(>=3 papers & >=0.2%/yr)")
             else:
-                na_text = ("lag undefined\nby design\n\nneither side ever\ncrosses the 20%\nthreshold")
+                na_text = ("lag undefined\nin this corpus (0/698)\n\nneither side reaches\nnon-trivial yearly presence\n(paper >=3 & 0.2%/yr;\nproject >=2 & 0.2%/yr)")
             ax.text(qi, 0.0, na_text, va='center', ha='center', fontsize=8.6,
                     color='#555555', fontweight='bold', linespacing=1.45, zorder=2)
 
@@ -759,8 +764,9 @@ def fig9_diffusion_by_quadrant():
     ax.axhspan(0.02, 5.5, color=COLORS['red'], alpha=0.07, zorder=0)
     ax.set_xticks(range(n_x))
     ax.set_xticklabels(xtick_labs, fontsize=9.0)
-    ax.set_ylabel('Lag (years) = year(project-first-high) − year(paper-first-high)',
-                  fontweight='bold', fontsize=9.5)
+    ax.set_ylabel('Lag (years) = first year of non-trivial project presence\n'
+                  '− first year of non-trivial paper presence (paper: >=3 & >=0.2%/yr; project: >=2 & >=0.2%/yr)',
+                  fontweight='bold', fontsize=8.6)
     ax.set_ylim(-5.1, 5.1)
     fig.suptitle('Diffusion Lag by Quadrant  —  only HRLT & HRHT have defined lags (29/886 topics)\n'
                  'Red zone = research leads training (course update needed); green zone = training uses already-cold content.  '
@@ -797,11 +803,13 @@ def fig9_diffusion_by_quadrant():
                     f"   => HRLT positive lag is larger on average (research→training direction); not significant at α=0.05 with n=5 vs 24.\n")
     how_to = (grp_line +
               "How to read: box = Q1–Q3, bold line = median, diamond = mean, whiskers = 1.5·IQR, dots = individual topics.  "
-              "Lag > 0 = paper side hit 20% threshold FIRST (research frontier leads training).  "
-              "Lag < 0 = project side hit first.\n"
-              "v0.9.1 CORRECTION: LRHT (10 topics) and LRLT (698 topics) by construction NEVER cross the 20% threshold "
-              "on their 'low' side, so lag CANNOT be defined — the old 12K-pool figure reporting 'LRHT med = −1.5 yr' was "
-              "fabricated from legacy K=307 data and is RETRACTED.")
+              "Lag > 0 = paper side reached non-trivial yearly presence FIRST (research leads training).  "
+              "Lag < 0 = project side reached it first.\n"
+              "DEFINITION (frozen): lag requires BOTH sides to show non-trivial presence in a single year "
+              "(paper: >=3 docs & >=0.2% of that year's papers; project: >=2 docs & >=0.2% of that year's projects). "
+              "LRHT (0/10) and LRLT (0/698) never satisfy this in the 2020-2024 corpus, so lag is undefined for them "
+              "(expected from their low-research quadrant status). The old 12K-pool claim 'LRHT med = -1.5 yr' came "
+              "from legacy K=307 data and is RETRACTED.")
     fig.text(0.5, 0.115, how_to, ha='center', va='top', fontsize=8.2, color='#331100',
              linespacing=1.55,
              bbox=dict(boxstyle='round,pad=0.55', facecolor='#f1f1f1', alpha=0.95,
