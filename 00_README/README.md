@@ -87,8 +87,8 @@ RTAS_FINAL_PROJECT/
 | Tag       | What is frozen                               | Status   |
 |-----------|----------------------------------------------|----------|
 | v0.1      | MiniLM × 5 RTAS variants experiment run     | done     |
-| **v0.2**  | **RTAS frozen.** Data sample, year-window, embedding, aggregation chosen (PRIMARY: `rtas_mini_mean`). Outdated canonical numbers list signed off. | ✅ **CURRENT** |
-| v0.9      | All 6 downstream analyses regenerated with primary RTAS and HLM table↔figure aligned | pending  |
+| v0.2      | RTAS frozen. Data sample, year-window, embedding, aggregation chosen (PRIMARY: `rtas_mini_mean`). Outdated canonical numbers list signed off. | done |
+| **v0.9**  | **All 6 downstream analyses regenerated with primary RTAS and HLM table↔figure aligned; manuscript v0.9 drafted; 12+1 figures; public repo pushed.** | ✅ **CURRENT** |
 | v1.0      | Scientometrics submission. Zenodo DOI for code snapshot minted. | pending  |
 
 ## Do NOT push this directory to GitHub
