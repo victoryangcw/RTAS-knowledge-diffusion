@@ -221,7 +221,7 @@
   <div class="stat-item"><div class="num">3,714</div><div class="label">Projects</div></div>
   <div class="stat-item"><div class="num">40</div><div class="label">Colleges (SIE n=1 RTAS=0)</div></div>
   <div class="stat-item"><div class="num">887</div><div class="label">Topics (886+1 OUTLIER)</div></div>
-  <div class="stat-item"><div class="num">ICC 0.739</div><div class="label">HLM MixedLM (1|college)</div></div>
+  <div class="stat-item"><div class="num">ICC 0.738</div><div class="label">HLM MixedLM (1|college)</div></div>
   <div class="stat-item"><div class="num">G=0.767</div><div class="label">Nat. Project Gini</div></div>
   <div class="stat-item"><div class="num">33,312</div><div class="label">Papers Matched (58.5%)</div></div>
 </div>
@@ -292,10 +292,10 @@
   <div class="figure-card">
     <img src="main/Figure6_HLM_Forest.png" onclick="document.getElementById('lb').src=this.src;document.querySelector('.lightbox').style.display='flex'">
     <div class="figure-info">
-      <h2>Figure 6: HLM v2.0 随机截距混合模型森林图（β/CI/p 表格移到图下方独立信息区）</h2>
-      <div class="source">← hlm_mixedlm_v2_primary_coefficients.csv (statsmodels MixedLM, (1|college)) → 10_generate_figures.py</div>
+      <h2>Figure 6: HLM v2.0b 随机截距混合模型森林图（β/CI/p 表格移到图下方独立信息区）</h2>
+      <div class="source">← hlm_mixedlm_v2b_primary_coefficients.csv (statsmodels MixedLM, (1|college); clean 前置指导数) → 10_generate_figures.py</div>
       <p>图内只保留: 蓝点=β, 水平误差棒=95% CI (绿=***/红=**/灰=ns), 点右侧星号; 淡绿底=β>0 有利区, 淡红底=β<0。<b>图下方灰框</b>=完整 5 行系数表; 黄框=读图规则 + 数据血缘撤回声明。导师协变量均为<b>立项前窗口 [t-3, t-1]</b>（2017-2024 池），未匹配导师=NA 不是 0；Primary n=3,231 / 39 学院，高置信匹配 sensitivity n=2,750 方向与显著性完全一致</p>
-      <div class="key-finding">导师立项前 3 年发文量 log(1+x) β=+0.0043 *** (p=3.2e-9); 导师累计指导项目数 log(1+x) β=−0.0065 *** (p=1.1e-4，"包工头"负效应); 年份 β=+0.0018 **; 省级/国家级 ns; ICC=0.7393。<b>[撤回]</b> v0.9 "recent-3y β=+0.0085 p=4.5e-7" 为数据血缘假象（3,714 值中 3,712 为零）</div>
+      <div class="key-finding">导师立项前 3 年发文量 log(1+x) β=+0.0043 *** (p=3.2e-9); 导师立项前累计指导项目数 log(1+x) β=−0.0063 *** (p=1.9e-5，"包工头"负效应; v1.0-cand.3 clean 前置口径); 年份 β=+0.0031 ***; 省级/国家级 ns; ICC=0.7376。<b>[撤回]</b> v0.9 "recent-3y β=+0.0085 p=4.5e-7" 为数据血缘假象（3,714 值中 3,712 为零）</div>
     </div>
   </div>
 
@@ -519,17 +519,17 @@
 <div class="fb-page">
   <div class="fb-head">
     <h2>Figure 6 — HLM v2.0 Random-Intercept Mixed Model Forest Plot</h2>
-    <span class="badge">Figure6_HLM_Forest.pdf | 9.8×7.6 inch | MixedLM (1|college), ICC=0.7393, n=3,231 projects × 39 colleges</span>
+    <span class="badge">Figure6_HLM_Forest.pdf | 9.8×7.6 inch | MixedLM (1|college), ICC=0.7376, n=3,231 projects × 39 colleges</span>
   </div>
   <div class="fb-figure-wrap"><img src="main/Figure6_HLM_Forest.png" onclick="document.getElementById('lb').src=this.src;document.querySelector('.lightbox').style.display='flex'"></div>
   <div class="fb-caption">
-    <div class="src">SOURCE: hlm/hlm_mixedlm_v2_primary_coefficients.csv (statsmodels MixedLM, REML) + hlm_mixedlm_v2_primary_summary.txt (动态读取 ICC/n/groups) → fig6_hlm_forest()</div>
+    <div class="src">SOURCE: hlm/hlm_mixedlm_v2b_primary_coefficients.csv (statsmodels MixedLM, REML; clean prior supervision) + hlm_mixedlm_v2b_primary_summary.txt (动态读取 ICC/n/groups) → fig6_hlm_forest()</div>
 
     <h3>模型规格（v2.0 数据血缘审计后重跑）</h3>
     <ul>
-      <li>两层随机截距混合模型：RTAS ~ Provincial + National + Year(centered 2022) + log(1+导师立项前3年发文) + log(1+导师累计指导项目数) + (1|学院)。</li>
+      <li>两层随机截距混合模型：RTAS ~ Provincial + National + Year(centered 2022) + log(1+导师立项前3年发文) + log(1+导师立项前累计指导项目数, 严格 year<t) + (1|学院)。</li>
       <li>导师协变量全部使用<b>立项前窗口 [t−3, t−1]</b>，论文池扩展为 <b>2017–2024 OpenAlex 共 79,339 篇</b>（补抓 2017–2019 共 22,438 篇），无未来信息泄漏；未匹配导师记 <b>NA 而非 0</b>（matched 2,750 / ambiguous 748 / unmatched 216 项目）。</li>
-      <li>Primary = 完整案例 n=3,231；Sensitivity = 仅高置信匹配 n=2,750 —— 两模型符号与显著性完全一致（hlm_mixedlm_v2_sensitivity_only_*.csv）。</li>
+      <li>Primary = 完整案例 n=3,231；Sensitivity = 仅高置信匹配 n=2,750 —— 两模型符号与显著性完全一致（hlm_mixedlm_v2b_sensitivity_matched_only_*.csv）。</li>
     </ul>
 
     <h3>上半部分（axes 内，刻意保持干净）</h3>
@@ -544,7 +544,7 @@
       <li><b>橙色黄框</b>：读图规则 + 撤回声明。</li>
     </ul>
 
-    <div class="alert-ok"><b>� v2.0 结果：</b>导师<b>立项前</b> 3 年发文 log(1+x) β=+0.0043, p=3.2×10⁻⁹ *** —— 导师科研活跃真实提升选题对齐（因果方向干净）；导师累计指导项目数 log(1+x) β=−0.0065, p=1.1×10⁻⁴ *** —— "包工头"式多项目并行负效应；年份 β=+0.0018, p=0.0014 **（对齐逐年上升）；省级 β=+0.0009 ns、国家级 β=−0.0014 ns —— 控制学院结构后等级效应消失；ICC=0.7393（约 74% 方差在学院层）。</div>
+    <div class="alert-ok"><b>✅ v2.0b 结果（v1.0-cand.3 clean 前置指导数）：</b>导师<b>立项前</b> 3 年发文 log(1+x) β=+0.0043, p=3.2×10⁻⁹ *** —— 导师科研活跃真实提升选题对齐（因果方向干净）；导师<b>立项前</b>累计指导项目数 log(1+x)（严格 year < focal year）β=−0.0063, p=1.9×10⁻⁵ *** —— "包工头"式多项目并行负效应；年份 β=+0.0031, p=1.1×10⁻⁶ ***（对齐逐年上升）；省级 β=+0.0006 ns、国家级 β=−0.0016 ns —— 控制学院结构后等级效应消失；ICC=0.7376（约 74% 方差在学院层）。<b>[泄漏修复]</b> 旧 v2.0 全期指导数（含未来项目）β=−0.0065 p=1.1×10⁻⁴，结论同号同显著，已降级为稳健性对照。</div>
     <div class="alert-err"><b>🔴 撤回（数据血缘 bug）：</b>v0.9 表与森林图的 "Advisor recent-3y works β=+0.0085, p=4.5×10⁻⁷ ***" 来自一个几乎全零的脏列（3,714 个项目中 3,712 个为 0，仅 2 个非零值 4.0/11.0），该显著性由 2 个观测驱动，<b>正式撤回</b>。旧 advisor_cited_by（2026 快照引用，含未来信息）从模型中移除。</div>
   </div>
 </div>

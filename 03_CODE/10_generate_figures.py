@@ -194,7 +194,7 @@ def fig2_roadmap():
         # Tier 2 (analyses): 5 boxes
         (0.40, R2, 1.95, BH, 'Heterogeneity (RQ1)\nF(2,3711)=35.7\nη²=1.89%\nd=0.352', COLORS['blue']),
         (2.60, R2, 1.95, BH, 'BERTopic (RQ2)\nUMAP+HDBSCAN\nK=886 topics\n4-quadrant', COLORS['orange']),
-        (4.80, R2, 1.95, BH, 'HLM (RQ3)\nMixedLM RE\nICC=0.739\n39 colleges', COLORS['purple']),
+        (4.80, R2, 1.95, BH, 'HLM (RQ3)\nMixedLM RE\nICC=0.738\n39 colleges', COLORS['purple']),
         (7.00, R2, 1.95, BH, 'Matthew (RQ4)\nGini=0.767\nTop5%=34.0%\nlag-OR=2.25***', COLORS['red']),
         (9.20, R2, 1.95, BH, 'RI-CLPM (future)\npanel built\nnot estimated\n(see MS sec.7)', COLORS['teal']),
         # Tier 3 (downstream): 1 box, aligned under BERTopic
@@ -488,9 +488,9 @@ def fig5_top20_colleges():
 # Figure 6: HLM Forest Plot (SINGLE SOURCE = hlm_coefficients.csv = Table 6)
 # ================================================================
 def fig6_hlm_forest():
-    inp = 'hlm/hlm_mixedlm_v2_primary_coefficients.csv'
-    provenance(6, 'HLM v2.0 Random-Intercept MixedLM Forest Plot', inp)
-    d = pd.read_csv(DATA / 'hlm' / 'hlm_mixedlm_v2_primary_coefficients.csv')
+    inp = 'hlm/hlm_mixedlm_v2b_primary_coefficients.csv'
+    provenance(6, 'HLM v2.0b Random-Intercept MixedLM Forest Plot', inp)
+    d = pd.read_csv(DATA / 'hlm' / 'hlm_mixedlm_v2b_primary_coefficients.csv')
     # Exclude intercept and Group Var (variance component, not a predictor)
     d_plot = d[~d['term'].isin(['Intercept', 'Group Var', 'const'])].copy()
     # Friendly labels
@@ -499,7 +499,8 @@ def fig6_hlm_forest():
         'is_national': 'National (vs. University)',
         'year_centered': 'Year (per year, centered at 2022)',
         'log_prior3y': 'Advisor pre-project 3y works  log(1+x)',
-        'log_supervision': 'Advisor total supervised projects  log(1+x)',
+        'log_prior_supervision': 'Advisor prior supervised projects  log(1+x)',
+        'log_supervision': 'Advisor prior supervised projects  log(1+x)',
         'advisor_count': 'Advisor count',
         'advisor_recent_3y_works_mean': 'Advisor recent-3y works (mean)',
         'advisor_cited_by_count_all_mean': 'Advisor cited-by count (mean)',
@@ -507,9 +508,9 @@ def fig6_hlm_forest():
     d_plot['label'] = d_plot['term'].map(label_map).fillna(d_plot['term'])
     d_plot = d_plot.sort_values('coef', ascending=True).reset_index(drop=True)
 
-    # Parse ICC / nobs / ngroups from v2 summary (single source)
+    # Parse ICC / nobs / ngroups from v2b summary (single source)
     icc_val, nobs_val, ngrp_val = 'NA', 'NA', 'NA'
-    summ = (DATA / 'hlm' / 'hlm_mixedlm_v2_primary_summary.txt').read_text(encoding='utf-8')
+    summ = (DATA / 'hlm' / 'hlm_mixedlm_v2b_primary_summary.txt').read_text(encoding='utf-8')
     m = re.search(r'ICC=([\d.]+)', summ)
     if m: icc_val = m.group(1)
     m = re.search(r'n=([\d,]+),\s*colleges=(\d+)', summ)
@@ -574,8 +575,9 @@ def fig6_hlm_forest():
 
     how = ("How to read:  dot = point estimate β, horizontal bar = 95% CI; bar colour: green = *** (p<0.001), red = ** (p<0.01), grey = ns.  "
            "CI not crossing 0 → significant.  Advisor covariates use PRE-PROJECT windows [t-3, t-1] over the 2017-2024 OpenAlex pool; unmatched advisors = NA, not zero.\n"
-           "Advisor research activity BEFORE the project raises alignment (β=+0.0043, ***); supervising MANY projects lowers it (β=−0.0065, ***).  "
-           "Tier dummies are ns after controlling for college context; alignment drifts up over years (β=+0.0018, **).  "
+           "Supervised-projects count is STRICTLY PRIOR (year < focal year; v2.0b leak fix — the earlier full-period count included future projects).  "
+           "Advisor research activity BEFORE the project raises alignment (β=+0.0043, ***); supervising MANY projects lowers it (β=−0.0063, ***).  "
+           "Tier dummies are ns after controlling for college context; alignment drifts up over years (β=+0.0031, ***).  "
            "Sensitivity on n=2,750 high-confidence matches gives the same signs and significance.\n"
            "[Retracted: v0.9 'recent-3y works β=+0.0085, p=4.5e-7' was a data-lineage artifact (3,712 of 3,714 values were zero).]")
     fig.text(0.5, 0.075, how, ha='center', va='top', fontsize=7.4, color='#332200',

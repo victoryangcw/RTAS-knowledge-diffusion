@@ -5,6 +5,44 @@ config, data, or code that could affect downstream numbers.
 
 ---
 
+## [v1.0-cand.3] — 2026-09-04 — Supervision covariate future-leak fix (last audit item before Analysis Freeze)
+
+### Found & fixed
+- **Future leakage in `advisor_total_supervised_projects`:** the covariate was a
+  FULL-PERIOD 2020-2024 count of projects advised by the advisor (no year filter
+  vs the focal project), so a 2020 focal project's covariate included projects
+  advised in 2021-2024 AND the focal project itself. Inconsistent with the
+  strictly pre-project windows used for all paper-side covariates in the same
+  audit script.
+- **Fix:** recomputed as `advisor_prior_supervised_projects` = number of projects
+  advised by the same advisor atom STRICTLY BEFORE the focal year (year < t),
+  mean across atoms. Old columns kept untouched (append-only) in
+  `table5_project_dataset_n3714_full.csv`.
+
+### HLM v2b re-run (identical spec, only the supervision term swapped)
+- Primary (n=3,231 / 39 colleges): ICC=0.7376 (v2: 0.7393); prior-3y works
+  β=+0.0043 *** (unchanged); **prior supervised β=−0.0063, p=1.9e-5 *** (v2
+  full-period: −0.0065, p=1.1e-4 — same sign, same significance)**; year
+  β strengthened +0.0018** → +0.0031*** (the clean prior variable releases the
+  year trend absorbed by the full-period count); Provincial/National remain ns.
+- Sensitivity matched-only (n=2,750): same signs and significance, no reversal.
+- **Every substantive conclusion survives; the "serial-supervisor" negative
+  effect does not depend on the window definition.**
+- Left-truncation disclosed (not leakage): project data start 2020, so the 2020
+  cohort is 0 by construction (identification from within-year variation,
+  mainly 2022-2024).
+
+### Synced
+- New frozen outputs: `hlm_mixedlm_v2b_primary/sensitivity_matched_only`
+  coefficients + summaries, `hlm_v2_vs_v2b_supervision_comparison.csv`; v2
+  full-period version demoted to robustness disclosure (§4.4).
+- Table 6, §2.3, §4, §8.1, §9 Fig6 caption, §12 updated; §2.3 rewritten as the
+  2017-2019 / 2020-2024 dual-corpus division of labor and the stale "all
+  downstream analyses share one window" sentence removed; Figure 2 (ICC 0.738)
+  and Figure 6 (v2b source) regenerated; gallery synced.
+
+---
+
 ## [v1.0-cand.2] — 2026-09-04 — External-review P0 remediation (no frozen number changes in existing analyses)
 
 ### Withdrawn
