@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RTAS v0.9.1 Figure Book — 官方图册页 (Audited 2026-09-03)</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+    background: #f5f5f5;
+    color: #222;
+    line-height: 1.7;
+  }
+  header {
+    background: linear-gradient(135deg, #1a237e, #2e5c8a);
+    color: white;
+    padding: 24px 20px 14px;
+    text-align: center;
+    position: sticky; top: 0; z-index: 999;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+  }
+  header h1 { font-size: 22px; margin-bottom: 6px; }
+  header p { font-size: 12.5px; opacity: 0.9; }
+
+  /* ===== Top tabs ===== */
+  .tab-bar {
+    display: flex;
+    gap: 0;
+    justify-content: center;
+    margin-top: 14px;
+    margin-bottom: -14px;
+    flex-wrap: wrap;
+  }
+  .tab-btn {
+    background: rgba(255,255,255,0.15);
+    color: white;
+    border: 1px solid rgba(255,255,255,0.35);
+    border-bottom: none;
+    padding: 8px 20px;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: 8px 8px 0 0;
+    transition: background 0.2s;
+    font-weight: 600;
+  }
+  .tab-btn:hover { background: rgba(255,255,255,0.28); }
+  .tab-btn.active {
+    background: #f5f5f5;
+    color: #1a237e;
+  }
+  .tab-pane { display: none; }
+  .tab-pane.active { display: block; }
+
+  /* ===== Stats bar ===== */
+  .stats-bar {
+    display: flex; gap: 14px; justify-content: center; flex-wrap: wrap;
+    max-width: 1180px; margin: 20px auto 6px; padding: 0 12px;
+  }
+  .stat-item {
+    background: white; padding: 10px 18px; border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08); text-align: center; min-width: 140px;
+  }
+  .stat-item .num { font-size: 20px; font-weight: bold; color: #c0392b; }
+  .stat-item .label { font-size: 10.5px; color: #777; }
+
+  .container { max-width: 1180px; margin: 0 auto; padding: 16px; }
+
+  /* ===== CARD VIEW (tab 1, existing gallery) ===== */
+  .figure-card {
+    background: white; border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    margin-bottom: 28px; overflow: hidden;
+    transition: box-shadow 0.3s;
+  }
+  .figure-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.15); }
+  .figure-card img { width: 100%; display: block; cursor: zoom-in; }
+  .figure-info { padding: 14px 20px; border-top: 1px solid #eee; }
+  .figure-info h2 { font-size: 15.5px; color: #1a237e; margin-bottom: 4px; }
+  .figure-info .source {
+    font-size: 12px; color: #888;
+    font-family: 'Consolas', monospace; margin-bottom: 6px;
+  }
+  .figure-info p { font-size: 12.5px; color: #555; }
+  .figure-info .key-finding {
+    margin-top: 8px; padding: 7px 12px;
+    background: #fff3e0; border-left: 3px solid #e67e22;
+    font-size: 11.8px; color: #444; border-radius: 0 4px 4px 0;
+  }
+
+  /* ===== AUDIT CHANGES BANNER  (tab 1 top) ===== */
+  .audit-banner {
+    background: #fff7e6;
+    border: 1px solid #faad14;
+    border-left: 5px solid #d46b08;
+    border-radius: 6px;
+    padding: 12px 16px;
+    margin: 8px 0 18px;
+    font-size: 12.5px;
+    color: #333;
+  }
+  .audit-banner b { color: #873800; }
+  .audit-banner ul { margin: 6px 0 0 18px; }
+
+  /* ===== FIGURE BOOK VIEW (tab 2) ===== */
+  .fb-page {
+    background: white;
+    margin-bottom: 36px;
+    border-radius: 6px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.12);
+    overflow: hidden;
+    page-break-after: always;
+  }
+  .fb-head {
+    padding: 12px 22px;
+    background: linear-gradient(90deg, #1a237e, #3949ab);
+    color: white;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .fb-head h2 { font-size: 18px; font-weight: 700; }
+  .fb-head .badge {
+    background: rgba(255,255,255,0.18);
+    padding: 4px 12px; border-radius: 99px;
+    font-size: 11.5px; font-family: Consolas, monospace;
+  }
+  .fb-figure-wrap {
+    padding: 16px 24px 6px;
+    background: #fafafa;
+    border-bottom: 1px solid #eee;
+    text-align: center;
+  }
+  .fb-figure-wrap img {
+    max-width: 100%;
+    max-height: 72vh;
+    display: inline-block;
+    border: 1px solid #ddd;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.10);
+    cursor: zoom-in;
+  }
+  .fb-caption {
+    padding: 12px 24px 18px;
+    font-size: 13px;
+    color: #222;
+  }
+  .fb-caption .src {
+    font-family: Consolas, monospace;
+    font-size: 11.5px;
+    color: #666;
+    padding: 6px 10px;
+    background: #f6f8fa;
+    border-radius: 4px;
+    margin-bottom: 10px;
+  }
+  .fb-caption h3 {
+    color: #1a237e;
+    font-size: 14.5px;
+    margin: 10px 0 5px;
+    border-bottom: 2px solid #e3e8f5;
+    padding-bottom: 3px;
+  }
+  .fb-caption h3:first-child { margin-top: 4px; }
+  .fb-caption ul, .fb-caption ol { margin-left: 1.2em; }
+  .fb-caption li { margin-bottom: 2px; }
+  .fb-caption .alert-warn {
+    background: #fff2e8; border-left: 3px solid #d46b08; color: #5c3a0a;
+    padding: 6px 12px; margin: 8px 0; border-radius: 0 4px 4px 0; font-size: 12px;
+  }
+  .fb-caption .alert-err {
+    background: #fff1f0; border-left: 3px solid #a8071a; color: #5c0011;
+    padding: 6px 12px; margin: 8px 0; border-radius: 0 4px 4px 0; font-size: 12px;
+  }
+  .fb-caption .alert-ok {
+    background: #f6ffed; border-left: 3px solid #389e0d; color: #135200;
+    padding: 6px 12px; margin: 8px 0; border-radius: 0 4px 4px 0; font-size: 12px;
+  }
+
+  /* ===== Lightbox ===== */
+  .lightbox {
+    display: none; position: fixed; z-index: 9999;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.92);
+    justify-content: center; align-items: center; cursor: zoom-out;
+  }
+  .lightbox img { max-width: 96%; max-height: 96%; object-fit: contain; }
+
+  footer { text-align: center; padding: 28px 16px; color: #777; font-size: 11.5px; }
+
+  /* ===== Print (Ctrl+P → print as PDF friendly) ===== */
+  @media print {
+    body { background: white; }
+    header { position: static; box-shadow: none; background: #1a237e !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .tab-bar, .tab-btn { display: none !important; }
+    #tab-book { display: block !important; }
+    #tab-cards { display: none !important; }
+    .fb-page { box-shadow: none; border: 1px solid #ccc; page-break-after: always; break-after: page; }
+    .fb-figure-wrap { padding: 8px; background: white; }
+    .lightbox { display: none !important; }
+    .stats-bar { display: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>RTAS v0.9.1 — 57K 池官方图册 + 数据审计画廊</h1>
+  <p>56,901 OpenAlex papers × 3,714 projects · ICC=0.7624 · K=886 (+1 OUTLIER) · All figures single-source from `03_FINAL_ANALYSIS/`</p>
+
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="switchTab('cards', this)">📇 数据审计卡片视图</button>
+    <button class="tab-btn" onclick="switchTab('book', this)">📖 大图册视图 (Figure Book)</button>
+  </div>
+</header>
+
+<!-- ============================================================ -->
+<!-- TAB 1  : EXISTING GALLERY -->
+<!-- ============================================================ -->
+<div id="tab-cards" class="tab-pane active">
+
+<div class="stats-bar">
+  <div class="stat-item"><div class="num">56,901</div><div class="label">Papers (OpenAlex I37461747)</div></div>
+  <div class="stat-item"><div class="num">3,714</div><div class="label">Projects</div></div>
+  <div class="stat-item"><div class="num">40</div><div class="label">Colleges (SIE n=1 RTAS=0)</div></div>
+  <div class="stat-item"><div class="num">887</div><div class="label">Topics (886+1 OUTLIER)</div></div>
+  <div class="stat-item"><div class="num">ICC 0.762</div><div class="label">HLM college RE</div></div>
+  <div class="stat-item"><div class="num">G=0.767</div><div class="label">Nat. Project Gini</div></div>
+  <div class="stat-item"><div class="num">33,312</div><div class="label">Papers Matched (58.5%)</div></div>
+</div>
+
+<div class="container">
+  <div class="audit-banner">
+    <b>🟠 2026-09-03 冻结数据三方一致性审计 — 4 处矛盾已全部修复：</b>
+    <ul>
+      <li>❌ 旧「Tukey: 省-国 *** 严格单调」 → 真实 <b>Tukey P-N p-adj=0.082 ns</b>；严格结论 <b>U &lt; P ≤ N</b>（Figure 4 bracket + §1.1 + §4.4 已同步）</li>
+      <li>❌ 旧 Table 6 HLM β (国家级 0.022** / 年份 0.0076** / 被引 −1.93e-6**) 全是 12K 池假阳性 → 真实 v0.9.1 <b>国家级/年份/被引全部 ns</b>，只有「导师近3年发文量 β=+0.0085, p=4.5e-7 ***」干净强显著（§4.4 整块重写 + 黄色警告并列）</li>
+      <li>❌ 旧 §6.2/Fig9 写「LRHT n=8, med=−1.5 yr」→ 真实 LRHT 10+LRLT 698 全部 <b>lag_defined=False (by construction 永远跨不过 paper Top-20% 阈值)</b> → Fig9 新图 LRHT/LRLT 用灰色斜纹 N/A 面板 + §6.2 撤回声明 RETRACTED</li>
+      <li>❌ SIE n=1 项目写 "有效 RTAS" 未给数值 → 真实 <b>SIE RTAS mean=0.0000, rank=40/40</b>（是真实 0，非 NaN）→ §1.1.5 表格末尾特别说明 + Figure S1 最底 40. School of International Education 0.000</li>
+    </ul>
+  </div>
+
+  <!-- ==============  Cards  (from previous gallery) ============== -->
+
+  <div class="figure-card">
+    <img src="main/Figure2_Roadmap.png" onclick="document.getElementById('lb').src=this.src;document.querySelector('.lightbox').style.display='flex'">
+    <div class="figure-info">
+      <h2>Figure 2: 技术路线图 (3-tier strict)</h2>
+      <div class="source">← FINAL_ANALYSIS_PROTOCOL §2 → 10_generate_figures.py</div>
+      <p>3层水平分层 (上层4流水线框 / 中层5分析框 / 下层1下游框)，所有箭头仅水平直通或垂直下落，绝不穿越方框</p>
+      <div class="key-finding">Data → Embedding → RTAS Freeze → 异质性/BERTopic+扩散/HLM/马太/RI-CLPM</div>
+    </div>
+  </div>
+
+  <div class="figure-card">
+    <img src="main/Figure3_QuadrantScatter.png" onclick="document.getElementById('lb').src=this.src;document.querySelector('.lightbox').style.display='flex'">
+    <div class="figure-info">
+      <h2>Figure 3: 四象限散点图（v0.9.1 原点修正 + 象限角标归位）</h2>
+      <div class="source">← topic_info.csv (887 topic rows: 886 non-outlier + 1 OUTLIER meta-row) → 10_generate_figures.py</div>
+      <p>X轴 = Paper Prevalence % (该主题占 56,901 篇论文的份额); Y轴 = Project Prevalence % (占 3,714 项目的份额); 点大小 ∝ 该主题总文档数 (paper+project); 颜色 = <b>HRHT 红 / HRLT 橙 / LRHT 绿 / LRLT 灰</b>. 象限阈值: 竖虚线 = paper 侧 Top-20% 自适应分位; 横虚线 = project 侧阈值。<b>两轴强制从 (0,0) 起，原点唯一重合在左下角</b>；四个象限大字水印标注在各自真实区域内（左上 LRHT / 右上 HRHT / 右下 HRLT / 左下 LRLT），带白描边压点可读</p>
+      <div class="key-finding">K=886 四象限: HRHT=5（右上，红）, HRLT=173（右下，橙：论文热但项目冷）, LRHT=10（左上，绿：项目热但论文冷）, LRLT=698（左下，灰，贴原点）</div>
+    </div>
+  </div>
+
+  <div class="figure-card">
+    <img src="main/Figure4a_MeanCI.png" onclick="document.getElementById('lb').src=this.src;document.querySelector('.lightbox').style.display='flex'">
+    <div class="figure-info">
+      <h2>Figure 4a: 项目等级 RTAS 均值 ± 95% CI（独立大图，无图内数字堆叠）</h2>
+      <div class="source">← project_level_summary.csv → 10_generate_figures.py</div>
+      <p>横轴=项目等级 (University/Provincial/National), 纵轴=RTAS 均值; 柱高=mean, 黑误差棒=95% CI (1.96·SEM); 柱顶黑色大字=均值 3 位小数, 柱内白字=n</p>
+      <div class="key-finding">U 0.121 (n=1,375) / P 0.139 (n=1,657) / N 0.146 (n=682); ANOVA F(2,3711)=35.72, p=4.3e-16, η²=1.89%。组间两两检验 (Welch/Tukey) 全部移到 Figure 4b 底部信息区</div>
+    </div>
+  </div>
+
+  <div class="figure-card">
+    <img src="main/Figure4b_Distribution.png" onclick="document.getElementById('lb').src=this.src;document.querySelector('.lightbox').style.display='flex'">
+    <div class="figure-info">
+      <h2>Figure 4b: 项目等级 RTAS 全分布（箱线+3,714 jitter；数字表全部移到图下方独立信息区）</h2>
+      <div class="source">← table5_project_dataset_n3714_full.csv + tukey_project_level_pairwise.csv → 10_generate_figures.py</div>
+      <p>图内只保留: 箱线 (Q1–Q3/中值/♦均值/1.5IQR须) + 3,714 散点 + 3 条 bracket (只标 *** / ns 显著性符号，不写检验方法名)。<b>图下方独立信息区</b>: 3 个色边小框 = 每档 8 数摘要 (n/mean/SD/med/Q1/Q3/IQR/whisk/range); 灰色大框 = pairwise 表 (Welch p + Cohen d | Tukey HSD p-adj + 95% ΔCI | 裁定，表头注明检验方法)</p>
+      <div class="key-finding">Tukey: U-P *** / U-N *** / <b>P-N = ns (p-adj=0.0821, Δ-CI [−0.001,+0.001] 跨 0)</b> → 严格结论 <b>U &lt; P ≤ N</b>。Welch P-N p=0.036 * 是未校正单对比，多组校正后失效</div>
+    </div>
+  </div>
+
+  <div class="figure-card">
+    <img src="main/Figure5_Top20Colleges.png" onclick="document.getElementById('lb').src=this.src;document.querySelector('.lightbox').style.display='flex'">
+    <div class="figure-info">
+      <h2>Figure 5: Top-20 学院 RTAS 柱状图 (水平)</h2>
+      <div class="source">← college_rtas_top20.csv → 10_generate_figures.py</div>
+      <p>纵轴=学院英文名 (asc排序: 差→好); 横轴=RTAS mean; 颜色 <b>RdYlGn 映射 RTAS VALUE (非排名)</b> → 红=低 绿=高 (Figure S1 appendix同色条可互相比); 右端色条标签 "red=lower → green=higher alignment"</p>
+      <div class="key-finding">冠军: 中国南极测绘研究中心 (0.360) — 与 Figure S1 (rank 1) 颜色完全一致</div>
+    </div>
+  </div>
+
+  <div class="figure-card">
+    <img src="main/Figure6_HLM_Forest.png" onclick="document.getElementById('lb').src=this.src;document.querySelector('.lightbox').style.display='flex'">
+    <div class="figure-info">
+      <h2>Figure 6: HLM 森林图（β/CI/p 表格移到图下方独立信息区）</h2>
+      <div class="source">← hlm_coefficients.csv (Table 6 唯一数据源) → 10_generate_figures.py</div>
+      <p>图内只保留: 蓝点=β, 水平误差棒=95% CI (绿=*** / 橙=* / 灰=ns), 点右侧小星号; 淡绿底=β>0 有利区, 淡红底=β<0。<b>图下方灰框</b>=完整 6 行系数表 (Predictor | β | 95% CI | p | sig); 再下方黄框=读图规则 + 12K→57K 国家级假阳性纠正</p>
+      <div class="key-finding">Advisor recent-3y works 唯一***(绿误差棒 β=+0.0085, p=4.5e-7), Provincial *(橙), 国家级/年份/导师数/被引全 ns(灰); 与 Table 6 逐行数值完全一致</div>
+    </div>
+  </div>
+
+  <div class="figure-card">
+    <img src="main/Figure7_TransitionMatrix.png" onclick="document.getElementById('lb').src=this.src;document.querySelector('.lightbox').style.display='flex'">
+    <div class="figure-info">
+      <h2>Figure 7: 导师活动量转移矩阵 (3×3)</h2>
+      <div class="source">← transition_probabilities_year_tercile.csv → 10_generate_figures.py</div>
+      <p>YlOrRd 色 (黄→深红褐色 = 转移概率↑); 每个格子中心黑体百分比数字; 行=From当年, 列=To下一年; 对角线62-66%=马太位置固化; n=736 consecutive pair</p>
+      <div class="key-finding">对角 62–66% → 高分位导师大概率明年仍高分位，低分位仍困低分位</div>
+    </div>
+  </div>
+
+  <div class="figure-card">
+    <img src="main/Figure8_DiffusionLag.png" onclick="document.getElementById('lb').src=this.src;document.querySelector('.lightbox').style.display='flex'">
+    <div class="figure-info">
+      <h2>Figure 8: 扩散滞后直方图 (lag 整数分桶 −4~+4)</h2>
+      <div class="source">← diffusion_lag_histogram_bins.csv + aggregate_stats OVERALL行 (标题动态读取) → 10_generate_figures.py</div>
+      <p>X轴=lag年份; 正 lag红色 (科研先出), 负绿色 (培养先出), 0浅灰色; 标题动态从 aggregate_stats拼出 "(29/886 topics with defined lag, median=X, mean=+Y)" — 不再硬编码</p>
+      <div class="key-finding">总 29/886 主题 (3.27%) — median=0 mean=+0.59; 41.38% 正 / 44.83% 0 / 13.79% 负</div>
+    </div>
+  </div>
+
+  <div class="figure-card">
+    <img src="main/Figure9_DiffusionByQuadrant.png" onclick="document.getElementById('lb').src=this.src;document.querySelector('.lightbox').style.display='flex'">
+    <div class="figure-info">
+      <h2>Figure 9: 分象限扩散滞后箱线图（v0.9.1 硬纠正；N/A 斜纹面板 + 小 n 标注 + 统计表在图下方）</h2>
+      <div class="source">← topic_first_year_adoption.csv (lag_defined=True 29/886 topics) + quadrant_overall_summary.csv → 10_generate_figures.py</div>
+      <p>横轴固定 4 列：HRLT/HRHT = 箱线 + jitter 散点（HRHT n=5 上方白框直接标出 "4 at lag 0 (synchronized) / 1 at lag −2"，避免平箱线被误读为数据缺失）；<b>LRHT/LRLT 改为灰色斜纹 N/A 面板</b>（不再像"坏掉的箱线图"），中央灰字说明 by design 无 lag。淡红/淡绿正负 lag 区 + 0 同步虚线。<b>图下方信息区</b>: HRLT/HRHT 两个色边框 = 9 行摘要；红边大框 = Welch/MWU 组间检验 + 读图规则 + RETRACTED 撤回声明</p>
+      <div class="key-finding">🔴 LRHT(10)+LRLT(698) 全部 lag_defined=False (by construction)；仅 HRLT n=24 (med=+0.5y, 50% 正/38% 零/12% 负) 与 HRHT n=5 (med=0, 80% 零)。<b>HRLT vs HRHT: Welch p=0.054 (ns), MWU p=0.095 (ns), d=+0.78</b>; 旧 "LRHT med=-1.5 yr" 为 12K 池遗留假值 RETRACTED</div>
+    </div>
+  </div>
+
+  <div class="figure-card">
+    <img src="main/Figure10_MatthewEffect.png" onclick="document.getElementById('lb').src=this.src;document.querySelector('.lightbox').style.display='flex'">
+    <div class="figure-info">
+      <h2>Figure 10: 马太效应 — Lorenz + Pareto 双面板</h2>
+      <div class="source">← supervisor_gini_pareto.csv + table5_project_dataset_n3714_full.csv (左Lorenz由脚本重算) + audit json → 10_generate_figures.py</div>
+      <p>左Lorenz: X累计导师比例, Y累计国家级项目份额; 红实线与45°黑虚线之间红阴影=不均等; Gini=0.767 标签. 右Pareto: X Top1/5/10/20/50%, Y国家级项目份额(%); 5%基准线虚线; 柱顶标签%.</p>
+      <div class="key-finding">Gini(national)=0.767, Top5% share=34.0%, Top20%=76.8% — Top5% 是 Equal share 基准线 5% 的 6.8×</div>
+    </div>
+  </div>
+
+  <div class="figure-card">
+    <img src="main/Figure11_QuadrantSummary.png" onclick="document.getElementById('lb').src=this.src;document.querySelector('.lightbox').style.display='flex'">
+    <div class="figure-info">
+      <h2>Figure 11: 四象限汇总柱状图 (三子图)</h2>
+      <div class="source">← quadrant_overall_summary.csv → 10_generate_figures.py</div>
+      <p>(a)主题数绝对数 / (b)论文总数 (out of 56,901) / (c) 项目总数 (out of 3,714). 每柱顶标数字; 象限色一致</p>
+      <div class="key-finding">HRLT=18,141 论文 vs 仅 399 项目 → "研究做透了但培养没跟上" → 课程改革靶点; LRHT = 219论文 / 278项目 → "教了但科研没做"</div>
+    </div>
+  </div>
+
+  <div class="figure-card">
+    <img src="supplementary/FigureS1_CollegeRTAS_Full40.png" onclick="document.getElementById('lb').src=this.src;document.querySelector('.lightbox').style.display='flex'">
+    <div class="figure-info">
+      <h2>Figure S1 (附录): 全部 40 学院 RTAS 完整排名</h2>
+      <div class="source">← college_rtas_summary_all.csv (附录全排名, 与 Figure 5 Top-20 主图互补) → 10_generate_figures.py</div>
+      <p>颜色图例: 越绿 = RTAS 越高 (培养与科研前沿对齐越好), 越红 = RTAS 越低。College ANOVA F(38,3674)=195.45, η²=66.90%。Y轴标签格式从顶到底 "40. → 1."（不用 #）</p>
+      <div class="key-finding">冠军: 中国南极测绘研究中心 (1.  0.360); 垫底 (40.): School of International Education (SIE) RTAS mean=0.000, n_projects=1 (真实0, not NaN)</div>
+    </div>
+  </div>
+
+  <div class="figure-card">
+    <img src="main/Figure13_TopicStackedArea.png" onclick="document.getElementById('lb').src=this.src;document.querySelector('.lightbox').style.display='flex'">
+    <div class="figure-info">
+      <h2>Figure 13: Top-15 主流主题年度流行度堆叠面积图（顶部框解释颜色=什么主题；Other 已剔除）</h2>
+      <div class="source">← topic_yearly_prevalence_for_diffusion_lag.csv + topic_info.csv (c-TF-IDF 主题词) → 10_generate_figures.py</div>
+      <p>12×10 inch。<b>顶部灰框</b>：3 列图例直接解释每条色带是什么主题（如 T5 = Language learning (Chinese/English)、T72 = Robots/robotics、T2 = Lithium-ion batteries、T196 = Deep learning 等，词条来自 BERTopic c-TF-IDF top words），顺序 = 自底向上堆叠顺序。<b>图区二次压扁至约 30% 高度</b>（用户要求色带再扁一半）给顶部含义框腾出大空间。X=年份 2020–2024；Y=Top-15 主流题累计流行度 %（0–18%）。每条色带×每个年份上边界 = 白边黑点 + 累计 %（白描边）；栈顶粗体 "Top-15 total 17.6%→13.5%"；图底斜体脚注逐年列出被剔除的 871 长尾主题份额。</p>
+      <div class="key-finding">最底蓝带 T5 语言学习：7.3%→4.1% 逐年降温；主流题合计 17.6%→13.5% 缓降、长尾 29.5%→33.1% 缓升 → 培养选题缓慢分散化；在线学习/大数据 (T216) 2020 后持续扩大，牙科 (T22)、食品 (T140) 等带形平稳</div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ============================================================ -->
+<!-- TAB 2  :  FIGURE BOOK  (大图 + manuscript §9 官方读图说明) -->
+<!-- ============================================================ -->
+<div id="tab-book" class="tab-pane">
+
+<div class="stats-bar">
+  <div class="stat-item"><div class="num">56,901</div><div class="label">Papers (Article, WHU)</div></div>
+  <div class="stat-item"><div class="num">3,714</div><div class="label">Projects</div></div>
+  <div class="stat-item"><div class="num">40</div><div class="label">Colleges</div></div>
+  <div class="stat-item"><div class="num">29</div><div class="label">Lag-defined topics</div></div>
+  <div class="stat-item"><div class="num">0.134 ±0.072</div><div class="label">RTAS mean±sd</div></div>
+  <div class="stat-item"><div class="num">p=4.5e-7</div><div class="label">Advis. 3y works (***)</div></div>
+</div>
+
+<div class="container">
+
+<!-- ============ FIG 2 ============ -->
+<div class="fb-page">
+  <div class="fb-head">
+    <h2>Figure 2 — Technical Roadmap (3-tier strict, no arrow through boxes)</h2>
+    <span class="badge">Figure2_Roadmap.pdf | 11.5×6.2 inch | PDF vector + 600dpi PNG</span>
+  </div>
+  <div class="fb-figure-wrap"><img src="main/Figure2_Roadmap.png" onclick="document.getElementById('lb').src=this.src;document.querySelector('.lightbox').style.display='flex'"></div>
+  <div class="fb-caption">
+    <div class="src">SOURCE: FINAL_ANALYSIS_PROTOCOL §2 → 06_CODE/10_generate_figures.py fig2_roadmap()</div>
+
+    <h3>视觉布局</h3>
+    <ul>
+      <li>三层严格水平分层：上层（4 个流水线方框）/ 中层（5 个分析模块方框）/ 下层（1 个下游 Robustness 方框）。</li>
+      <li>箭头只有两种形态（绝不穿过方框本体）：①同层方框之间的<strong>水平左→右直箭头</strong>（同阶段数据输入流）；②上层方框中点 → 下层方框中点的<strong>垂直直箭头</strong>（跨阶段输出→输入）。</li>
+      <li>颜色语义：蓝=数据源 / 橙=计算 / 绿=冻结输出 / 紫=分析模块 / 灰=下游应用。</li>
+    </ul>
+
+    <h3>如何阅读</h3>
+    <p>Paper corpus + Project dataset → Embedding encode → RTAS compute → RTAS freeze。垂直线下传到五大分析模块：<b>异质性分析 / BERTopic 四象限 + 扩散滞后 / HLM 多层线性 / 马太效应 / RI-CLPM 面板</b>。最终 Diffusion 模块垂直下传到 Downstream（培养改革干预）。</p>
+  </div>
+</div>
+
+<!-- ============ FIG 3 ============ -->
+<div class="fb-page">
+  <div class="fb-head">
+    <h2>Figure 3 — Quadrant Scatter (Research × Training prevalence)</h2>
+    <span class="badge">Figure3_QuadrantScatter.pdf | 886 non-outlier dots + 1 OUTLIER row (not plotted)</span>
+  </div>
+  <div class="fb-figure-wrap"><img src="main/Figure3_QuadrantScatter.png" onclick="document.getElementById('lb').src=this.src;document.querySelector('.lightbox').style.display='flex'"></div>
+  <div class="fb-caption">
+    <div class="src">SOURCE: topic_info.csv (887 rows = 886 non-outlier clusters + 1 OUTLIER meta-row) → fig3_quadrant_scatter()</div>
+
+    <h3>坐标轴</h3>
+    <ul>
+      <li><b>X 轴：Paper Prevalence %</b>（该主题的论文数 / 总论文数 <b>56,901</b>，百分比线性刻度）。</li>
+      <li><b>Y 轴：Project Prevalence %</b>（同一主题的项目数 / 总项目数 <b>3,714</b>，百分比线性刻度）。</li>
+      <li><b>原点唯一</b>：两轴显式从 (0, 0) 起（xlim/ylim 左、下界锁 0），x=0 与 y=0 刻度在左下角重合为同一个原点——旧版自动留白导致两个"0"错位的问题已修正。</li>
+    </ul>
+
+    <h3>视觉元素</h3>
+    <ul>
+      <li><b>圆点</b> = 1 个非 OUTLIER 主题（共 886 个），OUTLIER 伪主题不出现。</li>
+      <li><b>点大小 ∝ #documents</b>（paper+project 文档总数，越大=文档越多）。</li>
+      <li><b>点颜色</b> = 象限分色：<b>HRHT 红 / HRLT 橙 / LRHT 绿 / LRLT 灰</b>（与 Figure 9、Figure 11 同一套 QUADRANT_COLORS）。</li>
+      <li><b>垂直虚线</b> = paper 侧 Top-20% 自适应分位阈值。<b>水平虚线</b> = project 侧阈值。两条线分平面为 4 个象限。</li>
+      <li><b>象限水印</b>：四个缩写大字标注在<b>各自真实象限区域内</b>并带白色描边（左上 LRHT / 右上 HRHT / 右下 HRLT / 左下 LRLT）。旧版四个角标放在图面四角、与点的实际分布错位（HRLT 点在右下却标左上），本轮已修正。</li>
+    </ul>
+
+    <h3>冻结真实数值（四象限计数）</h3>
+    <div class="alert-ok">HRHT=5, HRLT=173, LRHT=10, LRLT=698，合计 886。</div>
+  </div>
+</div>
+
+<!-- ============ FIG 4a ============ -->
+<div class="fb-page">
+  <div class="fb-head">
+    <h2>Figure 4a — Mean RTAS by Project Tier (± 95% CI)</h2>
+    <span class="badge">Figure4a_MeanCI.pdf | 7.6×6.0 inch | clean standalone, no in-plot clutter</span>
+  </div>
+  <div class="fb-figure-wrap"><img src="main/Figure4a_MeanCI.png" onclick="document.getElementById('lb').src=this.src;document.querySelector('.lightbox').style.display='flex'"></div>
+  <div class="fb-caption">
+    <div class="src">SOURCE: heterogeneity/project_level_summary.csv → fig4a_mean_ci()</div>
+    <h3>坐标轴</h3>
+    <ul>
+      <li>横轴 = 项目等级三档（University 1,375 蓝 / Provincial 1,657 橙 / National 682 红，按均值升序）。纵轴 = RTAS 均值（0 ~ 0.19 线性）。</li>
+      <li>柱高 = 档内 RTAS 均值；黑色误差棒 = 95% CI = 1.96 × SD/√n（capsize=7）。柱顶黑色粗体大字 = 均值三位小数；柱内白字 = 该档项目数 n。</li>
+    </ul>
+    <div class="alert-ok">冻结值：University 0.121 / Provincial 0.139 / National 0.146。标题给出总体 ANOVA：F(2, 3711) = 35.72, p = 4.3×10⁻¹⁶, η² = 1.89%。<b>两两差异的严格检验（Welch + Tukey HSD）全部移到 Figure 4b 底部信息区</b>，本图只呈现均值与置信区间。</div>
+  </div>
+</div>
+
+<!-- ============ FIG 4b ============ -->
+<div class="fb-page">
+  <div class="fb-head">
+    <h2>Figure 4b — RTAS per-project Distribution + stats panel BELOW the plot</h2>
+    <span class="badge">Figure4b_Distribution.pdf | 10.5×9.6 inch | 3,714 projects; tables moved out of axes</span>
+  </div>
+  <div class="fb-figure-wrap"><img src="main/Figure4b_Distribution.png" onclick="document.getElementById('lb').src=this.src;document.querySelector('.lightbox').style.display='flex'"></div>
+  <div class="fb-caption">
+    <div class="src">SOURCE: table5_project_dataset_n3714_full.csv (raw 3,714 projects) + heterogeneity/tukey_project_level_pairwise.csv → fig4b_distribution()</div>
+
+    <h3>上半部分（axes 内，刻意保持干净）</h3>
+    <ul>
+      <li>横轴 = 三档等级；纵轴 = 每个项目的 RTAS 原始值（3,714 个点，一个项目都没隐藏）。</li>
+      <li>半透明彩色箱 = Q1–Q3；粗黑横线 = 中位数；白边黑菱形 ♦ = 均值；竖线须 = Tukey 1.5·IQR；浅色 jitter 点 = 个体项目。</li>
+      <li>箱上方 3 条横向 bracket <b>只标显著性符号</b>（不写检验方法名，方法在图注/方法部分说明）：U–P ***（navy）/ P–N <b>ns（棕色）</b> / U–N ***（红）。详细 p 值、ΔCI、Cohen d 全部在下方灰色表里，不再堆叠在图内。</li>
+    </ul>
+
+    <h3>下半部分（图下方独立信息区，figure 坐标锚定，不随数据缩放漂移）</h3>
+    <ul>
+      <li><b>3 个色边小框</b>（蓝/橙/红，与箱色一致）= 每档 8 数摘要：n / mean / ±SD / med / Q1·Q3 / IQR / whisker 范围 / 全距。</li>
+      <li><b>灰色大框 pairwise 表</b>：每对一行 = Welch p（未校正两样本 t）+ Cohen d ｜ Tukey HSD p-adj ｜ Tukey 同时 95% Δ-CI ｜ 裁定。</li>
+    </ul>
+
+    <div class="alert-warn"><b>Provincial vs National 边界声明（本表是唯一权威出处）：</b>Welch p = 3.61×10⁻²（*，未校正）但 Tukey HSD p-adj = 0.0821（ns），95% Δ-CI [−0.001, +0.001] 跨 0 → 多组校正后 FAIL。严格结论只能写 <b>University &lt; Provincial ≤ National</b>。U–P、U–N 两对在 Welch 与 Tukey 下均 ***，稳健。</div>
+  </div>
+</div>
+
+<!-- ============ FIG 5 ============ -->
+<div class="fb-page">
+  <div class="fb-head">
+    <h2>Figure 5 — Top-20 Colleges Horizontal Bar (RTAS value color-mapped)</h2>
+    <span class="badge">Figure5_Top20Colleges.pdf | 9×8 inch | Same norm as Figure S1 (colors compatible)</span>
+  </div>
+  <div class="fb-figure-wrap"><img src="main/Figure5_Top20Colleges.png" onclick="document.getElementById('lb').src=this.src;document.querySelector('.lightbox').style.display='flex'"></div>
+  <div class="fb-caption">
+    <div class="src">SOURCE: heterogeneity/college_rtas_top20.csv → fig5_top20_colleges()</div>
+
+    <h3>坐标轴</h3>
+    <ul>
+      <li>纵轴 = 学院英文名 20 所（字体 9pt，按 RTAS_mean asc 排列，最差学院在顶，冠军在底）。<b>Figure 5 不做 rank 序号标注</b>（序号标注只在 Figure S1 附录全排名，避免两幅图都标序号造成读者误以为 Figure 5 本身是 20 所从 1 开始的完整 1-20 排名——Figure 5 仅是 Top-20 crop）。</li>
+      <li>横轴 = RTAS 均值（线性刻度，0 ~ max(RTAS_mean) × 1.25，保证右端数字小框有空间）。</li>
+    </ul>
+
+    <h3>颜色与图例</h3>
+    <ul>
+      <li>柱颜色 <b>映射的是 RTAS 均值的 VALUE（而非排名）</b>：cmap = RdYlGn，norm 覆盖 20 所的 min→max。<b>红 = 低 RTAS（对齐差），绿 = 高 RTAS（对齐好），黄 = 中间</b>。</li>
+      <li>右侧 colorbar（shrink=0.55, pad=0.12），标签文字："RTAS color scale: red = lower alignment → green = higher alignment"（tick 字体 7pt）。</li>
+      <li><b>颜色与 Figure S1（附录 40 学院排名）完全兼容</b>：两图用同一个 norm 归一化，所以 Figure 5 中的"绿色深度"和 Figure S1 中同一学院的"绿色深度"数值一致（同一个 RTAS 数值=同一个颜色）。可把两张图放在一起直接对比颜色。</li>
+    </ul>
+
+    <h3>数值标注</h3>
+    <p>每柱右端白色 7pt 字 `X.XXX (n=Y)`（RTAS 均值 + n_projects 该学院项目数）。</p>
+
+    <div class="alert-ok"><b>冻结冠军（Figure S1 rank 1）：</b>中国南极测绘研究中心 RTAS mean=0.360（n=8 项目）。亚军：化学与分子科学学院 0.256 / 工业科学研究院 0.252。</div>
+  </div>
+</div>
+
+<!-- ============ FIG 6 ============ -->
+<div class="fb-page">
+  <div class="fb-head">
+    <h2>Figure 6 — HLM Forest Plot (numeric table moved BELOW the axes)</h2>
+    <span class="badge">Figure6_HLM_Forest.pdf | 9.8×7.6 inch | ICC=0.7624, N=3,714 obs × 40 colleges</span>
+  </div>
+  <div class="fb-figure-wrap"><img src="main/Figure6_HLM_Forest.png" onclick="document.getElementById('lb').src=this.src;document.querySelector('.lightbox').style.display='flex'"></div>
+  <div class="fb-caption">
+    <div class="src">SOURCE: hlm/hlm_coefficients.csv (6 predictors, Table 6 唯一来源) + hlm/hlm_fit_summary.txt (动态读取 ICC/nobs/ngroups) → fig6_hlm_forest()</div>
+
+    <h3>上半部分（axes 内，刻意保持干净）</h3>
+    <ul>
+      <li>纵轴 = 6 个预测变量友好标签（按 β 升序）。横轴 = 系数估计值 β；右半淡绿底 = 正贡献区（β&gt;0，对齐有利），左半淡红底 = 负贡献区；0 处黑色虚线。</li>
+      <li>深蓝实心点 = β 点估计；水平误差棒 + cap = 95% CI。<b>误差棒颜色按显著性编码</b>：绿 = *** (p&lt;0.001) / 橙 = * (p&lt;0.05) / 灰 = ns。点右侧同色小星号 = 显著性标记。CI 不跨 0 = 显著。</li>
+    </ul>
+
+    <h3>下半部分（图下方独立信息区）</h3>
+    <ul>
+      <li><b>灰色等宽字体表</b>：6 行 × Predictor / β / 95% CI [low, high] / p-value / sig。极小系数量级自动切换科学计数法（如被引 β = −9.8e-07），避免显示成误导性的 "−0.0000"。</li>
+      <li><b>橙色黄框</b>：读图规则 + 12K→57K 假阳性纠正说明。</li>
+    </ul>
+
+    <div class="alert-err"><b>🔴 12K 池 → 57K 池关键假阳性纠正：</b>v0.2 12K 池旧表：国家级 β=+0.022 **、年份 β=+0.0076 **、被引 β=−1.93e-6 ** 全部显著；在 57K 全量（本图）三个全部 ns。唯一干净强显著：<b>Advisor recent-3y works β=+0.0085, p=4.53×10⁻⁷, ***（绿色误差棒）</b>；Provincial β=+0.0035 *（橙色）。</div>
+  </div>
+</div>
+
+<!-- ============ FIG 7 ============ -->
+<div class="fb-page">
+  <div class="fb-head">
+    <h2>Figure 7 — Supervisor Activity Tercile Transition Matrix</h2>
+    <span class="badge">Figure7_TransitionMatrix.pdf | 5.5×5 inch | n=736 consecutive supervisor-year pairs</span>
+  </div>
+  <div class="fb-figure-wrap"><img src="main/Figure7_TransitionMatrix.png" onclick="document.getElementById('lb').src=this.src;document.querySelector('.lightbox').style.display='flex'"></div>
+  <div class="fb-caption">
+    <div class="src">SOURCE: matthew_effect/transition_probabilities_year_tercile.csv → fig7_transition_matrix()</div>
+
+    <h3>坐标轴</h3>
+    <ul>
+      <li>X 轴 = To（下一年三分位：T1 低 / T2 中 / T3 高）。Y 轴 = From（当年三分位：T1 低 / T2 中 / T3 高）。</li>
+    </ul>
+
+    <h3>颜色与数字</h3>
+    <ul>
+      <li>cmap = YlOrRd（黄白 → 深红褐），vmin = 0%, vmax = 70%，颜色越深 = 转移概率越大。</li>
+      <li>每格中心 11pt 黑体三行百分比数字：<b>数据 &gt; 40% 白色字体，&lt; 40% 黑色字体</b>（高对比度可读）。</li>
+      <li>右侧 colorbar：标签 "Transition probability (%)"（8pt）。</li>
+    </ul>
+
+    <div class="alert-ok">马太效应位置固化特征：对角线 62–66% 的超高自转移概率（T1→T1 / T2→T2 / T3→T3 三档都在 60%+），意味着高活动量导师大概率明年仍高活动，低活动量导师仍困低活动量。标题注明 "n=736 consecutive pairs"（国家级项目分位排序的连续导师-年份对）。</div>
+  </div>
+</div>
+
+<!-- ============ FIG 8 ============ -->
+<div class="fb-page">
+  <div class="fb-head">
+    <h2>Figure 8 — Diffusion Lag Histogram</h2>
+    <span class="badge">Figure8_DiffusionLag.pdf | Only 29/886 topics with defined lag; LRHT/LRLT absent</span>
+  </div>
+  <div class="fb-figure-wrap"><img src="main/Figure8_DiffusionLag.png" onclick="document.getElementById('lb').src=this.src;document.querySelector('.lightbox').style.display='flex'"></div>
+  <div class="fb-caption">
+    <div class="src">SOURCE: diffusion_lag/diffusion_lag_histogram_bins.csv + diffusion_lag_aggregate_stats.csv (group=OVERALL row 动态读取标题) → fig8_diffusion_histogram()</div>
+
+    <h3>坐标轴</h3>
+    <ul>
+      <li>X 轴 = lag 年份（整数桶 −4 / −3 / −2 / −1 / 0 / +1 / +2 / +3 / +4）。lag=0 桶 = 同一日历年 paper 侧与 project 侧首次同时破各自阈值（同步）。负桶 = 培养先破阈值（内容可能滞后），正桶 = 科研先破阈值（科研领先培养）。</li>
+      <li>Y 轴 = 主题数（绝对计数）。</li>
+    </ul>
+
+    <h3>颜色语义（与 Figure 9 正负区底色一致）</h3>
+    <ul>
+      <li>正 lag 红色 = 研究前沿先出，培养项目后续才追上（课程更新需求）。</li>
+      <li>零 lag 浅灰色 = paper 与 project 在同一年首次同时破阈值（同步）。</li>
+      <li>负 lag 绿色 = 培养先破阈值，但科研侧早已冷退出（可能 = 教学内容已经过时）。</li>
+    </ul>
+
+    <p>每柱顶标签："count (占 29 的百分比)"。标题动态从 aggregate_stats OVERALL 行拼出："(29/886 topics with defined lag, median={X:.1f}, mean={Y:+.2f} yr)"。<b>标题中所有数字都由 CSV 计算写入，禁止硬编码，避免出现旧版 69/307 的假数字错误。</b></p>
+
+    <div class="alert-warn">注意：只有 HRLT 24 + HRHT 5 = 29 个主题在此直方图中出现。LRHT 10 / LRLT 698 因按 lag 硬定义 <b>永远无法满足 paper-side Top-20% 先破阈值的条件</b>，所以不出现在图中（合计 886-29=857 个主题未出现）。这也是为什么 total count 只有 29（而不是旧 12K 池的 69）。</div>
+  </div>
+</div>
+
+<!-- ============ FIG 9 ============ -->
+<div class="fb-page">
+  <div class="fb-head">
+    <h2>Figure 9 — Diffusion Lag by Quadrant (N/A hatched panels + small-n annotation; stat tables below)</h2>
+    <span class="badge">Figure9_DiffusionByQuadrant.pdf | 11.5×9.6 inch | LRHT/LRLT = grey hatched "lag undefined by design" panels</span>
+  </div>
+  <div class="fb-figure-wrap"><img src="main/Figure9_DiffusionByQuadrant.png" onclick="document.getElementById('lb').src=this.src;document.querySelector('.lightbox').style.display='flex'"></div>
+  <div class="fb-caption">
+    <div class="src">SOURCE: diffusion_lag/topic_first_year_adoption.csv (filter lag_defined==True, 29 rows: HRLT=24, HRHT=5) + topic_model/quadrant_overall_summary.csv (quadrant sizes) → fig9_diffusion_by_quadrant()</div>
+
+    <h3>上半部分（axes 内，刻意保持干净）</h3>
+    <ul>
+      <li><b>横轴 = 固定 4 列</b>：HRLT / HRHT 有箱线 + jitter 散点；<b>LRHT / LRLT 改为浅灰斜纹 N/A 面板</b>（不再是虚线"警告框"，视觉上明确表达"这一列有意不画数据"），面板中央灰字写明原因（paper side never crosses Top-20% / neither side crosses 20%）。</li>
+      <li><b>HRHT n=5 小样本标注</b>：箱线因 4/5 主题 lag=0 而退化为 0 处平线，上方白框直接写明 "n=5 topics, 4 at lag 0 (synchronized), 1 at lag −2 (training first)"，避免读者把退化箱线误读为数据缺失。</li>
+      <li><b>纵轴 = lag（年）</b>，范围 [−5.1, +5.1] = year(project-first-high) − year(paper-first-high)。<b>y&gt;0 淡红区 = 科研先破 20% 阈值（课程更新需求）；y&lt;0 淡绿区 = 培养先破；y=0 黑色虚线 = 同步。</b></li>
+      <li>箱元素同 Figure 4b：半透明彩箱 Q1–Q3、粗黑中值线、白菱形均值、1.5·IQR 须、彩色散点 = 单个主题。</li>
+    </ul>
+
+    <h3>下半部分（图下方独立信息区）</h3>
+    <ul>
+      <li><b>HRLT / HRHT 两个色边小框</b>：n / mean / ±SD / med（附 one-sample t vs 0 的 p）/ Q1·Q3 / whisk / lag&gt;0·=0·&lt;0 三向百分比，共 9 行。</li>
+      <li><b>红边大框</b>：HRLT vs HRHT 组间 Welch + Mann–Whitney + Cohen d、读图规则、以及 v0.9.1 RETRACTED 撤回声明。</li>
+    </ul>
+
+    <div class="alert-ok"><b>冻结真值（本次重算复核）：</b>HRLT n=24，mean=+0.79 yr，med=+0.5，50% 正 / 38% 零 / 12% 负；HRHT n=5，mean=−0.40 yr，med=0，80% 零。<b>HRLT vs HRHT：Welch t=+2.11, p=0.054 (ns)；Mann–Whitney p=0.095 (ns)；Cohen d=+0.78（大效应方向一致，但 HRHT n=5 功效不足，不作显著结论）。</b></div>
+    <div class="alert-err"><b>🔴 RETRACTED：</b>旧 12K 池 K=307 时 "LRHT n=8, median=−1.5 yr" 在 57K 池 K=886 下撤回——LRHT(10)/LRLT(698) 按 lag 硬定义 paper side 永远跨不过 Top-20% 阈值，lag 在这两个象限 by construction 不可定义，不是数据缺失。</div>
+  </div>
+</div>
+
+<!-- ============ FIG 10 ============ -->
+<div class="fb-page">
+  <div class="fb-head">
+    <h2>Figure 10 — Matthew Effect: Lorenz Curve + Pareto Bar (dual-panel)</h2>
+    <span class="badge">Figure10_MatthewEffect.pdf | 11×5 inch | Gini = 0.767 (national projects)</span>
+  </div>
+  <div class="fb-figure-wrap"><img src="main/Figure10_MatthewEffect.png" onclick="document.getElementById('lb').src=this.src;document.querySelector('.lightbox').style.display='flex'"></div>
+  <div class="fb-caption">
+    <div class="src">SOURCE: matthew_effect/supervisor_gini_pareto.csv (右面板) + table5_project_dataset_n3714_full.csv (左面板由脚本内重算国家级项目按导师排序的累积分布) + matthew_effect/matthew_effect_audit.json (权威数值) → fig10_matthew_effect()</div>
+
+    <h3>左面板 (a) — Lorenz 曲线（国家级项目分布不均等）</h3>
+    <ul>
+      <li>横轴 = 累计导师比例（从最穷国家级项目导师到最富国家级项目导师排序，0–1 线性 0–100%）。</li>
+      <li>纵轴 = 累计国家级项目份额（同排序后累加，0–1 线性 0–100%）。</li>
+      <li>45° 黑色虚线 = Perfect equality（完美均等，Top 1% 导师 = 1% 项目）。红色实线 = Lorenz 曲线。红色阴影面积 = 实线与 45° 线之间的不均等面积；<b>Gini 系数 = 该面积 × 2</b>。</li>
+      <li>图例标签 "National grants (Gini=0.767)" 由 audit JSON 动态读取（非硬编码）。</li>
+    </ul>
+
+    <h3>右面板 (b) — Pareto 柱状图（Top N% 切片国家级项目份额）</h3>
+    <ul>
+      <li>横轴 = Top N% 导师切片：top1 / top5 / top10 / top20 / top50。颜色：红=top1 / 橙=top5,top10 / 蓝=top20 / 灰=top50。</li>
+      <li>纵轴 = 该切片导师持有的国家级项目份额 (%)。柱顶标签 "X.X%"（黑体 8pt）。</li>
+      <li>水平黑色虚线 y=5 = Equal share 基准线（如 Pareto 公平，Top-5% 切片应持有正好 5% 份额；实际持有 34.0% = 基准的 6.8×）。</li>
+    </ul>
+
+    <div class="alert-ok"><b>冻结权威值（matthew_effect_audit.json 验证）：</b>Gini(national projects) = 0.766658 ≈ 0.767 ✅；Top-5% share = 34.0176% ≈ 34.0% ✅；Top 20% share = 76.83%。Logistic regression OR(top5%) = 6.085 (p = 2.31e-65, n_obs=3,714, §8.1 权威表) — top-5% 导师获得国家级项目的机会是其余导师 6.08 倍。</div>
+  </div>
+</div>
+
+<!-- ============ FIG 11 ============ -->
+<div class="fb-page">
+  <div class="fb-head">
+    <h2>Figure 11 — Quadrant Summary 3-Subplot Bar</h2>
+    <span class="badge">Figure11_QuadrantSummary.pdf | HRHT 5/HRLT 173/LRHT 10/LRLT 698</span>
+  </div>
+  <div class="fb-figure-wrap"><img src="main/Figure11_QuadrantSummary.png" onclick="document.getElementById('lb').src=this.src;document.querySelector('.lightbox').style.display='flex'"></div>
+  <div class="fb-caption">
+    <div class="src">SOURCE: topic_model/quadrant_overall_summary.csv → fig11_quadrant_summary()</div>
+
+    <h3>三子图（Figure 3 象限同一颜色）</h3>
+    <ul>
+      <li>(a) 左子图：X = 四象限缩写，Y = 主题数（绝对数）。每柱顶标数字（5 / 173 / 10 / 698）。</li>
+      <li>(b) 中子图：Y = 总论文数（paper_count，56,901 中按 quadrant 归属）。每柱顶标（2,090 / 18,141 / 219 / 15,097）。</li>
+      <li>(c) 右子图：Y = 总项目数（project_count，3,714 中按 quadrant 归属）。每柱顶标（308 / 399 / 278 / 765）。</li>
+    </ul>
+
+    <div class="alert-ok"><b>读图口诀：</b>HRLT 中子图超高（≈18K 论文）但右子图矮（≈399 项目）→ "研究做得很透但培养没跟上" = 课程改革靶点。LRHT 相反（中 b 矮=219 论文，但 c 高=278 项目）→ "培养内容教了很多但科研现在没做" = 教学大纲核查靶点。</div>
+  </div>
+</div>
+
+<!-- ============ FIG 13 ============ -->
+<div class="fb-page">
+  <div class="fb-head">
+    <h2>Figure 13 — Mainstream Topics Stacked Area (Top 15 only; top box explains what each colour MEANS)</h2>
+    <span class="badge">Figure13_TopicStackedArea.pdf | 12×10 inch | c-TF-IDF topic glosses in framed legend box above flatter plot</span>
+  </div>
+  <div class="fb-figure-wrap"><img src="main/Figure13_TopicStackedArea.png" onclick="document.getElementById('lb').src=this.src;document.querySelector('.lightbox').style.display='flex'"></div>
+  <div class="fb-caption">
+    <div class="src">SOURCE: topic_model/topic_yearly_prevalence_for_diffusion_lag.csv + topic_model/topic_info.csv (Name/Representation c-TF-IDF words) → fig13_stacked_area()</div>
+
+    <h3>顶部灰框：颜色 = 什么主题（本轮新增）</h3>
+    <p>旧版图例只有 Topic 编号（读者不知道编号背后是什么题）。本版在图面<b>顶部灰框</b>里用 3 列表格直接给出每条色带的中文/英文释义，词条取自 BERTopic 的 c-TF-IDF top words：T5 Language learning (Chinese/English)｜T72 Robots/robotics｜T125 Drones/unmanned vehicles｜T22 Dental implants｜T216 Online learning/big data｜T6 Urban land/ecology｜T160 College English/talent education｜T429 Internet platforms &amp; legal governance｜T333 Event cameras/imagers｜T3 Blockchain/privacy computing｜T196 Deep learning｜T140 Food safety｜T2 Lithium-ion batteries｜T345 Elderly care/aging｜T81 Video quality/coding。框内每列自上而下 = 堆叠自底向上的顺序。</p>
+
+    <h3>布局口径（图高不变、图区压扁）</h3>
+    <ul>
+      <li>图幅仍是 12×10 inch；图区二次压扁至约 <b>30% 高度</b>（用户要求色带再扁一半，上一版为 60%），顶部 ~60% 留给主题含义框。纵轴范围 0–18%（只含 Top-15），底蓝带从 0 起逐层累加。</li>
+      <li>871 个长尾主题合并的 Other（占 29.5%~33.3%）整带剔除，份额在图底斜体脚注逐年透明列出（29.5 / 31.2 / 29.4 / 33.3 / 33.1%），与主流题合计相加可对账旧版总盘 47.1/48.2/44.8/47.9/46.5%。</li>
+    </ul>
+
+    <h3>圆点 + 数字（读图重点）</h3>
+    <ul>
+      <li><b>每条色带 × 每个年份的上边界</b>都有白边小黑点 + 累计 %（6.2pt 白描边，压扁后仍可读）。读法：相邻两带同年数字之差 = 上一带厚度；同一带 5 个年份数字之差 = 该主题年度扩张/收缩。</li>
+      <li>每年栈顶粗体 "Top-15 total 17.6% / 17.0% / 15.4% / 14.6% / 13.5%" = 15 个主流题当年合计份额。</li>
+    </ul>
+
+    <div class="alert-ok">数字变化示例：底蓝带 T5 语言学习上边界 2020=7.3 → 2024=4.1 逐年降温；T216 在线学习/大数据带 2020 后持续扩张；主流题合计 17.6%→13.5% 缓降而长尾 29.5%→33.1% 缓升（总盘 47% 稳定）→ 培养体系选题从少数热门题向长尾缓慢分散。</div>
+  </div>
+</div>
+
+<!-- ============ FIG S1 ============ -->
+<div class="fb-page">
+  <div class="fb-head">
+    <h2>Figure S1 (Appendix) — All 40 Colleges Full RTAS Ranking</h2>
+    <span class="badge">supplementary/FigureS1_CollegeRTAS_Full40.pdf | height = max(10, 0.32×40+2) inch | Rank 1–40 format "N.  Name" (not #)</span>
+  </div>
+  <div class="fb-figure-wrap"><img src="supplementary/FigureS1_CollegeRTAS_Full40.png" onclick="document.getElementById('lb').src=this.src;document.querySelector('.lightbox').style.display='flex'"></div>
+  <div class="fb-caption">
+    <div class="src">SOURCE: heterogeneity/college_rtas_summary_all.csv (40 colleges, ascending by RTAS_mean: lowest RTAS top on y-axis = rank 40, highest bottom = rank 1 champion) → fig12_college_rtas_ranking()</div>
+
+    <h3>坐标轴（水平柱状图）</h3>
+    <ul>
+      <li><b>纵轴 = 40 学院英文名，y-tick 标签格式从顶到底 "40.  College-Name / … / 1.  冠军学院名"</b>（本次 audit 按你要求不用 "#N"，改为 "N.  Name"，从顶到底 40 → 1）。Figure 5 Top-20 不标序号，避免两幅图都标序号产生读者误解。</li>
+      <li>横轴 = RTAS 均值（同 Figure 5）。每柱右端白字 6.5pt `X.XXX (n=Y)`。</li>
+    </ul>
+
+    <h3>颜色（与 Figure 5 完全兼容）</h3>
+    <p>cmap=RdYlGn，norm 映射 40 所的 min→max RTAS VALUE（非排名）。Figure 5 Top-20 的 RdYlGn 与 Figure S1 用完全相同的归一化 norm，所以同一个学院在 Figure 5 Top-20 crop 中的绿色深度与 Figure S1 全排名中完全同一颜色深度（可互相比颜色判断 RTAS 值）。</p>
+
+    <h3>色条图例（同 Figure 5）：</h3>
+    <p>右侧 colorbar 标签："RTAS color scale: red = lower alignment → green = higher alignment"。</p>
+
+    <div class="alert-warn"><b>特别学院（SIE — 国际教育学院）：</b>最顶 rank 40，RTAS mean = 0.0000，n_projects = 1。<b>不是 NaN（空值），而是真实计算值 0</b>（它的唯一项目标题与匹配 SIE 作者的英文论文标题在多语 MiniLM 语义空间余弦相似度恰为 0 或近似为 0）。因此 HLM 把它作为一条正常观测加权极小地纳入（HLM G=40），但 College ANOVA 因 n≥2 组内方差估计规则自动排除（ANOVA groups=39）。两种处理都统计合理，巧合的是 df_within = 3674 与旧 v0.2 值完全相等（§1.1.5 详细解释）。</div>
+
+    <h3>标题：</h3>
+    <p>`All 40 Colleges by RTAS — Full Ranking (Appendix) / College ANOVA: F(38, 3674)=195.45, p≈0, η²=66.90%`（ANOVA 的组数=39，与 Figure S1 的 40 学院不矛盾，因为 SIE n=1 被自动排除）。</p>
+  </div>
+</div>
+
+</div>
+</div>
+
+<!-- Lightbox overlay, shared -->
+<div class="lightbox" onclick="this.style.display='none'">
+  <img id="lb" src="" alt="zoom">
+</div>
+
+<footer>
+  <p>RTAS v0.9.1 Audited Figure Book · 2026-09-03 · 12 main figures + 1 supplementary (Figure S1) · All figures generated by 06_CODE/10_generate_figures.py single-sourced from 03_FINAL_ANALYSIS/ frozen CSVs.
+  <br><b>Ctrl+P / Print to PDF</b> = 一键导出为 A4 图册（@media print CSS 已配置：自动只打印 📖 Figure Book Tab，每页一张大图，节省纸张）。
+  </p>
+</footer>
+
+<script>
+  function switchTab(name, btn) {
+    document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + name).classList.add('active');
+    btn.classList.add('active');
+    window.scrollTo({top: 0, behavior: 'smooth'});
+  }
+</script>
+</body>
+</html>

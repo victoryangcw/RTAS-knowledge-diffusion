@@ -1,0 +1,213 @@
+# =============================================================================
+# FINAL CONFIG v0.2  (RTAS frozen)
+# Machine-readable companion of FINAL_ANALYSIS_PROTOCOL.md.
+# This file is the SINGLE SOURCE OF TRUTH for hyperparameters used by scripts
+# in 06_CODE/. Do not scatter magic numbers in the analysis code: read this.
+# =============================================================================
+
+version: "v0.2"
+milestone: "RTAS frozen"
+protocol: "FINAL_ANALYSIS_PROTOCOL.md"
+random_seed: 42
+
+# -----------------------------------------------------------------------------
+# 1. DATA SAMPLE
+# -----------------------------------------------------------------------------
+data:
+  projects_file: "01_DATA/final_analysis/table5_project_dataset_n3714.csv"
+  projects_n: 3714
+  projects_year_min: 2020
+  projects_year_max: 2024
+  colleges_total: 40
+  colleges_in_hlm_substrate: 40   # v0.9.1: intl college has matched papers in 57K corpus (n=1 project)
+  supervisors_unique: 1940
+  supervisors_hlm_valid: 1926     # after excluding NaN-RTAS rows
+  openalex_papers_unique: 56901       # full unique paper corpus (all on disk)
+  openalex_topic_freq_sum: 35721     # topic assignments in 12K legacy file (superseded)
+  openalex_papers_matched_pct: 58.5   # % matched to >=1 college (57K corpus)
+  # year window: cumulative [2020, project_year] because no pre-2020 data exists
+  window_mode: cumulative
+  window_start_year: 2020
+  window_end_year: "project_year"   # variable, per row
+
+# -----------------------------------------------------------------------------
+# 2. RTAS
+# -----------------------------------------------------------------------------
+rtas:
+  primary_column: "rtas_mini_mean"
+  primary_embedding: "minilm"       # minilm or bge_m3
+  primary_aggregation: "mean"       # mean | top5 | top10 | top20 | centroid
+  top_k: null                       # set to integer iff aggregation is topN
+
+  # substrate: project_title cosine-similarity to college-year paper set
+  text_side_project: "title"
+  text_side_paper: "title"          # 12K file has no abstract
+  similarity: "cosine"              # vectors L2-normalized, so dot = cosine
+
+  embedding_models:
+    minilm:
+      hf_repo: "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
+      dim: 384
+      normalize: true
+      status: "primary"
+      # Correction v0.2.1: the actual encoder used in step2_mini.py v0.2 freeze was the
+      # multilingual variant (corpus = 92% Chinese project titles + 100% English paper titles).
+      # Previously documented sentence-transformers/all-MiniLM-L6-v2 (monolingual English) was
+      # an error in this file only, not in the frozen embeddings.
+    bge_m3:
+      hf_repo: "BAAI/bge-m3"
+      dim: 1024
+      use_fp16: true
+      status: "deferred robustness (torch DLL instability)"
+
+  # Aggregations evaluated; only the primary one is used downstream.
+  # The remainder downgrade to sensitivity analysis.
+  evaluated_aggregations:
+    - mean
+    - top5
+    - top10
+    - top20
+    - centroid
+
+# -----------------------------------------------------------------------------
+# 3. VALIDATION CRITERIA (Model-Selection Rule)
+# -----------------------------------------------------------------------------
+validation:
+  c1_human_spearman:
+    n_pairs: 150
+    annotations_file: "02_RTAS_MODEL_SELECTION/human_validation/150pairs_human_annotations.csv"
+    min_pass: 0.15
+  c2_knowngroups:
+    factor_column: "project_level"    # national / provincial / university
+    significance: 0.05
+  c3_kstability:
+    # Spearman between top5 / top10 / top20 rankings over 3714 projects
+    spearman_min: 0.90
+  c4_stability:
+    # blended: 0.5 * norm(1 - year_sd_norm) + 0.5 * norm(college_ICC)
+    year_sd_weight: 0.5
+    college_icc_weight: 0.5
+  c5:
+    # Current: convergent validity w/ original topic-based rtas_sbert (proxy)
+    # Later:   inter-model Spearman(MiniLM, BGE-M3) once BGE-M3 encodes
+    mode: "convergent_original_rtas"   # switch to "inter_model" after bge encode
+  composite_weights:
+    c2_eta2: 0.45
+    c4_stability: 0.30
+    c3_kstability: 0.25
+  top_k_tiebreak_within_pct: 5        # prefer Top-K if within 5% of top composite
+
+# -----------------------------------------------------------------------------
+# 4. TOPIC MODEL (BERTopic)
+# -----------------------------------------------------------------------------
+topic_model:
+  algorithm: "BERTopic"
+  # keep original 2,449 cluster count as reference if 35K corpus used;
+  # if 12K subset used, K will be roughly (12K/35K)*2449 ≈ 840;
+  # do not force n_topics; let HDBSCAN select naturally with params below
+  embedding_backend: "minilm"         # match primary RTAS embedding for consistency
+  umap:
+    n_neighbors: 15
+    n_components: 5
+    min_dist: 0.0
+  hdbscan:
+    min_cluster_size: 10
+    min_samples: 5
+  # 4-quadrant thresholds (in % of corpus that assigns to topic)
+  paper_prevalence_threshold_pct: 1.5
+  project_prevalence_threshold_pct: 0.5
+  # dynamic diffusion lag thresholds: same as quadrant prevalence
+  diffusion_lag:
+    t_paper_pct: 1.5
+    t_project_pct: 0.5
+
+# -----------------------------------------------------------------------------
+# 5. STATISTICAL MODELS
+# -----------------------------------------------------------------------------
+statistics:
+  anova:
+    type: "one-way"
+    posthoc: "Tukey HSD"
+  hlm:
+    # 2-level: project (level-1) nested in college (level-2), predictors at both
+    formula_like: "rtas ~ 1 + level1_vars + (1 | college)"
+    package: "linearmodels.PanelOLS"   # or R lme4 if needed
+    report_icc: true
+    report_r2: true
+    report_n: true
+  matthew_effect:
+    top_pct_supervisors: 5            # Top5% by cumulative national projects
+    tests:
+      - "independent_t"
+      - "mann_whitney_u"
+      - "cohens_d"
+    gini: true
+    transition_matrix: true
+    logistic_project_level: true
+  ri_clpm:
+    panel_key_columns:
+      - "supervisor_id"
+      - "year"
+    aggregate_columns:
+      papers_count: "count"
+      citations_mean: "mean citations per paper"
+      srtp_count: "project count"
+      srtp_rtas_mean: "mean RTAS per supervisor-year"
+    model: "RI-CLPM"
+    language_caveat: "cross-lagged directional evidence, not strict causality"
+
+# -----------------------------------------------------------------------------
+# 6. VISUALIZATION (chart policy from project memory)
+# -----------------------------------------------------------------------------
+visualization:
+  global_title_language: "english"
+  forbid_figure_numbers_in_canvas: true   # no "Fig1", "图2" inside the image
+  figure_formats:
+    - pdf     # preferred: vector
+    - png     # 600 dpi fallback
+  png_dpi: 600
+  output_main: "05_FINAL_FIGURES/main/"
+  output_supp: "05_FINAL_FIGURES/supplementary/"
+
+  # ---- Individual figure policies ----
+  fig_college_ranking:
+    college_fontsize: 10               # Fig12: readability requirement
+  fig_quadrant:
+    style: "2x2_grouped_bars"          # not scatter, per project memory
+    bar_height: 0.55
+    theme_max_chars: 20
+    theme_fontsize: 7
+    value_fontsize: 5
+    legend_position: "upper center"    # one universal legend
+    figure_height_increase: true       # to fit top-placed legend
+  fig_stacked_area:
+    show_gridlines: true
+    annotate_boundary_every_year: true
+    boundary_value_fontsize: 6
+  fig_forest_hlm:
+    layout: "two_column"               # left: var names, right: dot + CI
+    legend_between_title_and_figure: true
+    single_line_legend: true
+    legend_content: [ICC, R2, n, model_type]
+  fig_box:
+    statistical_annotation: "single_line_top"   # t, MWU, Cohen's d in one line at top
+  # Universal significance-legend text; include in every plot with stars
+  significance_legend: "* p<0.05, ** p<0.01, *** p<0.001, ns = not significant"
+
+# -----------------------------------------------------------------------------
+# 7. OUTDATED NUMBER REPLACEMENTS (sanity-checked by 06_CODE scripts)
+# -----------------------------------------------------------------------------
+canonical_numbers:
+  n_projects: 3714
+  n_supervisors: 1940
+  n_supervisors_hlm: 1926
+  n_colleges_total: 40
+  n_colleges_hlm: 40       # v0.9.1: intl college has valid RTAS in 57K corpus
+  top5pct_supervisors: 97
+  gini_coefficient: 0.767
+  top5pct_national_project_share_pct: 34.0
+  anova_df_college_between: 38
+  anova_df_within: 3674    # 3713 rows (intl college n=1 excluded by n>=2 rule) - 39 groups. Same value as pre-57K by coincidence.
+  rtas_primary_c1_human_spearman: 0.405
+  old_rtas_topic_based_c1: 0.098
+  human_inter_rater_reliability_spearman: 0.56    # independent of RTAS validity

@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Editor
+.vscode/
+.idea/
+
+# Large binary artefacts (regenerate from frozen CSVs)
+*.npy
+*.tmp
+*.bak
+
+# NO raw data, PII, or private intermediates in this public repo
+# This repo contains ONLY: code, figures, manuscript, governance docs
