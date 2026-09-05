@@ -23,7 +23,7 @@ Figures generated (v1.0-cand.5 final freeze — 7 main + 4 supplementary):
   Figure S1 College Full Ranking   <-- college_rtas_summary_all.csv (p < .001, not p≈0) --(10_generate_figures.py)--> supplementary/FigureS1_CollegeRTAS_Full40.pdf
   Figure 7  Transition Matrix      <-- transition_probabilities_year_tercile.csv --(10_generate_figures.py)--> supplementary/Figure7_TransitionMatrix.pdf
   Figure 11 Quadrant Summary       <-- quadrant_overall_summary.csv (clustered denominators) --(10_generate_figures.py)--> supplementary/Figure11_QuadrantSummary.pdf
-  Figure 13 Topic Dynamics 2-panel <-- topic_yearly_prevalence_for_diffusion_lag.csv (denominator = ALL projects/yr, sum(denom_project)=3,714; demoted to Supplementary) --(10_generate_figures.py)--> supplementary/Figure13_TopicDynamics.pdf
+  Figure 13 Topic Dynamics split <-- topic_yearly_prevalence_for_diffusion_lag.csv (v1.0-cand.7 split into TWO supplementary files: 13a legend to upper-right corner; 13b heatmap standalone; denominator = ALL projects/yr) --(10_generate_figures.py)--> supplementary/Figure13a_TopicTrend.pdf + supplementary/Figure13b_TopicHeatmap.pdf
   DELETED (v1.0-cand.5): Figure4a_MeanCI (redundant with Fig4 mean diamonds), FigureS2_Top20Colleges (raw-mean small-n amplification; caterpillar + S1 suffice).
 """
 from __future__ import annotations
@@ -393,7 +393,13 @@ def _fig4_pairwise(data_box):
     for (ia, ib) in [(0, 1), (1, 2), (0, 2)]:
         va, vb = data_box[ia], data_box[ib]
         _, pw = _stats.ttest_ind(va, vb, equal_var=False, alternative='two-sided')
-        d_ = (np.mean(vb) - np.mean(va)) / np.sqrt((np.var(va, ddof=1) + np.var(vb, ddof=1)) / 2)
+        # v1.0-cand.7: standard Cohen's d uses the n-weighted pooled SD
+        # sqrt(((n1-1)s1^2+(n2-1)s2^2)/(n1+n2-2)); the earlier unweighted mean of
+        # variances understated d when n1 != n2 (0.3485 vs frozen-CSV 0.3517).
+        na_, nb_ = len(va), len(vb)
+        spool = np.sqrt(((na_ - 1) * np.var(va, ddof=1) + (nb_ - 1) * np.var(vb, ddof=1))
+                        / (na_ + nb_ - 2))
+        d_ = (np.mean(vb) - np.mean(va)) / spool
         out.append((ia, ib, pw, d_, tukey_dict[(ia, ib)]))
     return out
 
@@ -883,8 +889,14 @@ def fig12_college_rtas_ranking():
 #    the "Other" band is explicitly "Other clustered topics".)
 # ================================================================
 def fig13_topic_dynamics():
+    # v1.0-cand.7 SPLIT (user visual review): two standalone supplementary files so
+    # neither panel crowds the other (heatmap y-labels and trend annotations no
+    # longer compete for space):
+    #   Figure13a_TopicTrend   — two-line diversification trend; legend moved to
+    #       the UPPER RIGHT corner (was center-right, floating over lines).
+    #   Figure13b_TopicHeatmap — 15 x 5 prevalence heatmap with own colorbar.
     inp = 'topic_model/topic_yearly_prevalence_for_diffusion_lag.csv + topic_model/topic_info.csv (topic words)'
-    provenance(13, 'Temporal Topic Dynamics — Top-15 vs clustered long tail (trend) + prevalence heatmap', inp)
+    provenance(13, 'Temporal Topic Dynamics (split files: diversification trend + prevalence heatmap)', inp)
     d = pd.read_csv(DATA / 'topic_model' / 'topic_yearly_prevalence_for_diffusion_lag.csv')
     ti = pd.read_csv(DATA / 'topic_model' / 'topic_info.csv')
     pivot = d.pivot_table(index='year', columns='topic_id', values='pct_project', fill_value=0)
@@ -923,9 +935,10 @@ def fig13_topic_dynamics():
                 seen.append(t)
         return ' '.join(seen[:3]) if seen else f'Topic {tid}'
 
-    fig, (axA, axB) = plt.subplots(1, 2, figsize=(13.5, 6.2),
-                                   gridspec_kw=dict(width_ratios=[1.0, 1.15], wspace=0.24))
-    # ---- Panel A: two-line diversification trend ----
+    suptitle_note = ('shares of all projects per year; topics = BERTopic clusters')
+
+    # ---- 13a: two-line diversification trend (standalone) ----
+    fig, axA = plt.subplots(figsize=(7.4, 5.8))
     axA.plot(years, top15_share.values, 'o-', color=COLORS['blue'], linewidth=2.2, markersize=7,
              label='Top-15 mainstream topics', zorder=4)
     axA.plot(years, longtail_share.values, 's-', color=COLORS['orange'], linewidth=2.2, markersize=7,
@@ -940,15 +953,20 @@ def fig13_topic_dynamics():
     axA.set_xlabel('Year', fontweight='bold', fontsize=11)
     axA.set_ylabel('Share of all project documents (%)', fontweight='bold', fontsize=10)
     axA.set_title('(a) Mainstream topics decline, long tail diversifies', fontweight='bold', fontsize=11)
-    axA.legend(fontsize=8.5, loc='center right', framealpha=0.9)
+    axA.legend(fontsize=8.5, loc='upper right', framealpha=0.9)  # v1.0-cand.7: moved to upper-right corner
     axA.set_ylim(0, max(longtail_share.max(), top15_share.max()) * 1.22)
     axA.margins(x=0.06)
     axA.grid(axis='y', alpha=0.25, linewidth=0.5)
+    fig.suptitle('Temporal Topic Dynamics in ITTP Projects, 2020-2024 (a)\n' + suptitle_note,
+                 fontweight='bold', fontsize=11.5, y=1.00)
+    fig.tight_layout(rect=[0, 0, 1, 0.93])
+    savefig(fig, 'Figure13a_TopicTrend', subdir='supp')
 
-    # ---- Panel B: 15 × 5 heatmap (rows sorted by lifetime share, top = largest) ----
+    # ---- 13b: 15 x 5 heatmap (standalone; rows sorted by lifetime share, top = largest) ----
     order_desc = list(top_topics)  # nlargest already sorted desc
     mat = pivot_top.loc[:, order_desc].T  # rows=topics, cols=years
     row_labels = [f'T{int(tid)}  {TOPIC_GLOSS.get(tid, auto_gloss(tid))}' for tid in order_desc]
+    fig, axB = plt.subplots(figsize=(7.0, 6.8))
     im = axB.imshow(mat.values, aspect='auto', cmap='YlOrRd', vmin=0)
     axB.set_xticks(range(len(years)))
     axB.set_xticklabels(years, fontsize=10)
@@ -964,11 +982,10 @@ def fig13_topic_dynamics():
     cbar.set_label('Project-side prevalence (% of all projects / yr)', fontsize=8)
     cbar.ax.tick_params(labelsize=7)
     axB.set_title('(b) Top-15 topic prevalence heatmap', fontweight='bold', fontsize=11)
-
-    fig.suptitle('Temporal Topic Dynamics in ITTP Projects, 2020-2024  '
-                 '(shares of all projects per year; topics = BERTopic clusters)',
-                 fontweight='bold', fontsize=12.5, y=0.99)
-    savefig(fig, 'Figure13_TopicDynamics', subdir='supp')
+    fig.suptitle('Temporal Topic Dynamics in ITTP Projects, 2020-2024 (b)\n' + suptitle_note,
+                 fontweight='bold', fontsize=11.5, y=1.00)
+    fig.tight_layout(rect=[0, 0, 1, 0.94])
+    savefig(fig, 'Figure13b_TopicHeatmap', subdir='supp')
 
 # ================================================================
 # MAIN

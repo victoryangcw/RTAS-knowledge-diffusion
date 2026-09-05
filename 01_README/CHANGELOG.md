@@ -5,6 +5,39 @@ config, data, or code that could affect downstream numbers.
 
 ---
 
+## [v1.0-cand.7] — 2026-09-05 — FIFTEENTH ROUND: FIGURE 13 FILE SPLIT & COHEN'S d CONVENTION FIX (USER VISUAL + REVIEWER AUDIT)
+
+Milestone status: ✅ Visualization + one numeric-convention fix. All frozen CSVs
+unchanged (the d fix aligns the manuscript TO the frozen CSV, not vice versa).
+
+### Changed (figures, `06_CODE/10_generate_figures.py` → `05_FINAL_FIGURES/`)
+- **Figure 13 split into two standalone supplementary files** (user review: panels
+  crowded each other when side-by-side):
+  - `supplementary/Figure13a_TopicTrend.pdf/png` (7.4 × 5.8): diversification
+    two-line trend; **legend moved to the upper-right corner** (was center-right).
+  - `supplementary/Figure13b_TopicHeatmap.pdf/png` (7.0 × 6.8): 15 × 5 prevalence
+    heatmap with own colorbar; 15 row labels now full-size and unobscured.
+  - `supplementary/Figure13_TopicDynamics.*` (old merged 13.5 × 6.2 file) **removed**.
+- **Cohen's d convention fix (N vs U project level):** frozen CSV
+  `heterogeneity/project_level_top_vs_bottom_cohensd.csv` reports **d = 0.3517**
+  using the textbook **n-weighted pooled SD**. The manuscript text said 0.349 —
+  that value came from an unweighted mean-of-variances pooled SD in the figure
+  script (`sqrt((s1²+s2²)/2)`), which understates d when n1 ≠ n2
+  (682 national vs 1,375 university → 0.3485). Manuscript corrected to **d = 0.352**
+  (2 places); `_fig4_pairwise()` formula corrected to the n-weighted pooled SD.
+  Figure 2 roadmap already showed 0.352 and is unchanged. Welch t = 7.375,
+  p = 2.9e-13 unaffected.
+
+### Docs
+- Manuscript Figure 13 section rewritten for 13a/13b (sources, sizes, split
+  rationale); §1.1 d value + data-dictionary entry updated to 0.352 with
+  formula-convention note.
+- `05_FINAL_FIGURES/gallery.html`: synced to cand.7 via atomic patch (5 reps,
+  3 s post-write verification passed): version bump, Figure 13 grid card split
+  into 13a + 13b, book page shows both files, footer supp count updated.
+
+---
+
 ## [v1.0-cand.6] — 2026-09-05 — FOURTEENTH ROUND: FIGURE 8 FILE SPLIT & FIGURE 10 VISUAL CLEANUP (USER VISUAL REVIEW)
 
 Milestone status: ✅ Visualization-only round (user visual review of inserted figures).

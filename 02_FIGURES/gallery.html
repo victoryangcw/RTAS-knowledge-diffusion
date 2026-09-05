@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RTAS v1.0-cand.6 Figure Book — 官方图册页 (Figure Freeze 2026-09-05)</title>
+<title>RTAS v1.0-cand.7 Figure Book — 官方图册页 (Figure Freeze 2026-09-05)</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
@@ -202,7 +202,7 @@
 <body>
 
 <header>
-  <h1>RTAS v1.0-cand.6 — 官方图册 + 数据审计画廊（Figure Freeze 版）</h1>
+  <h1>RTAS v1.0-cand.7 — 官方图册 + 数据审计画廊（Figure Freeze 版）</h1>
   <p>56,901 OpenAlex papers × 3,714 projects · HLM v2b ICC=0.7376 · K=886 (+1 OUTLIER) · 主文 7 图号 + Supplementary 4 图 · All figures single-source from `03_FINAL_ANALYSIS/`</p>
 
   <div class="tab-bar">
@@ -351,12 +351,22 @@
   </div>
 
   <div class="figure-card">
-    <img src="supplementary/Figure13_TopicDynamics.png" onclick="document.getElementById('lb').src=this.src;document.querySelector('.lightbox').style.display='flex'">
+    <img src="supplementary/Figure13a_TopicTrend.png" onclick="document.getElementById('lb').src=this.src;document.querySelector('.lightbox').style.display='flex'">
     <div class="figure-info">
-      <h2>Figure 13 (Supplementary，v1.0-cand.5 降级): 时间主题动态双面板（趋势双线 + Top-15 热力图）</h2>
+      <h2>Figure 13a (Supplementary，v1.0-cand.7 拆分): 主题动态趋势双线（图例右上角）</h2>
+      <div class="source">← topic_model/topic_yearly_prevalence_for_diffusion_lag.csv → 10_generate_figures.py</div>
+      <p>Top-15 mainstream topics（蓝，17.6→13.5% ↓）vs Other clustered topics（橙，871 topics 长尾，29.5→33.1% ↑）——一眼读出 "topic diversification"。纵轴 = Share of <b>all</b> project documents (%)，分母 = 全部 3,714 个项目文档/年。<b>v1.0-cand.7：</b>与热力图拆分为独立文件，图例移至右上角，趋势线注释不再被挤压</p>
+      <div class="key-finding">主流合计 17.6→13.5% 缓降、clustered 长尾 29.5→33.1% 缓升（两线合计 ≈47% = clustered 占全部项目比例）→ 培养选题缓慢分散化</div>
+    </div>
+  </div>
+
+  <div class="figure-card">
+    <img src="supplementary/Figure13b_TopicHeatmap.png" onclick="document.getElementById('lb').src=this.src;document.querySelector('.lightbox').style.display='flex'">
+    <div class="figure-info">
+      <h2>Figure 13b (Supplementary，v1.0-cand.7 拆分): Top-15 主题流行度热力图</h2>
       <div class="source">← topic_model/topic_yearly_prevalence_for_diffusion_lag.csv + topic_info.csv (c-TF-IDF 主题词) → 10_generate_figures.py</div>
-      <p><b>Panel (a) 两条线</b>：Top-15 mainstream topics（蓝，17.6→13.5% ↓）vs Other clustered topics（橙，871 topics 长尾，29.5→33.1% ↑）——一眼读出 "topic diversification"。<b>Panel (b) 15×5 heatmap</b>：行=Top-15 主题（按生命周期份额降序，标签 = T编号 + c-TF-IDF 英文简义），列=2020–2024，cell=项目侧流行度 %（YlOrRd，cell 内标数值）。<b>v1.0-cand.5 分母口径修正（freeze 前必修）</b>：纵轴 = Share of <b>all</b> project documents (%)，分母 = 全部 3,714 个项目文档/年（17.6%+29.5%≈47.1% 恰为 clustered 项目占全部项目的比例；旧 "clustered docs 分母" 表述错误已纠正）；colorbar = % of all projects / yr；图题注明 "shares of all projects per year; topics = BERTopic clusters"。降级理由：属第二层发现，非回答 RQ 所必需证据</p>
-      <div class="key-finding">T5 语言学习 7.27→4.06% 逐年降温（heatmap 首行）；主流合计 17.6→13.5% 缓降、clustered 长尾 29.5→33.1% 缓升 → 培养选题缓慢分散化；T216 在线学习/大数据波动收缩 (1.64→0.12%)</div>
+      <p>15×5 heatmap：行=Top-15 主题（按生命周期份额降序，标签 = T编号 + c-TF-IDF 英文简义），列=2020–2024，cell=项目侧流行度 %（YlOrRd，cell 内标数值）；colorbar = % of all projects / yr；分母 = 全部项目文档（v1.0-cand.5 口径修正）。<b>v1.0-cand.7：</b>拆分为独立文件后 15 行标签满幅可读，不再与趋势面板互相遮挡</p>
+      <div class="key-finding">T5 语言学习 7.27→4.06% 逐年降温（首行）；T216 在线学习/大数据波动收缩 (1.64→0.12%)</div>
     </div>
   </div>
 
@@ -653,10 +663,11 @@
 <!-- ============ FIG 13 (REDESIGNED TWO-PANEL) ============ -->
 <div class="fb-page">
   <div class="fb-head">
-    <h2>Figure 13 (Supplementary) — Temporal Topic Dynamics, two-panel (v1.0-cand.5 demoted; denominator corrected to ALL projects)</h2>
-    <span class="badge">supplementary/Figure13_TopicDynamics.pdf | 13.5×6.2 inch | denominator = all projects/yr (3,714)</span>
+    <h2>Figure 13 (Supplementary) — Temporal Topic Dynamics (v1.0-cand.7 split into two standalone files: 13a trend + 13b heatmap; v1.0-cand.5 demoted; denominator = ALL projects)</h2>
+    <span class="badge">supplementary/Figure13a_TopicTrend.pdf (7.4×5.8) + Figure13b_TopicHeatmap.pdf (7.0×6.8) | denominator = all projects/yr (3,714)</span>
   </div>
-  <div class="fb-figure-wrap"><img src="supplementary/Figure13_TopicDynamics.png" onclick="document.getElementById('lb').src=this.src;document.querySelector('.lightbox').style.display='flex'"></div>
+  <div class="fb-figure-wrap"><img src="supplementary/Figure13a_TopicTrend.png" onclick="document.getElementById('lb').src=this.src;document.querySelector('.lightbox').style.display='flex'"></div>
+  <div class="fb-figure-wrap"><img src="supplementary/Figure13b_TopicHeatmap.png" onclick="document.getElementById('lb').src=this.src;document.querySelector('.lightbox').style.display='flex'"></div>
   <div class="fb-caption">
     <div class="src">SOURCE: topic_model/topic_yearly_prevalence_for_diffusion_lag.csv + topic_model/topic_info.csv (c-TF-IDF words) → fig13_topic_dynamics()</div>
 
@@ -720,7 +731,7 @@
 </div>
 
 <footer>
-  <p>RTAS v1.0-cand.6 Figure Freeze Figure Book · 2026-09-05 · 主文 7 个图号 / 8 个图文件（Fig 2, 3, 4, 5, 6, 8a, 8b, 10）+ Supplementary 4 图（Fig 7, 11, 13, S1）· v1.0-cand.5 删除 Figure 4a 与 Figure S2、Figure 13 降级 Supplementary；v1.0-cand.6 Figure 8 拆分为 8a/8b 双文件、Figure 10 删 top50 灰柱· All figures generated by 06_CODE/10_generate_figures.py single-sourced from 03_FINAL_ANALYSIS/ frozen CSVs.
+  <p>RTAS v1.0-cand.7 Figure Freeze Figure Book · 2026-09-05 · 主文 7 个图号 / 8 个图文件（Fig 2, 3, 4, 5, 6, 8a, 8b, 10）+ Supplementary 4 个图号 / 5 个图文件（Fig 7, 11, 13a, 13b, S1）· v1.0-cand.5 删除 Figure 4a 与 Figure S2、Figure 13 降级 Supplementary；v1.0-cand.6 Figure 8 拆分为 8a/8b、Figure 10 删 top50 灰柱；v1.0-cand.7 Figure 13 拆分为 13a/13b（13a 图例移右上角）、Cohen's d 统一为冻结 CSV 标准口径 0.352· All figures generated by 06_CODE/10_generate_figures.py single-sourced from 03_FINAL_ANALYSIS/ frozen CSVs.
   <br><b>Ctrl+P / Print to PDF</b> = 一键导出为 A4 图册（@media print CSS 已配置：自动只打印 📖 Figure Book Tab，每页一张大图，节省纸张）。
   </p>
 </footer>

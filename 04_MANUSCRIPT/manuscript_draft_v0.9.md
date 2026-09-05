@@ -37,7 +37,7 @@
 - 省级：1,657 项（44.6%），RTAS 均值 = 0.1391
 - 国家级：682 项（18.4%），RTAS 均值 = 0.1460
 
-RTAS 均值随项目等级单调递增（国家级 ≥ 省级 > 校级；注意省级-国家级之间在严格多重比较下仅为趋势、未越过 α=0.05 门槛）。ANOVA 整体检验 F(2, 3711) = 35.72, p = 4.3×10⁻¹⁶, η² = 1.89%。最大两两差距在"国家级 vs 校级"：Welch's unequal-variance t = 7.375, p = 2.9×10⁻¹³, Cohen's d = +0.349。Tukey HSD 严格多重比较结果（同时 95% Δ-CI 与 p-adj）：
+RTAS 均值随项目等级单调递增（国家级 ≥ 省级 > 校级；注意省级-国家级之间在严格多重比较下仅为趋势、未越过 α=0.05 门槛）。ANOVA 整体检验 F(2, 3711) = 35.72, p = 4.3×10⁻¹⁶, η² = 1.89%。最大两两差距在"国家级 vs 校级"：Welch's unequal-variance t = 7.375, p = 2.9×10⁻¹³, Cohen's d = +0.352（v1.0-cand.7 修正：旧稿 0.349 来自未加权 pooled SD 公式，冻结 CSV `project_level_top_vs_bottom_cohensd.csv` 标准 n 加权口径 d = 0.3517）。Tukey HSD 严格多重比较结果（同时 95% Δ-CI 与 p-adj）：
 - **校级 vs 省级**：Δmean = +0.0179, 95% CI [+0.0117, +0.0240], p-adj ≈ 0 → ***
 - **校级 vs 国家级**：Δmean = +0.0248, 95% CI [+0.0170, +0.0327], p-adj ≈ 0 → ***
 - **省级 vs 国家级**：Δmean = +0.0070, 95% CI [−0.0007, +0.0146], **p-adj = 0.082 → ns（CI 跨 0，FAIL）**
@@ -574,7 +574,7 @@ R 脚本（`06_CODE/09_ri_clpm.R`）使用 lavaan 包的 FIML（全信息最大�
 - `anova_project_level.csv` — F(2,3711)=35.72, p=4.3e-16, η²=1.89%
 - `project_level_summary.csv` — 校/省/国 RTAS 均值: 0.1212/0.1391/0.1460
 - `tukey_project_level_pairwise.csv` — 三对比较：U-P p<0.0001 ***, U-N p<0.0001 ***, **P-N p-adj=0.082 ns (95%Δ-CI [−0.0007, +0.0146] 跨 0)**（严格结论 U<P≤N）
-- `project_level_top_vs_bottom_cohensd.csv` — d=0.349, Welch p=2.9e-13
+- `project_level_top_vs_bottom_cohensd.csv` — d=0.352（标准 n 加权 pooled SD；v1.0-cand.7 修正，旧稿 0.349 为未加权公式）, Welch p=2.9e-13
 - `anova_college.csv` — F(38,3674)=195.45, η²=66.90%
 - `college_rtas_summary_all.csv` — **40 学院** RTAS 完整描述（Figure S1 附录排名用）
 - `college_rtas_top20.csv` — Top 20 学院 raw-mean 排名（**历史/辅助输出**；v1.0-cand.4 起 Figure 5 已改用 `hlm_v2b_college_random_effects.csv` caterpillar，本文件不再供主图使用）
@@ -718,8 +718,9 @@ R 脚本（`06_CODE/09_ri_clpm.R`）使用 lavaan 包的 FIML（全信息最大�
 - **分母诚实（v1.0-cand.4）**：图题声明 "Denominators = clustered documents only; BERTopic outliers (38.47% of docs) are outside the four quadrants"——四象限论文合计 35,547 ≠ 56,901、项目合计 1,750 ≠ 3,714，差额 = OUTLIER 文档，图自己说清楚。
 **读图口诀：** HRLT 中柱（b 超高论文数 ≈18K，但 c 矮项目数 ≈399 → "研究做透了但培养没跟上"）= 课程改革靶点。LRHT 相反 (b 矮 219, c 高 278 → "培养内容教了科研没做") = 教学大纲核查靶点。
 
-### Figure 13（Supplementary，v1.0-cand.5 降级）: 时间主题动态双面板（**v1.0-cand.4 重做、v1.0-cand.5 修分母口径**：panel (a) 趋势双线 + panel (b) Top-15 热力图）
-**来源：** `topic_model/topic_yearly_prevalence_for_diffusion_lag.csv (886 × 5 = 4,430 rows) + topic_model/topic_info.csv (c-TF-IDF 主题词) → supplementary/Figure13_TopicDynamics.pdf/png`（13.5 × 6.2 inch）。
+### Figure 13（Supplementary，v1.0-cand.5 降级、**v1.0-cand.7 拆分为两个独立文件**）: 时间主题动态（13a 趋势双线 + 13b Top-15 热力图；v1.0-cand.4 重做、v1.0-cand.5 修分母口径）
+**来源：** `topic_model/topic_yearly_prevalence_for_diffusion_lag.csv (886 × 5 = 4,430 rows) + topic_model/topic_info.csv (c-TF-IDF 主题词) → supplementary/Figure13a_TopicTrend.pdf/png（7.4 × 5.8 inch）+ supplementary/Figure13b_TopicHeatmap.pdf/png（7.0 × 6.8 inch）`。
+**拆分理由（v1.0-cand.7 用户视觉评审）：** 两面板并排时热力图 15 行 y 轴标签与趋势线注释互相挤压；拆为独立文件后各自可满幅排版，13a 图例移至**右上角**（不再压在线条区）。
 **降级原因（v1.0-cand.5，reviewer verdict）：** "主流降、长尾升"属第二层发现，不为回答 RQ 的主证据链所必需；主文减法至 7 图号后移入附录。
 **换图种理由（reviewer audit）：** 旧堆叠面积图要求读者同时处理 15 种颜色 × 15 个主题名 × 5 年色带 × 上下边界差值 × 几十个累计数字，是全套图认知负担最高的一张；新版只回答一个问题——**培养选题在集中还是分散？**
 **Panel (a) — Mainstream decline, long-tail diversification（两条线）：** 蓝线圆点 = Top-15 mainstream topics 合计份额（按生命周期总份额选出）：**17.6% → 13.5% 缓降**，数值标点下方；橙线方块 = **Other clustered topics**（其余 871 个 clustered 主题长尾合计）：**29.5% → 33.1% 缓升**，数值标点上方。纵轴 = Share of **all** project documents (%)——分母为**全部 3,714 个项目文档**（v1.0-cand.5 口径修正：旧稿误标 "clustered"，但两线合计 17.6%+29.5%≈47.1% 恰为 clustered 项目占全部项目之比；若分母真是 clustered docs 应合计 100%。已核冻结 CSV：`pct_project` 的分母列 `denom_project` 逐年合计 = 3,714）。长尾线命名 "Other clustered topics" 仍指 871 个 clustered 主题——unclustered（OUTLIER）项目不属于任何 clustered 主题（不进入两线分子），但仍计入全部项目分母（与 "Share of all project documents" 口径自洽）。
