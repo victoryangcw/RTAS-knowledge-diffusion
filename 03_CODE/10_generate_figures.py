@@ -10,19 +10,21 @@ RULE (enforced, per FINAL_ANALYSIS_PROTOCOL §4):
 Output: PDF (vector) + 600 dpi PNG into 05_FINAL_FIGURES/main/ and supplementary/.
 NO "Fig X" text inside any image canvas (config policy).
 
-Figures generated:
-  Figure 2  Technical Roadmap      <-- FINAL_ANALYSIS_PROTOCOL §2 --(10_generate_figures.py)--> Figure2_Roadmap.pdf
-  Figure 3  4-Quadrant Scatter     <-- topic_info.csv --(10_generate_figures.py)--> Figure3_QuadrantScatter.pdf
-  Figure 4  Project-Level RTAS    <-- project_level_summary.csv --(10_generate_figures.py)--> Figure4_ProjectLevel.pdf
-  Figure 5  Top-20 Colleges Bar  <-- college_rtas_top20.csv (college_fontsize=10) --(10_generate_figures.py)--> Figure5_Top20Colleges.pdf
-  Figure 6  HLM Forest Plot       <-- hlm_coefficients.csv (SAME source as Table 6) --(10_generate_figures.py)--> Figure6_HLM_Forest.pdf
-  Figure 7  Transition Matrix     <-- transition_probabilities_year_tercile.csv --(10_generate_figures.py)--> Figure7_TransitionMatrix.pdf
-  Figure 8  Diffusion Lag Hist   <-- diffusion_lag_histogram_bins.csv --(10_generate_figures.py)--> Figure8_DiffusionLag.pdf
-  Figure 9  Diffusion by Quadrant<-- diffusion_lag_aggregate_stats.csv --(10_generate_figures.py)--> Figure9_DiffusionByQuadrant.pdf
-  Figure 10 Matthew Lorenz+Pareto<-- supervisor_gini_pareto.csv --(10_generate_figures.py)--> Figure10_MatthewEffect.pdf
-  Figure 11 Quadrant Summary Bars<-- quadrant_overall_summary.csv --(10_generate_figures.py)--> Figure11_QuadrantSummary.pdf
-  Figure 12 College RTAS Ranking  <-- college_rtas_top20.csv (college_fontsize=10) --(10_generate_figures.py)--> Figure12_CollegeRTAS.pdf
-  Figure 13 Topic Yearly Stacked  <-- topic_yearly_prevalence_for_diffusion_lag.csv (boundary_fontsize=6) --(10_generate_figures.py)--> Figure13_TopicStackedArea.pdf
+Figures generated (v1.0-cand.5 final freeze — 7 main + 4 supplementary):
+  MAIN (7):
+  Figure 2  Technical Roadmap      <-- FINAL_ANALYSIS_PROTOCOL §2 (rho_s=.405 in Embedding box; Heterogeneity fed from RTAS Frozen, not raw corpus) --(10_generate_figures.py)--> Figure2_Roadmap.pdf
+  Figure 3  4-Quadrant Scatter     <-- topic_info.csv (zoom inset + bubble legend) --(10_generate_figures.py)--> Figure3_QuadrantScatter.pdf
+  Figure 4  Project-Level Dist.    <-- project_level_summary.csv + table5_project_dataset_n3714_full.csv (box+jitter; ex-Fig4b; old 4a DELETED as redundant) --(10_generate_figures.py)--> Figure4_Distribution.pdf
+  Figure 5  College Caterpillar    <-- hlm_v2b_college_random_effects.csv (BLUPs, ICC=0.738) --(10_generate_figures.py)--> Figure5_CollegeCaterpillar.pdf
+  Figure 6  HLM Forest Plot        <-- hlm_mixedlm_v2b_primary_coefficients.csv (SAME source as Table 6; sig defs moved to caption) --(10_generate_figures.py)--> Figure6_HLM_Forest.pdf
+  Figure 8  Diffusion-Lag 2-panel  <-- diffusion_lag_histogram_bins.csv + topic_first_year_adoption.csv (neutral lag wording; merges old Fig8+Fig9) --(10_generate_figures.py)--> Figure8_DiffusionLagPatterns.pdf
+  Figure 10 Matthew 3-panel        <-- supervisor_gini_pareto.csv + lagged_logit_national_path_dependence*.csv (panel c "Expanded risk set") --(10_generate_figures.py)--> Figure10_MatthewEffect.pdf
+  SUPPLEMENTARY (4):
+  Figure S1 College Full Ranking   <-- college_rtas_summary_all.csv (p < .001, not p≈0) --(10_generate_figures.py)--> supplementary/FigureS1_CollegeRTAS_Full40.pdf
+  Figure 7  Transition Matrix      <-- transition_probabilities_year_tercile.csv --(10_generate_figures.py)--> supplementary/Figure7_TransitionMatrix.pdf
+  Figure 11 Quadrant Summary       <-- quadrant_overall_summary.csv (clustered denominators) --(10_generate_figures.py)--> supplementary/Figure11_QuadrantSummary.pdf
+  Figure 13 Topic Dynamics 2-panel <-- topic_yearly_prevalence_for_diffusion_lag.csv (denominator = ALL projects/yr, sum(denom_project)=3,714; demoted to Supplementary) --(10_generate_figures.py)--> supplementary/Figure13_TopicDynamics.pdf
+  DELETED (v1.0-cand.5): Figure4a_MeanCI (redundant with Fig4 mean diamonds), FigureS2_Top20Colleges (raw-mean small-n amplification; caterpillar + S1 suffice).
 """
 from __future__ import annotations
 import os, sys, json, re, warnings; warnings.filterwarnings('ignore')
@@ -176,64 +178,93 @@ def provenance(fig_num, title, input_csv, script='10_generate_figures.py'):
 # Figure 2: Technical Roadmap (schematic)
 # ================================================================
 def fig2_roadmap():
-    provenance(2, 'Technical Roadmap', 'FINAL_ANALYSIS_PROTOCOL.md §2')
-    fig, ax = plt.subplots(figsize=(11.5, 6.2))
-    ax.set_xlim(0, 11.5); ax.set_ylim(0, 6.4); ax.axis('off')
+    provenance(2, 'Technical Roadmap (dual-corpus)', 'FINAL_ANALYSIS_PROTOCOL.md §2')
+    fig, ax = plt.subplots(figsize=(11.5, 7.0))
+    ax.set_xlim(0, 11.5); ax.set_ylim(0, 7.0); ax.axis('off')
 
-    # 3-tier layout: each tier strictly horizontal, tiers separated by wide gaps.
-    # Arrows are ONLY same-tier horizontal or cross-tier near-vertical,
-    # so no arrow can ever cross a box.
-    BW, BH = 2.3, 1.15          # box width/height
-    R1, R2, R3 = 4.7, 2.45, 0.25  # tier baseline y
+    # v1.0-cand.4 reviewer-audit redesign:
+    #   1) TWO corpora are now explicit (main RTAS corpus 2020-2024 vs auxiliary
+    #      advisor-history corpus 2017-2019 that only feeds HLM pre-project covariates);
+    #   2) pairwise semantic validity rho=.405 moved to the EMBEDDING box (it is
+    #      embedding-level and shared by all 5 aggregation variants);
+    #   3) RTAS Frozen box now shows variant SELECTION (5 variants, mean chosen by
+    #      composite score .742) instead of the validity number;
+    #   4) RI-CLPM "future work" box REMOVED from the method figure (never estimated).
+    BW2, BH2 = 2.4, 1.15        # standard box size
     boxes = [
-        # Tier 1 (pipeline): 4 boxes, evenly spaced
-        (0.40, R1, BW, BH, 'Data Collection\n3,714 projects (CN)\n56,901 papers (EN)\nOpenAlex 2020-2024', COLORS['blue']),
-        (3.30, R1, BW, BH, 'Embedding\nMultilingual MiniLM\nL12-v2 (384-dim)\nL2-normalized', COLORS['teal']),
-        (6.20, R1, BW, BH, 'RTAS Computation\nCosine similarity\nMean aggregation\nCumulative [2020, t]', COLORS['green']),
-        (9.10, R1, BW, BH, 'RTAS Frozen\n5 variants tested\nPrimary = mean\nSpearman = 0.405', COLORS['navy']),
-        # Tier 2 (analyses): 5 boxes
-        (0.40, R2, 1.95, BH, 'Heterogeneity (RQ1)\nF(2,3711)=35.7\nη²=1.89%\nd=0.352', COLORS['blue']),
-        (2.60, R2, 1.95, BH, 'BERTopic (RQ2)\nUMAP+HDBSCAN\nK=886 topics\n4-quadrant', COLORS['orange']),
-        (4.80, R2, 1.95, BH, 'HLM (RQ3)\nMixedLM RE\nICC=0.738\n39 colleges', COLORS['purple']),
-        (7.00, R2, 1.95, BH, 'Matthew (RQ4)\nGini=0.767\nTop5%=34.0%\nlag-OR=2.25***', COLORS['red']),
-        (9.20, R2, 1.95, BH, 'RI-CLPM (future)\npanel built\nnot estimated\n(see MS sec.7)', COLORS['teal']),
-        # Tier 3 (downstream): 1 box, aligned under BERTopic
-        (2.60, R3, 1.95, BH, 'Diffusion Lag (RQ2)\n29/886 defined\nHRLT median +0.5 yr', COLORS['gray']),
+        # Row 1 (y=5.4): the two corpora
+        (0.60, 5.40, 5.20, 1.15, 'Main RTAS corpus\n3,714 ITTP projects (CN)  +  56,901 OpenAlex papers (EN)\nOpenAlex 2020-2024', COLORS['blue']),
+        (6.30, 5.40, 4.60, 1.15, 'Auxiliary advisor-history corpus\n22,438 OpenAlex papers, 2017-2019\n-> pre-project covariate windows [t-3, t-1]', None),
+        # Row 2 (y=3.45): method pipeline
+        (0.60, 3.45, BW2, BH2, 'Embedding\nMultilingual MiniLM\nL12-v2 (384-dim)\nPairwise semantic validity\n$\\rho_s$ = .405 (n=150, p=2.6e-7)', COLORS['teal']),
+        (3.40, 3.45, BW2, BH2, 'RTAS Computation\nCosine similarity\nMean aggregation\nCumulative [2020, t]', COLORS['green']),
+        (6.30, 3.45, BW2, BH2, 'RTAS Frozen\n5 aggregation variants\ntested; Primary = mean\n(composite score .742)', COLORS['navy']),
+        # Row 3 (y=1.50): analyses (v1.0-cand.5: BERTopic moved to the LEFTMOST slot,
+        #   directly under Embedding, so the embeddings branch feeds it with a straight
+        #   vertical; the three RTAS-fed analyses (Het/Matthew/HLM) all hang off RTAS
+        #   Frozen. Left column = text-mining branch, right columns = RTAS analyses.)
+        (3.40, 1.50, BW2, BH2, 'Heterogeneity (RQ1)\nF(2,3711)=35.7\neta2=1.89%\nd=0.352', COLORS['blue']),
+        (0.60, 1.50, BW2, BH2, 'BERTopic (RQ2)\nUMAP+HDBSCAN\nK=886 topics\n4-quadrant', COLORS['orange']),
+        (6.30, 1.50, BW2, BH2, 'Matthew (RQ4)\nGini=0.767\nTop5%=34.0%\nlag-OR=2.25***', COLORS['red']),
+        (9.10, 1.50, BW2, BH2, 'HLM (RQ3)\nMixedLM RE\nICC=0.738, 39 colleges\nclean prior supervision', COLORS['purple']),
+        # Row 4 (y=0.05): downstream
+        (3.40, 0.05, BW2, 1.00, 'Diffusion Lag (RQ2)\n29/886 defined\nHRLT median +0.5 yr', COLORS['gray']),
     ]
     edges = {}
     for x, y, w, h, text, color in boxes:
+        aux = color is None
         rect = mpatches.FancyBboxPatch((x, y), w, h, boxstyle='round,pad=0.07',
-                                        facecolor=color, alpha=0.13, edgecolor=color, linewidth=1.4)
+                                        facecolor=('#f2f2f2' if aux else color),
+                                        alpha=(0.9 if aux else 0.13),
+                                        edgecolor=('#888888' if aux else color),
+                                        linewidth=1.4, linestyle=('--' if aux else '-'))
         ax.add_patch(rect)
-        ax.text(x + w/2, y + h/2, text, ha='center', va='center', fontsize=6.3, fontweight='bold',
-                color=color, linespacing=1.35)
+        ax.text(x + w/2, y + h/2, text, ha='center', va='center', fontsize=6.4, fontweight='bold',
+                color=('#444444' if aux else color), linespacing=1.4)
         edges[(x, y, w, h)] = {
             'top': (x + w/2, y + h), 'bottom': (x + w/2, y),
             'left': (x, y + h/2), 'right': (x + w, y + h/2),
+            'bottom_left': (x + w*0.25, y), 'bottom_right': (x + w*0.75, y),
+            'top_left': (x + w*0.25, y + h), 'top_right': (x + w*0.75, y + h),
         }
 
-    def arrow(bf, bt, sf='right', st='left'):
-        p1 = edges[bf][sf]; p2 = edges[bt][st]
+    def arrow(p1, p2, dashed=False, rad=0.0):
         ax.annotate('', xy=p2, xytext=p1,
                     arrowprops=dict(arrowstyle='->', color='#555555', lw=1.2,
-                                    connectionstyle='arc3,rad=0'),
+                                    linestyle=('--' if dashed else '-'),
+                                    connectionstyle=f'arc3,rad={rad}'),
                     zorder=1)
 
-    b = [bb[:4] for bb in boxes]
-    # Tier 1 horizontal flow
-    arrow(b[0], b[1], 'right', 'left')
-    arrow(b[1], b[2], 'right', 'left')
-    arrow(b[2], b[3], 'right', 'left')
-    # Tier 1 → Tier 2: straight vertical drops between aligned columns (wide gap, no boxes in between)
-    arrow(b[0], b[4], 'bottom', 'top')       # data → heterogeneity
-    arrow(b[1], b[5], 'bottom', 'top')       # embedding → BERTopic
-    arrow(b[2], b[6], 'bottom', 'top')       # RTAS → HLM
-    arrow(b[3], b[7], 'bottom', 'top')       # frozen → Matthew
-    arrow(b[3], b[8], 'bottom', 'top')       # frozen → RI-CLPM (near-vertical)
-    # Tier 2 → Tier 3: BERTopic straight down to Diffusion Lag
-    arrow(b[5], b[9], 'bottom', 'top')
+    def elbow(p1, p2, y_mid):
+        """Orthogonal 3-segment connector (v1.0-cand.5): vertical from p1 to the
+        inter-row highway at y_mid, horizontal to p2.x, then arrowhead into p2.
+        Keeps Row2->Row3 data flow in separate lanes (no diagonal crossings)."""
+        ax.plot([p1[0], p1[0]], [p1[1], y_mid], color='#555555', lw=1.2, zorder=1)
+        ax.plot([p1[0], p2[0]], [y_mid, y_mid], color='#555555', lw=1.2, zorder=1)
+        ax.annotate('', xy=p2, xytext=(p2[0], y_mid),
+                    arrowprops=dict(arrowstyle='->', color='#555555', lw=1.2), zorder=1)
 
-    ax.set_title('RTAS Technical Roadmap — Data to Discovery',
+    b = [bb[:4] for bb in boxes]
+    main, aux, emb, comp, froz = b[0], b[1], b[2], b[3], b[4]
+    het, bert, mat, hlm, diff = b[5], b[6], b[7], b[8], b[9]
+    # Row 1 -> Row 2: main corpus feeds embedding; aux corpus feeds HLM covariates
+    arrow(edges[main]['bottom_left'], edges[emb]['top'])            # main corpus -> embedding
+    arrow(edges[aux]['bottom_right'], edges[hlm]['top_right'], dashed=True)  # aux corpus -> HLM
+    # Row 2 horizontal pipeline
+    arrow(edges[emb]['right'], edges[comp]['left'])
+    arrow(edges[comp]['right'], edges[froz]['left'])
+    # Row 2 -> Row 3 (v1.0-cand.5 rerouting): analyses consume FROZEN RTAS or the
+    # frozen embeddings, never the raw corpus. BERTopic now sits in the leftmost
+    # column directly under Embedding (straight vertical feed); Heterogeneity /
+    # Matthew / HLM are fed from RTAS Frozen -> data flow is crossing-free.
+    arrow(edges[emb]['bottom'], edges[bert]['top'])                  # embeddings -> BERTopic (vertical, same column)
+    elbow(edges[froz]['bottom'], edges[het]['top'], y_mid=3.05)      # frozen RTAS -> Heterogeneity (was: raw corpus -> Het)
+    arrow(edges[froz]['bottom_right'], edges[mat]['top_right'])      # frozen RTAS -> Matthew (vertical drop)
+    arrow(edges[froz]['right'], edges[hlm]['top_left'])              # frozen RTAS -> HLM
+    # Row 3 -> Row 4
+    elbow(edges[bert]['bottom'], edges[diff]['top'], y_mid=1.25)     # BERTopic -> Diffusion Lag
+
+    ax.set_title('RTAS Technical Roadmap — Dual-Corpus Data to Discovery',
                  fontsize=12, fontweight='bold', pad=10)
     fig.tight_layout()
     savefig(fig, 'Figure2_Roadmap')
@@ -243,10 +274,10 @@ def fig2_roadmap():
 # ================================================================
 def fig3_quadrant_scatter():
     inp = 'topic_model/topic_info.csv'
-    provenance(3, '4-Quadrant Scatter', inp)
+    provenance(3, '4-Quadrant Scatter (zoom inset + bubble size legend)', inp)
     ti = pd.read_csv(DATA / 'topic_model' / 'topic_info.csv')
     ti = ti[ti['Topic'] >= 0].copy()  # exclude outlier row
-    fig, ax = plt.subplots(figsize=(7, 6))
+    fig, ax = plt.subplots(figsize=(8, 6.8))
     for q, color in QUADRANT_COLORS.items():
         sub = ti[ti['quadrant'] == q]
         if len(sub) == 0: continue
@@ -267,40 +298,71 @@ def fig3_quadrant_scatter():
     ax.set_xlabel('Paper Prevalence (%)', fontweight='bold')
     ax.set_ylabel('Project Prevalence (%)', fontweight='bold')
     ax.set_title('Topic Distribution across Research-Training Quadrants', fontweight='bold')
-    ax.legend(loc='upper right', framealpha=0.9, fontsize=7)
+
+    # v1.0-cand.4 reviewer audit: (1) zoomed inset over the crowded origin so the
+    # 698 LRLT + small-topic mass becomes legible; (2) bubble-size reference legend
+    # (bubble area encodes topic documents via s = Count * 0.3).
+    # Inset is kept NARROW (right edge ~0.90 axes-fraction) so the extreme HRHT
+    # topic near x=1.47% stays visible in the main axes.
+    axins = ax.inset_axes([0.53, 0.42, 0.375, 0.53])
+    for q, color in QUADRANT_COLORS.items():
+        sub = ti[ti['quadrant'] == q]
+        if len(sub) == 0: continue
+        axins.scatter(sub['frac_paper'] * 100, sub['frac_project'] * 100,
+                      s=sub['Count'] * 0.3, c=color, alpha=0.65, edgecolors='white',
+                      linewidth=0.3, zorder=3)
+    axins.axhline(y=thr_r, color='#999999', linestyle='--', linewidth=0.8, alpha=0.5)
+    axins.axvline(x=thr_p, color='#999999', linestyle='--', linewidth=0.8, alpha=0.5)
+    axins.set_xlim(0, 0.25)
+    axins.set_ylim(0, 1.2)
+    axins.tick_params(labelsize=6)
+    axins.set_title('Zoom: origin cluster (0-0.25%, 0-1.2%)', fontsize=7.5, fontweight='bold')
+    axins.grid(alpha=0.2, linewidth=0.4)
+    ax.indicate_inset_zoom(axins, edgecolor='#666666', alpha=0.8)
+
     # Quadrant labels — anchored INSIDE the true quadrant regions relative to the
-    # threshold lines: vertical line = paper threshold, horizontal = project threshold.
-    #   top-right = HRHT (high paper, high project)
-    #   top-left  = LRHT (low paper, high project)
-    #   bot-right = HRLT (high paper, low project)
-    #   bot-left  = LRLT (low paper, low project)
+    # threshold lines (HRHT label moved below the inset window, which occupies the
+    # upper-right corner).
     ytop = ax.get_ylim()[1]; xright = ax.get_xlim()[1]
     import matplotlib.patheffects as _pe3
     _halo3 = [_pe3.withStroke(linewidth=2.2, foreground='white')]
     def _qlabel(x, y, txt, color, alpha):
         ax.text(x, y, txt, ha='left', fontsize=9, color=color, alpha=alpha,
                 fontweight='bold', path_effects=_halo3, zorder=5)
-    _qlabel(xright * 0.75, ytop * 0.92, 'HRHT', QUADRANT_COLORS['HRHT_HighResearch_HighTraining'], 0.55)
+    _qlabel(xright * 0.80, ytop * 0.36, 'HRHT', QUADRANT_COLORS['HRHT_HighResearch_HighTraining'], 0.55)
     _qlabel(0.015, ytop * 0.88, 'LRHT', QUADRANT_COLORS['LRHT_LowResearch_HighTraining'], 0.75)
     _qlabel(xright * 0.58, thr_r * 0.35, 'HRLT', QUADRANT_COLORS['HRLT_HighResearch_LowTraining'], 0.6)
     _qlabel(0.012, thr_r * 0.62, 'LRLT', QUADRANT_COLORS['LRLT_LowResearch_LowTraining'], 0.9)
-    fig.tight_layout()
+
+    # Two legends on one axes (matplotlib multi-legend pattern): create the
+    # quadrant legend, then the size legend (which replaces ax.legend_), then
+    # RE-ADD the quadrant legend as an artist — otherwise the second ax.legend()
+    # call silently deletes the first legend.
+    quad_leg = ax.legend(loc='upper center', bbox_to_anchor=(0.40, -0.135), ncol=2,
+                         framealpha=0.9, fontsize=7.5)
+    # Bubble-size reference legend inside the gap between LRHT label and inset
+    size_handles = [ax.scatter([], [], s=n_docs * 0.3, facecolors='none',
+                               edgecolors='#666666', linewidth=1.0)
+                    for n_docs in (25, 100, 500)]
+    size_leg = ax.legend(size_handles, ['25 docs', '100 docs', '500 docs'],
+                         title='Bubble size = topic documents',
+                         loc='upper left', bbox_to_anchor=(0.245, 1.0),
+                         fontsize=6.5, title_fontsize=7, framealpha=0.9,
+                         labelspacing=1.0, borderpad=0.6, handletextpad=0.9)
+    ax.add_artist(quad_leg)
+    ax.add_artist(size_leg)
+    # Reserve bottom margin so the below-axes quadrant legend is not clipped
+    # (tight_layout does not account for legends anchored outside the axes).
+    fig.tight_layout(rect=[0, 0.085, 1, 1])
     savefig(fig, 'Figure3_QuadrantScatter')
 
 # ================================================================
-# Figure 4: Project-Level RTAS Comparison (校/省/国)
-#   Left panel: mean ± 95% CI bars; Right panel: full distribution boxplot
-#   (raw per-project RTAS from table5_full — nothing hidden, nothing crowded)
+# Figure 4: Project-Level RTAS Distribution (校/省/国)
+#   v1.0-cand.5: old Figure4a (mean ± 95% CI point plot) DELETED — its information
+#   is fully carried by Figure 4's mean diamonds + the caption stats, and the
+#   reviewer verdict was to slim the main text. Only the box+jitter figure remains,
+#   renamed Figure4_Distribution (was Figure4b_Distribution).
 # ================================================================
-def fig4_project_level():
-    """Figure 4 split into TWO clean standalone figures (v0.9.1 round-6 user request):
-      Figure4a_MeanCI       — mean RTAS bars with 95% CI only, no in-plot clutter.
-      Figure4b_Distribution — boxplot + 3,714 jitter points only; ALL numeric tables
-                              (8-number summaries + Welch/Tukey pairwise stats) moved
-                              to a dedicated info panel BELOW the axes (figure coords).
-    """
-    fig4a_mean_ci()
-    fig4b_distribution()
 
 def _fig4_load():
     """Shared loader for Fig 4a/4b: tier summary + raw per-project RTAS + Tukey CSV."""
@@ -335,40 +397,19 @@ def _fig4_pairwise(data_box):
         out.append((ia, ib, pw, d_, tukey_dict[(ia, ib)]))
     return out
 
-def fig4a_mean_ci():
-    inp = 'heterogeneity/project_level_summary.csv'
-    provenance(4, 'Fig 4a Project-Level Mean RTAS with 95% CI', inp)
-    d, _, order, _ = _fig4_load()
-    colors = [COLORS['blue'], COLORS['orange'], COLORS['red']]
-    x = np.arange(len(d))
-    fig, ax = plt.subplots(figsize=(7.6, 6.0))
-    bars = ax.bar(x, d['mean'], yerr=d['ci95'], capsize=7,
-                  color=colors, alpha=0.88, edgecolor='white', linewidth=0.6, width=0.56,
-                  error_kw=dict(ecolor='#222', elinewidth=1.3, capthick=1.3))
-    for xi, (bar, val, n, ci) in enumerate(zip(bars, d['mean'], d['n'], d['ci95'])):
-        ax.text(xi, val + ci + 0.004, f'{val:.3f}', ha='center', va='bottom',
-                fontsize=12, fontweight='bold', color='#111')
-        ax.text(xi, val / 2, f'n = {n:,}', ha='center', va='center', fontsize=9.5,
-                color='white', fontweight='bold')
-    ax.set_xticks(x); ax.set_xticklabels(order, fontsize=11.5)
-    ax.set_ylabel('RTAS (mean ± 95% CI)', fontweight='bold', fontsize=11)
-    ax.set_xlabel('Project Level', fontweight='bold', fontsize=11)
-    ax.set_ylim(0, max(d['mean'] + d['ci95']) * 1.22)
-    ax.set_title('(a) Mean Research-Training Alignment Score by Project Level\n'
-                 'One-way ANOVA: F(2, 3711) = 35.72,  p = 4.3e-16,  η² = 1.89%',
-                 fontweight='bold', fontsize=11)
-    fig.tight_layout()
-    savefig(fig, 'Figure4a_MeanCI')
-
-def fig4b_distribution():
+def fig4_project_level():
+    """MAIN-TEXT Figure 4 (v1.0-cand.5: renamed from Figure4b; Figure4a deleted).
+    Chart-only: element definitions (box = IQR, diamond = mean, whiskers = 1.5*IQR,
+    jitter = individual projects, brackets = Tukey HSD verdicts) live in the
+    manuscript figure caption, per reviewer verdict to shorten the teaching title."""
     inp = 'heterogeneity/project_level_summary.csv + tukey_project_level_pairwise.csv + table5_project_dataset_n3714_full.csv'
-    provenance(4, 'Fig 4b Project-Level RTAS Distribution (box+jitter, stats panel below)', inp)
+    provenance(4, 'Figure 4 Project-Level RTAS Distribution (box+jitter, chart-only; ex-Fig4b, 4a deleted)', inp)
     d, raw, order, data_box = _fig4_load()
     colors = [COLORS['blue'], COLORS['orange'], COLORS['red']]
     x = np.arange(len(order))
 
-    fig = plt.figure(figsize=(10.5, 9.6))
-    ax = fig.add_axes([0.08, 0.42, 0.90, 0.48])  # leave large bottom info-panel zone
+    fig = plt.figure(figsize=(10.5, 7.0))
+    ax = fig.add_axes([0.09, 0.11, 0.89, 0.76])
 
     bp = ax.boxplot(data_box, positions=x, widths=0.38, patch_artist=True, showmeans=True,
                     meanprops=dict(marker='D', markerfacecolor='white', markeredgecolor='#222', markersize=8),
@@ -407,82 +448,51 @@ def fig4b_distribution():
     ax.set_xticks(x); ax.set_xticklabels(order, fontsize=11.5)
     ax.set_ylabel('RTAS (per project, 3,714 observations)', fontweight='bold', fontsize=10.5)
     ax.set_xlabel('Project Level', fontweight='bold', fontsize=10.5)
-    fig.suptitle('(b) RTAS per-project distribution  —  box = Q1–Q3,  bold line = median,  diamond = mean,  whiskers = 1.5·IQR,  dots = 3,714 individual projects\n'
-                 'Brackets = post-hoc pairwise verdict (*** / ns); full statistics and 8-number summaries in the panel below.',
-                 fontweight='bold', fontsize=10.5, y=0.965)
+    fig.suptitle('Per-Project RTAS by Project Funding Level (n = 3,714)',
+                 fontweight='bold', fontsize=11.5, y=0.975)
 
-    # ---- Bottom info panel (figure-fraction coordinates, stable under tight_layout) ----
-    # 1) Three per-tier 8-number summary columns
-    col_x = [0.20, 0.50, 0.80]
-    for xi, vals, lv, color, cx in zip(x, data_box, order, colors, col_x):
-        n = len(vals); mean_v = float(np.mean(vals)); med_v = float(np.median(vals))
-        q1 = float(np.percentile(vals, 25)); q3 = float(np.percentile(vals, 75))
-        sd = float(np.std(vals, ddof=1))
-        lo_w = float(bp['whiskers'][2*xi].get_ydata()[0])
-        hi_w = float(bp['whiskers'][2*xi+1].get_ydata()[0])
-        block = (f"{lv}  (n = {n:,})\n"
-                 f"─────────────────────\n"
-                 f" mean  = {mean_v:.4f}\n"
-                 f" ± SD  = {sd:.4f}\n"
-                 f" med   = {med_v:.4f}\n"
-                 f" Q1/Q3 = {q1:.4f} / {q3:.4f}\n"
-                 f" IQR   = {q3-q1:.4f}\n"
-                 f" whisk = [{lo_w:.3f}, {hi_w:.3f}]\n"
-                 f" range = [{float(np.min(vals)):.3f}, {float(np.max(vals)):.3f}]")
-        fig.text(cx, 0.36, block, ha='center', va='top', fontsize=8.2, family='Consolas',
-                 color='#111', linespacing=1.35,
-                 bbox=dict(boxstyle='round,pad=0.45', facecolor=color, alpha=0.07,
-                           edgecolor=color, linewidth=1.0))
-
-    # 2) Pairwise comparison table (Welch vs strict Tukey side by side)
-    def _ps(p):
-        return '***' if p < 0.001 else '**' if p < 0.01 else '*' if p < 0.05 else 'ns'
-    lines = ['Pairwise tests (Welch = uncorrected two-sample t;  Tukey HSD = strict family-wise corrected)',
-             'pair            Welch p (Cohen d)              Tukey HSD p-adj     Tukey 95% Δ-CI              verdict',
-             '────────────────────────────────────────────────────────────────────────────────────────────────────']
-    pair_names = {(0, 1): 'U vs P', (1, 2): 'P vs N', (0, 2): 'U vs N'}
-    for (ia, ib, pw, dco, tk) in pairs:
-        verdict = 'PASS ***' if tk['reject'] else 'FAIL (ns, CI crosses 0)'
-        lines.append(f"{pair_names[(ia,ib)]:<9}  {pw:8.2e}  {_ps(pw):<3} (d={dco:+.3f})      "
-                     f"{tk['p_adj']:8.4f}  {_ps(tk['p_adj']):<3}      [{tk['lower']:+.4f}, {tk['upper']:+.4f}]     {verdict}")
-    lines.append('')
-    lines.append('Strict multiplicity-corrected ordering:  University < Provincial ≤ National.  '
-                 'P vs N is borderline * in Welch but FAILS Tukey HSD (p-adj = 0.082, Δ-CI crosses 0).')
-    fig.text(0.5, 0.165, '\n'.join(lines), ha='center', va='top', fontsize=7.8, family='Consolas',
-             color='#222', linespacing=1.45,
-             bbox=dict(boxstyle='round,pad=0.55', facecolor='#f1f1f1', alpha=0.9,
-                       edgecolor='#888', linewidth=0.9))
-    savefig(fig, 'Figure4b_Distribution')
+    savefig(fig, 'Figure4_Distribution')
 
 # ================================================================
-# Figure 5: Top-20 Colleges Bar Chart (horizontal, college_fontsize=10)
+# (v1.0-cand.5) FigureS2_Top20Colleges DELETED per reviewer verdict: the
+# raw-mean Top-20 ranking amplified small-n colleges (n=8/9) and added no
+# information beyond Figure 5 (model-adjusted caterpillar) + Figure S1
+# (full 40-college raw-mean ranking with uncertainty context in the text).
 # ================================================================
-def fig5_top20_colleges():
-    inp = 'heterogeneity/college_rtas_top20.csv'
-    provenance(5, 'Top-20 Colleges by RTAS', inp)
-    d = pd.read_csv(DATA / 'heterogeneity' / 'college_rtas_top20.csv')
-    d = d.sort_values('rtas_mean')  # ascending for horizontal bar
-    d['college_en'] = d['college'].apply(translate_college)
-    fig, ax = plt.subplots(figsize=(9, 8))
-    # Color mapped to VALUE (not rank) so red/green meaning is exact
-    norm = plt.Normalize(vmin=d['rtas_mean'].min(), vmax=d['rtas_mean'].max())
-    cmap = plt.cm.RdYlGn  # red = low RTAS, green = high RTAS
-    colors = cmap(norm(d['rtas_mean'].values))
-    bars = ax.barh(range(len(d)), d['rtas_mean'], color=colors, edgecolor='white', linewidth=0.3, height=0.7)
-    ax.set_yticks(range(len(d)))
-    ax.set_yticklabels(d['college_en'].values, fontsize=9)  # English names, fontsize=10 per config
-    ax.set_xlabel('RTAS (mean)', fontweight='bold')
-    ax.set_title('Top-20 Colleges by Research-Training Alignment Score',
-                 fontweight='bold', fontsize=11)
-    for i, (val, n) in enumerate(zip(d['rtas_mean'], d['n_projects'])):
-        ax.text(val + 0.003, i, f'{val:.3f} (n={n})', va='center', fontsize=7)
-    ax.set_xlim(0, max(d['rtas_mean']) * 1.25)
-    sm = plt.cm.ScalarMappable(cmap=cmap, norm=norm)
-    cbar = fig.colorbar(sm, ax=ax, shrink=0.55, pad=0.12)
-    cbar.set_label('RTAS color scale:  red = lower alignment  →  green = higher alignment', fontsize=8)
-    cbar.ax.tick_params(labelsize=7)
+
+def fig5_college_caterpillar():
+    """MAIN-TEXT Figure 5 (v1.0-cand.4): college random-effects caterpillar plot.
+    Single source = hlm_v2b_college_random_effects.csv (BLUPs + conditional SEs
+    extracted from the frozen v2b MixedLM refit; identity-guarded)."""
+    inp = 'hlm/hlm_v2b_college_random_effects.csv (BLUPs + conditional SEs from frozen v2b MixedLM)'
+    provenance(5, 'College Random Effects Caterpillar (main-text replacement for Top-20 ranking)', inp)
+    re_df = pd.read_csv(DATA / 'hlm' / 'hlm_v2b_college_random_effects.csv')
+    re_df = re_df.sort_values('blup', ascending=True)  # ascending so rank 1 lands on top row
+    re_df['college_en'] = re_df['college'].apply(translate_college)
+    n_all = len(re_df)
+    n_sig = int(((re_df['blup_ci_low'] > 0) | (re_df['blup_ci_high'] < 0)).sum())
+    fig, ax = plt.subplots(figsize=(9.5, max(8.5, 0.30 * n_all + 1.5)))
+    for i, (_, r) in enumerate(re_df.iterrows()):
+        lo, hi = r['blup_ci_low'], r['blup_ci_high']
+        ax.plot([lo, hi], [i, i], color='#888888', linewidth=1.6, zorder=2)
+        ax.plot([lo, lo], [i - 0.10, i + 0.10], color='#888888', linewidth=1.3, zorder=2)
+        ax.plot([hi, hi], [i - 0.10, i + 0.10], color='#888888', linewidth=1.3, zorder=2)
+        ax.scatter([r['blup']], [i], s=46, color=COLORS['navy'], zorder=3)
+    ax.axvline(x=0, color='#333', linestyle='--', linewidth=1.1, alpha=0.7)
+    labels = [f"{int(r['rank_blup'])}.  {r['college_en']}  (n={int(r['n_projects'])})"
+              for _, r in re_df.iterrows()]
+    ax.set_yticks(range(n_all))
+    ax.set_yticklabels(labels, fontsize=8)
+    ax.set_xlabel('College random intercept (BLUP) with 95% CI — contribution to college-mean RTAS\n'
+                  'MixedLM v2b: ICC = 0.738; 39 colleges; CI = BLUP ± 1.96·conditional SE (wider = fewer projects)',
+                  fontweight='bold', fontsize=8.8)
+    ax.set_title('College Random Effects on Research-Training Alignment (Caterpillar Plot)\n'
+                 f'model-adjusted college deviations; {n_sig} of {n_all} colleges have CIs excluding 0',
+                 fontweight='bold', fontsize=10.5)
+    ax.grid(axis='x', alpha=0.25, linewidth=0.5)
+    ax.margins(y=0.012)
     fig.tight_layout()
-    savefig(fig, 'Figure5_Top20Colleges')
+    savefig(fig, 'Figure5_CollegeCaterpillar')
 
 # ================================================================
 # Figure 6: HLM Forest Plot (SINGLE SOURCE = hlm_coefficients.csv = Table 6)
@@ -517,73 +527,36 @@ def fig6_hlm_forest():
     if m:
         nobs_val, ngrp_val = m.group(1), m.group(2)
 
-    fig = plt.figure(figsize=(9.8, 7.6))
-    ax = fig.add_axes([0.30, 0.46, 0.66, 0.44])  # wide left margin for labels; bottom zone = table
+    fig = plt.figure(figsize=(9.8, 6.2))
+    ax = fig.add_axes([0.30, 0.12, 0.66, 0.74])  # wide left margin for labels; chart-only
     y_pos = np.arange(len(d_plot))
     x_range_min = min(d_plot['ci_low'].min(), 0)
     x_range_max = max(d_plot['ci_high'].max(), 0.001)
     x_span = x_range_max - x_range_min
     ax.set_xlim(x_range_min - 0.18 * x_span, x_range_max + 0.22 * x_span)
 
-    def _sig_color(sig):
-        return (COLORS['green'] if sig == '***'
-                else COLORS['orange'] if sig == '*'
-                else COLORS['red'] if sig == '**'
-                else COLORS['gray'])
-
+    # v1.0-cand.4 reviewer-audit "de-dashboard" pass: no red/green background zones,
+    # single-colour CIs (sign is already encoded by position vs the 0 line; significance
+    # by the star). Only position + CI + star remain -> econometrics-journal style.
     for i, (_, row) in enumerate(d_plot.iterrows()):
         sig = row['stars']
-        color = _sig_color(sig)
         ax.errorbar(row['coef'], i,
                     xerr=[[row['coef'] - row['ci_low']],
                           [row['ci_high'] - row['coef']]],
-                    fmt='o', color=COLORS['navy'], ecolor=color, capsize=5,
+                    fmt='o', color=COLORS['navy'], ecolor='#444444', capsize=5,
                     markersize=9, linewidth=2.0, zorder=3)
         # Small significance star just right of the CI cap
         ax.text(row['ci_high'] + 0.03 * x_span, i, sig, ha='left', va='center',
-                fontsize=11, fontweight='bold', color=color)
+                fontsize=11, fontweight='bold', color='#111111')
     ax.axvline(x=0, color='#333333', linestyle='--', linewidth=1.0, alpha=0.6)
-    ax.axvspan(0, ax.get_xlim()[1], facecolor=COLORS['green'], alpha=0.05, zorder=0)
-    ax.axvspan(ax.get_xlim()[0], 0, facecolor=COLORS['red'], alpha=0.05, zorder=0)
     ax.set_yticks(y_pos)
     ax.set_yticklabels(d_plot['label'].values, fontsize=10)
-    ax.set_xlabel('Coefficient (β) ± 95% CI   (green zone = positive alignment, red zone = negative)',
-                  fontweight='bold', fontsize=9.5)
+    ax.set_xlabel('Coefficient (β) with 95% CI', fontweight='bold', fontsize=9.5)
     fig.suptitle('Two-level mixed model (projects nested in colleges, random intercept)\n'
                  f'ICC = {icc_val}   |   n = {nobs_val} projects   |   {ngrp_val} college groups   |   '
-                 'exact β, 95% CI, p-values in the table below',
-                 fontweight='bold', fontsize=11, y=0.97)
+                 'exact β, 95% CI and p-values in Table 6',
+                 fontweight='bold', fontsize=11, y=0.99)
 
-    # ---- Numeric table BELOW the axes (figure coords, stable) ----
-    header = ('Predictor                                      β            95% CI [low , high]               p-value        sig\n'
-              '──────────────────────────────────────────────────────────────────────────────────────────────────────────────')
-    rows = [header]
-    def _fmt(v):
-        return f'{v:+.1e}' if abs(v) < 1e-3 else f'{v:+.4f}'
-    for _, row in d_plot.iterrows():
-        sig = row['stars']
-        try:
-            pv = float(row['p'])
-            pstr = 'p ≈ 0' if pv < 1e-99 else (f'{pv:.2e}' if pv < 0.0001 else f'{pv:.4f}')
-        except (ValueError, TypeError):
-            pstr = str(row['p'])
-        rows.append(f"{row['label']:<44}  {_fmt(row['coef']):>8}    [{_fmt(row['ci_low']):>9} , {_fmt(row['ci_high']):>9}]  {pstr:>10}     {sig}")
-    fig.text(0.5, 0.385, '\n'.join(rows), ha='center', va='top', fontsize=8.0, family='Consolas',
-             color='#111', linespacing=1.5,
-             bbox=dict(boxstyle='round,pad=0.55', facecolor='#f7f7f7', alpha=0.95,
-                       edgecolor='#666', linewidth=1.0))
-
-    how = ("How to read:  dot = point estimate β, horizontal bar = 95% CI; bar colour: green = *** (p<0.001), red = ** (p<0.01), grey = ns.  "
-           "CI not crossing 0 → significant.  Advisor covariates use PRE-PROJECT windows [t-3, t-1] over the 2017-2024 OpenAlex pool; unmatched advisors = NA, not zero.\n"
-           "Supervised-projects count is STRICTLY PRIOR (year < focal year; v2.0b leak fix — the earlier full-period count included future projects).  "
-           "Advisor research activity BEFORE the project raises alignment (β=+0.0043, ***); supervising MANY projects lowers it (β=−0.0063, ***).  "
-           "Tier dummies are ns after controlling for college context; alignment drifts up over years (β=+0.0031, ***).  "
-           "Sensitivity on n=2,750 high-confidence matches gives the same signs and significance.\n"
-           "[Retracted: v0.9 'recent-3y works β=+0.0085, p=4.5e-7' was a data-lineage artifact (3,712 of 3,714 values were zero).]")
-    fig.text(0.5, 0.075, how, ha='center', va='top', fontsize=7.4, color='#332200',
-             linespacing=1.5,
-             bbox=dict(boxstyle='round,pad=0.5', facecolor='#fff7e6', alpha=0.95,
-                       edgecolor='#d46b08', linewidth=1.0))
     savefig(fig, 'Figure6_HLM_Forest')
 
 # ================================================================
@@ -614,216 +587,120 @@ def fig7_transition_matrix():
     cbar = fig.colorbar(im, ax=ax, shrink=0.8)
     cbar.set_label('Transition probability (%)', fontsize=8)
     fig.tight_layout()
-    savefig(fig, 'Figure7_TransitionMatrix')
+    savefig(fig, 'Figure7_TransitionMatrix', subdir='supp')
 
 # ================================================================
-# Figure 8: Diffusion Lag Histogram
+# Figure 8: Diffusion-Lag Patterns — TWO-PANEL MERGED (v1.0-cand.4 figure audit:
+#   old Fig8 histogram + old Fig9 quadrant boxes combined; LRHT/LRLT undefined
+#   quadrants stated in a compact annotation instead of hatched N/A columns)
 # ================================================================
-def fig8_diffusion_histogram():
-    inp = 'diffusion_lag/diffusion_lag_histogram_bins.csv'
-    provenance(8, 'Diffusion Lag Histogram', inp)
+def fig8_diffusion_lag_patterns():
+    inp = 'diffusion_lag/diffusion_lag_histogram_bins.csv + diffusion_lag/topic_first_year_adoption.csv'
+    provenance(8, 'Diffusion-Lag Patterns (two-panel: overall discrete distribution + defined-lag quadrants)', inp)
     d = pd.read_csv(DATA / 'diffusion_lag' / 'diffusion_lag_histogram_bins.csv')
-    fig, ax = plt.subplots(figsize=(8, 4.5))
-    colors = [COLORS['red'] if c > 0 else COLORS['green'] if c < 0 else COLORS['gray']
-              for c in d['lag_year_bin_center']]
-    bars = ax.bar(d['lag_year_bin_center'], d['n_topics'], color=colors, alpha=0.7,
-                  edgecolor='white', linewidth=0.5, width=0.8)
-    ax.axvline(x=0, color='#333', linestyle='--', linewidth=1, alpha=0.5)
-    ax.set_xlabel('Lag (years): Project adoption − Paper emergence\n'
-                  'Positive = research leads training (diffusion lag)',
-                  fontweight='bold')
-    ax.set_ylabel('Number of topics', fontweight='bold')
-    # Dynamic totals from aggregate stats (single source)
     agg = pd.read_csv(DATA / 'diffusion_lag' / 'diffusion_lag_aggregate_stats.csv')
     agg_row = agg[agg['group'] == 'OVERALL'].iloc[0]
     n_lag = int(agg_row['n_topics_with_defined_lag'])
     lag_med = float(agg_row['lag_median']); lag_mean = float(agg_row['lag_mean'])
-    ax.set_title(f'Diffusion Lag Distribution: Research → Training Adoption Delay\n'
-                 f'({n_lag}/886 topics with defined lag, median={lag_med:.1f}, mean={lag_mean:+.2f} yr)',
-                 fontweight='bold', fontsize=10)
+
+    fig, (axA, axB) = plt.subplots(1, 2, figsize=(13.0, 5.4),
+                                   gridspec_kw=dict(width_ratios=[1.0, 1.05], wspace=0.22))
+    # ---- Panel A: discrete integer bar chart, compact xlim (reviewer audit fix) ----
+    d = d[d['n_topics'] > 0].copy()          # drop empty integer bins
+    colors = [COLORS['red'] if c > 0 else COLORS['green'] if c < 0 else COLORS['gray']
+              for c in d['lag_year_bin_center']]
+    bars = axA.bar(d['lag_year_bin_center'], d['n_topics'], color=colors, alpha=0.75,
+                   edgecolor='white', linewidth=0.5, width=0.72)
+    axA.axvline(x=0, color='#333', linestyle='--', linewidth=1, alpha=0.5)
+    axA.set_xlim(-4.6, 4.6)
+    axA.set_xticks(range(-4, 5))
+    axA.set_xlabel('Lag (years): project adoption − paper emergence\n'
+                   'positive = research leads training', fontweight='bold', fontsize=9.5)
+    axA.set_ylabel('Number of topics', fontweight='bold', fontsize=10)
+    axA.set_title(f'(a) Overall lag distribution ({n_lag}/886 topics defined; median={lag_med:.1f}, mean={lag_mean:+.2f} yr)',
+                  fontweight='bold', fontsize=10.5)
     for bar, n, pct in zip(bars, d['n_topics'], d['pct_topics']):
-        if n > 0:
-            ax.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 0.3,
-                    f'{n}\n({pct:.1f}%)', ha='center', fontsize=6)
-    # Legend
+        axA.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 0.25,
+                 f'{n}\n({pct:.0f}%)', ha='center', fontsize=8, fontweight='bold', color='#333')
+    axA.set_ylim(0, d['n_topics'].max() * 1.24)
     legend_elements = [
-        mpatches.Patch(facecolor=COLORS['red'], alpha=0.7, label='Positive lag (research → training)'),
-        mpatches.Patch(facecolor=COLORS['green'], alpha=0.7, label='Negative lag (training → research)'),
-        mpatches.Patch(facecolor=COLORS['gray'], alpha=0.7, label='Zero lag (synchronized)'),
+        mpatches.Patch(facecolor=COLORS['red'], alpha=0.75, label='Positive lag (research → training)'),
+        mpatches.Patch(facecolor=COLORS['gray'], alpha=0.75, label='Zero lag (synchronized)'),
+        mpatches.Patch(facecolor=COLORS['green'], alpha=0.75, label='Negative lag (training → research)'),
     ]
-    ax.legend(handles=legend_elements, loc='upper right', fontsize=7)
-    fig.tight_layout()
-    savefig(fig, 'Figure8_DiffusionLag')
+    axA.legend(handles=legend_elements, loc='upper right', fontsize=7.5)
+    axA.grid(axis='y', alpha=0.25, linewidth=0.5)
 
-# ================================================================
-# Figure 9: Diffusion Lag by Quadrant (boxplot-style)
-# ================================================================
-def fig9_diffusion_by_quadrant():
-    inp = 'diffusion_lag/topic_first_year_adoption.csv'
-    provenance(9, 'Diffusion Lag by Quadrant (stat tables moved below axes)', inp)
-    d = pd.read_csv(DATA / 'diffusion_lag' / 'topic_first_year_adoption.csv')
-    d = d[d['lag_defined']].copy()
-    # FROZEN DEFINITION (diffusion_lag/_build.py + audit JSON): lag uses the SINGLE-YEAR
-    # non-trivial-presence rule — paper side: n_paper(y) >= 3 AND pct_paper(y) >= 0.2%
-    # of that year's papers (~20+ papers in one year); project side: n_project(y) >= 2
-    # AND pct_project(y) >= 0.2%. This is deliberately NOT the cumulative Top-20% quadrant
-    # threshold. Empirically 0/10 LRHT and 0/698 LRLT topics ever satisfy the paper-side
-    # yearly bar in 2020-2024 (expected from their low-research quadrant status; 0/708).
-    # So only HRLT (24) and HRHT (5) appear as boxplots; LRHT/LRLT stay as hatched N/A panels.
-    # ALL numeric stat blocks moved to a clean info panel BELOW the axes (round-6 user request).
-    fig = plt.figure(figsize=(11.5, 9.6))
-    ax = fig.add_axes([0.08, 0.42, 0.90, 0.48])
-    quadrants_order = ['HRLT_HighResearch_LowTraining', 'HRHT_HighResearch_HighTraining',
-                       'LRHT_LowResearch_HighTraining', 'LRLT_LowResearch_LowTraining']
-    present_q = [q for q in quadrants_order if q in d['quadrant'].values]
-    data_box = [d[d['quadrant'] == q]['lag_years'].dropna().values for q in present_q]
+    # ---- Panel B: defined-lag quadrants (HRLT / HRHT only) ----
+    # FROZEN DEFINITION: lag uses the SINGLE-YEAR non-trivial-presence rule —
+    # paper side: n_paper(y) >= 3 AND pct_paper(y) >= 0.2%; project side:
+    # n_project(y) >= 2 AND pct_project(y) >= 0.2%. Empirically 0/10 LRHT and
+    # 0/698 LRLT topics ever satisfy the paper-side yearly bar in 2020-2024, so
+    # only HRLT (24) and HRHT (5) are drawn; the undefined quadrants are stated
+    # in a compact annotation instead of two large hatched panels (v1.0-cand.4
+    # reviewer audit: hatched N/A columns were visually dominating the figure).
+    dd = pd.read_csv(DATA / 'diffusion_lag' / 'topic_first_year_adoption.csv')
+    dd = dd[dd['lag_defined']].copy()
+    quadrants_order = ['HRLT_HighResearch_LowTraining', 'HRHT_HighResearch_HighTraining']
+    box_vals = [dd[dd['quadrant'] == q]['lag_years'].dropna().values for q in quadrants_order]
+    box_colors = [QUADRANT_COLORS[q] for q in quadrants_order]
 
-    n_x = 4
-    quadrant_has_data = [q in present_q for q in quadrants_order]
-    box_x, box_vals, box_colors = [], [], []
-    data_idx = 0
-    for qi, q in enumerate(quadrants_order):
-        if quadrant_has_data[qi]:
-            box_x.append(qi)
-            box_vals.append(data_box[data_idx]); data_idx += 1
-            box_colors.append(QUADRANT_COLORS[q])
-
-    bp = ax.boxplot(box_vals, positions=box_x, widths=0.34, patch_artist=True, showmeans=True,
-                    meanprops=dict(marker='D', markerfacecolor='white', markeredgecolor='#111', markersize=8),
-                    medianprops=dict(color='#111', linewidth=1.8),
-                    whiskerprops=dict(linewidth=1.2),
-                    capprops=dict(linewidth=1.2),
-                    flierprops=dict(marker='o', markersize=4, markeredgecolor='none',
-                                    markerfacecolor='#888', alpha=0.6))
+    bp = axB.boxplot(box_vals, positions=[0, 1], widths=0.34, patch_artist=True, showmeans=True,
+                     meanprops=dict(marker='D', markerfacecolor='white', markeredgecolor='#111', markersize=8),
+                     medianprops=dict(color='#111', linewidth=1.8),
+                     whiskerprops=dict(linewidth=1.2),
+                     capprops=dict(linewidth=1.2),
+                     flierprops=dict(marker='o', markersize=4, markeredgecolor='none',
+                                     markerfacecolor='#888', alpha=0.6))
     for patch, color in zip(bp['boxes'], box_colors):
         patch.set_facecolor(color); patch.set_alpha(0.25); patch.set_edgecolor(color); patch.set_linewidth(1.4)
 
-    # X-axis labels: all 4 quadrants always visible (quadrant sizes from frozen summary CSV)
     qsum = pd.read_csv(DATA / 'topic_model' / 'quadrant_overall_summary.csv')
     quadrant_total = dict(zip(qsum['quadrant'], qsum['n_topics']))
-    xtick_labs = []
-    for qi, q in enumerate(quadrants_order):
-        nd_this = int((d['quadrant'] == q).sum())
-        if quadrant_has_data[qi]:
-            xtick_labs.append(f"{QUADRANT_SHORT[q]}\nn_defined = {nd_this}\n({quadrant_total[q]} in quadrant)")
-        else:
-            xtick_labs.append(f"{QUADRANT_SHORT[q]}\n({quadrant_total[q]} in quadrant)")
-
-    # Jitter scatter for quadrants WITH data (no inline stat tables)
-    from matplotlib.patches import Rectangle
-    bp_i = 0
-    stat_blocks = []  # collected for bottom panel
+    xtick_labs = [f"{QUADRANT_SHORT[q]}\nn_defined = {len(v)}\n({quadrant_total[q]} in quadrant)"
+                  for q, v in zip(quadrants_order, box_vals)]
     rng = np.random.default_rng(7)
-    for qi, q in enumerate(quadrants_order):
-        if quadrant_has_data[qi]:
-            vals = box_vals[bp_i]
-            color = box_colors[bp_i]
-            jx = rng.normal(qi, 0.045, len(vals))
-            ax.scatter(jx, vals, c=color, alpha=0.9, s=46, zorder=3,
-                       edgecolors='white', linewidth=0.7)
-            n = len(vals); mean_v = float(np.mean(vals)); med_v = float(np.median(vals))
-            q1 = float(np.percentile(vals, 25)); q3 = float(np.percentile(vals, 75))
-            sd = float(np.std(vals, ddof=1))
-            lo_w = float(bp['whiskers'][2*bp_i].get_ydata()[0])
-            hi_w = float(bp['whiskers'][2*bp_i+1].get_ydata()[0])
-            frac_pos = float(np.mean(vals > 0)) * 100
-            frac_neg = float(np.mean(vals < 0)) * 100
-            frac_zero = 100 - frac_pos - frac_neg
-            try:
-                _, p_vs0 = _stats.ttest_1samp(vals, popmean=0)
-                sig0 = '***' if p_vs0 < 0.001 else '**' if p_vs0 < 0.01 else '*' if p_vs0 < 0.05 else 'ns'
-            except Exception:
-                p_vs0 = float('nan'); sig0 = 'na'
-            stat_blocks.append(dict(short=QUADRANT_SHORT[q], color=color, n=n, mean=mean_v, sd=sd,
-                                    med=med_v, sig0=sig0, p0=p_vs0, q1=q1, q3=q3,
-                                    lo_w=lo_w, hi_w=hi_w, fp=frac_pos, fn=frac_neg, fz=frac_zero))
-            # Small n groups: annotate the actual values so the flat boxplot is not read as "missing"
-            if n <= 6:
-                n_zero = int((vals == 0).sum()); n_neg = int((vals < 0).sum())
-                note = f"n = {n} topics\n{n_zero} at lag 0 (synchronized)"
-                if n_neg:
-                    note += f"\n{n_neg} at lag {int(vals.min())} (training first)"
-                ax.text(qi, 4.55, note, ha='center', va='top', fontsize=7.6, color='#333',
-                        linespacing=1.4,
-                        bbox=dict(boxstyle='round,pad=0.35', facecolor='white', alpha=0.85,
-                                  edgecolor=color, linewidth=0.9))
-            bp_i += 1
-        else:
-            # Undefined quadrant: clean hatched N/A PANEL (not a fake boxplot)
-            ax.add_patch(Rectangle((qi - 0.42, -5.1), 0.84, 10.2,
-                                   facecolor='#f4f4f4', hatch='////', edgecolor='#cfcfcf',
-                                   linewidth=0.9, zorder=0.6))
-            if q.startswith('LRHT'):
-                na_text = ("lag undefined\nin this corpus (0/10)\n\npaper side never reaches\nnon-trivial yearly presence\n(>=3 papers & >=0.2%/yr)")
-            else:
-                na_text = ("lag undefined\nin this corpus (0/698)\n\nneither side reaches\nnon-trivial yearly presence\n(paper >=3 & 0.2%/yr;\nproject >=2 & 0.2%/yr)")
-            ax.text(qi, 0.0, na_text, va='center', ha='center', fontsize=8.6,
-                    color='#555555', fontweight='bold', linespacing=1.45, zorder=2)
+    for xi, (vals, color) in enumerate(zip(box_vals, box_colors)):
+        jx = rng.normal(xi, 0.05, len(vals))
+        axB.scatter(jx, vals, c=color, alpha=0.9, s=46, zorder=3,
+                    edgecolors='white', linewidth=0.7)
+        if len(vals) <= 6:  # HRHT: annotate actual values (flat box at 0 otherwise reads as missing)
+            n_zero = int((vals == 0).sum()); n_neg = int((vals < 0).sum())
+            note = f"n = {len(vals)} topics\n{n_zero} at lag 0 (synchronized)"
+            if n_neg:
+                note += f"\n{n_neg} at lag {int(vals.min())} (training first)"
+            axB.text(xi, 4.10, note, ha='center', va='top', fontsize=7.8, color='#333',
+                     linespacing=1.4,
+                     bbox=dict(boxstyle='round,pad=0.35', facecolor='white', alpha=0.9,
+                               edgecolor=color, linewidth=0.9))
+    axB.axhline(y=0, color='#333', linestyle='--', linewidth=1.1, alpha=0.6, zorder=1)
+    axB.axhspan(-5.5, -0.02, color=COLORS['green'], alpha=0.07, zorder=0)
+    axB.axhspan(0.02, 5.5, color=COLORS['red'], alpha=0.07, zorder=0)
+    axB.set_xticks([0, 1])
+    axB.set_xticklabels(xtick_labs, fontsize=9.0)
+    axB.set_ylabel('Lag (years), same definition as panel (a)', fontweight='bold', fontsize=9.5)
+    axB.set_ylim(-5.1, 5.1)
+    axB.set_title('(b) Defined lag by quadrant', fontweight='bold', fontsize=10.5)
+    # Top-LEFT placement (ha='left') so the note cannot collide with the HRHT
+    # value box at the top-right (v1.0-cand.4 visual fix).
+    axB.text(0.02, 0.965,
+             'Lag was undefined for ALL LRHT (0/10) and LRLT (0/698) topics\n'
+             'under the frozen single-year non-trivial-presence rule.',
+             transform=axB.transAxes, ha='left', va='top', fontsize=7.8, color='#555',
+             style='italic', linespacing=1.4)
 
-    # Zero line + zone shading
-    ax.axhline(y=0, color='#333', linestyle='--', linewidth=1.1, alpha=0.6, zorder=1)
-    ax.axhspan(-5.5, -0.02, color=COLORS['green'], alpha=0.07, zorder=0)
-    ax.axhspan(0.02, 5.5, color=COLORS['red'], alpha=0.07, zorder=0)
-    ax.set_xticks(range(n_x))
-    ax.set_xticklabels(xtick_labs, fontsize=9.0)
-    ax.set_ylabel('Lag (years) = first year of non-trivial project presence\n'
-                  '− first year of non-trivial paper presence (paper: >=3 & >=0.2%/yr; project: >=2 & >=0.2%/yr)',
-                  fontweight='bold', fontsize=8.6)
-    ax.set_ylim(-5.1, 5.1)
-    fig.suptitle('Diffusion Lag by Quadrant  —  only HRLT & HRHT have defined lags (29/886 topics)\n'
-                 'Red zone = research leads training (course update needed); green zone = training uses already-cold content.  '
-                 'Statistics in panel below.',
-                 fontweight='bold', fontsize=10.5, y=0.97)
-
-    # ---- Bottom info panel (figure coords): two per-quadrant stat columns ----
-    col_x = [0.28, 0.66]
-    for blk, cx in zip(stat_blocks, col_x):
-        block = (f"{blk['short']}  (n = {blk['n']} defined-lag topics)\n"
-                 f"───────────────────────────────\n"
-                 f" mean  = {blk['mean']:+.2f} yr\n"
-                 f" ± SD  = {blk['sd']:.2f}\n"
-                 f" med   = {blk['med']:+.1f}   (one-sample t vs 0: {blk['sig0']}, p={blk['p0']:.3f})\n"
-                 f" Q1/Q3 = {blk['q1']:+.1f} / {blk['q3']:+.1f}\n"
-                 f" whisk = [{blk['lo_w']:+.0f} , {blk['hi_w']:+.0f}]\n"
-                 f" lag > 0 (research leads) = {blk['fp']:.0f}%\n"
-                 f" lag = 0 (synchronized)   = {blk['fz']:.0f}%\n"
-                 f" lag < 0 (training leads) = {blk['fn']:.0f}%")
-        fig.text(cx, 0.36, block, ha='center', va='top', fontsize=8.4, family='Consolas',
-                 color='#111', linespacing=1.4,
-                 bbox=dict(boxstyle='round,pad=0.45', facecolor=blk['color'], alpha=0.07,
-                           edgecolor=blk['color'], linewidth=1.0))
-
-    # ---- Between-group test + retraction notice ----
-    hrlts = d[d['quadrant']=='HRLT_HighResearch_LowTraining']['lag_years'].values
-    hrhts = d[d['quadrant']=='HRHT_HighResearch_HighTraining']['lag_years'].values
-    grp_line = ''
-    if len(hrlts) > 1 and len(hrhts) > 1:
-        tw, pw = _stats.ttest_ind(hrlts, hrhts, equal_var=False, alternative='two-sided')
-        mw, pm = _stats.mannwhitneyu(hrlts, hrhts, alternative='two-sided')
-        d_ = (np.mean(hrlts)-np.mean(hrhts))/np.sqrt((np.var(hrlts,ddof=1)+np.var(hrhts,ddof=1))/2)
-        grp_line = (f"HRLT vs HRHT:  Welch t = {tw:+.2f}, p = {pw:.3f} (ns);  Mann–Whitney p = {pm:.3f} (ns);  Cohen d = {d_:+.2f} (large effect, but HRHT n=5 is underpowered)\n"
-                    f"   => HRLT positive lag is larger on average (research→training direction); not significant at α=0.05 with n=5 vs 24.\n")
-    how_to = (grp_line +
-              "How to read: box = Q1–Q3, bold line = median, diamond = mean, whiskers = 1.5·IQR, dots = individual topics.  "
-              "Lag > 0 = paper side reached non-trivial yearly presence FIRST (research leads training).  "
-              "Lag < 0 = project side reached it first.\n"
-              "DEFINITION (frozen): lag requires BOTH sides to show non-trivial presence in a single year "
-              "(paper: >=3 docs & >=0.2% of that year's papers; project: >=2 docs & >=0.2% of that year's projects). "
-              "LRHT (0/10) and LRLT (0/698) never satisfy this in the 2020-2024 corpus, so lag is undefined for them "
-              "(expected from their low-research quadrant status). The old 12K-pool claim 'LRHT med = -1.5 yr' came "
-              "from legacy K=307 data and is RETRACTED.")
-    fig.text(0.5, 0.115, how_to, ha='center', va='top', fontsize=8.2, color='#331100',
-             linespacing=1.55,
-             bbox=dict(boxstyle='round,pad=0.55', facecolor='#f1f1f1', alpha=0.95,
-                       edgecolor='#aa0000', linewidth=1.1))
-    savefig(fig, 'Figure9_DiffusionByQuadrant')
+    fig.suptitle('Diffusion-Lag Patterns: Research → Training Adoption Delay\n'
+                 'Positive lag = research precedes training;  negative lag = training precedes research.',
+                 fontweight='bold', fontsize=11.5, y=1.00)
+    fig.tight_layout(rect=[0, 0, 1, 0.94])
+    savefig(fig, 'Figure8_DiffusionLagPatterns')
 
 # ================================================================
 # Figure 10: Matthew Effect — Lorenz Curve + Pareto Bar
 # ================================================================
 def fig10_matthew_effect():
-    inp = 'matthew_effect/supervisor_gini_pareto.csv'
-    provenance(10, 'Matthew Effect: Lorenz + Pareto', inp)
+    inp = 'matthew_effect/supervisor_gini_pareto.csv + lagged_logit_national_path_dependence*.csv'
+    provenance(10, 'Matthew Effect three-panel: Lorenz + Pareto + lagged path-dependence OR', inp)
     # Read audit JSON for Lorenz curve computation
     audit = json.loads((DATA / 'matthew_effect' / 'matthew_effect_audit.json').read_text(encoding='utf-8'))
     # Reconstruct Lorenz curve from raw project data for national-project allocation
@@ -838,18 +715,25 @@ def fig10_matthew_effect():
     lorenz_y = np.concatenate([[0], cum / total])
     lorenz_x = np.arange(n + 1) / n
 
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(11, 5))
-    # Left: Lorenz curve
+    # Panel (c): lagged t-1 -> t path-dependence logistic (v1.0-cand.2, replaces the
+    # withdrawn circular cross-sectional OR=6.085)
+    lgA = pd.read_csv(DATA / 'matthew_effect' / 'lagged_logit_national_path_dependence.csv')
+    lgB = pd.read_csv(DATA / 'matthew_effect' / 'lagged_logit_national_path_dependence_sampleB.csv')
+    natA = lgA[lgA['term'] == 'nat_lag'].iloc[0]
+    natB = lgB[lgB['term'] == 'nat_lag'].iloc[0]
+
+    fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(13.5, 4.8),
+                                        gridspec_kw=dict(width_ratios=[1.0, 0.85, 1.0], wspace=0.30))
+    # (a) Lorenz curve
     ax1.plot(lorenz_x, lorenz_y, color=COLORS['red'], linewidth=2, label=f'National grants (Gini={audit["gini"]["value_national_projects"]:.3f})')
     ax1.plot([0, 1], [0, 1], '--', color=COLORS['gray'], linewidth=1, label='Perfect equality')
     ax1.fill_between(lorenz_x, lorenz_x, lorenz_y, alpha=0.1, color=COLORS['red'])
     ax1.set_xlabel('Cumulative share of supervisors (sorted)', fontweight='bold')
     ax1.set_ylabel('Cumulative share of national projects', fontweight='bold')
-    ax1.set_title('Lorenz Curve: National Project Allocation Inequality\n'
-                  '(Gini = 0.767, Top 5% hold 34.0%)', fontweight='bold', fontsize=9)
-    ax1.legend(fontsize=8)
+    ax1.set_title('(a) Lorenz Curve: National Project Allocation\n(Gini = 0.767, Top 5% hold 34.0%)', fontweight='bold', fontsize=9)
+    ax1.legend(fontsize=7.5)
 
-    # Right: Pareto bar
+    # (b) Pareto bar
     pareto_data = audit['gini']['pareto_national_shares_pct']
     pcts = ['top1', 'top5', 'top10', 'top20', 'top50']
     vals_p = [pareto_data.get(f'{p}_national_share_pct', 0) for p in pcts]
@@ -860,9 +744,42 @@ def fig10_matthew_effect():
         ax2.text(bar.get_x() + bar.get_width()/2, v + 1, f'{v:.1f}%', ha='center', fontsize=8, fontweight='bold')
     ax2.set_xlabel('Top N% supervisors', fontweight='bold')
     ax2.set_ylabel('Share of national projects (%)', fontweight='bold')
-    ax2.set_title('Pareto Distribution of National Projects\n'
-                  '(Top 20% supervisors hold 76.8%)', fontweight='bold', fontsize=9)
-    ax2.legend(fontsize=8)
+    ax2.set_title('(b) Pareto Concentration\n(Top 20% supervisors hold 76.8%)', fontweight='bold', fontsize=9)
+    ax2.legend(fontsize=7.5)
+
+    # (c) Lagged path-dependence OR forest (two samples).
+    # y-tick labels kept SHORT so they stay inside the inter-panel margin
+    # (long labels intruded into panel (b)); n / p moved into the in-plot
+    # annotation under each OR (v1.0-cand.4 visual fix).
+    rows = [(f"Sample A: active t-1 & t\n(n=736 cells / 491 advisors)",
+             float(natA['OR']), float(natA['OR_ci95_lo']), float(natA['OR_ci95_hi']), natA['mark'],
+             f"p = {natA['p_value']:.1e}"),
+            (f"Sample B: expanded risk set\n(n=2,302 / 1,621 advisors)",
+             float(natB['OR']), float(natB['OR_ci95_lo']), float(natB['OR_ci95_hi']), natB['mark'],
+             f"p = {natB['p_value']:.1e}")]
+    for yi, (lab, OR, lo, hi, mark, ptxt) in enumerate(rows):
+        ax3.plot([lo, hi], [yi, yi], color='#444444', linewidth=2.2, zorder=2)
+        ax3.plot([lo, lo], [yi - 0.06, yi + 0.06], color='#444444', linewidth=1.6, zorder=2)
+        ax3.plot([hi, hi], [yi - 0.06, yi + 0.06], color='#444444', linewidth=1.6, zorder=2)
+        ax3.scatter([OR], [yi], s=90, color=COLORS['navy'], zorder=3)
+        ax3.text(hi + 0.10, yi + 0.10, f'OR = {OR:.2f} [{lo:.2f}, {hi:.2f}] {mark}',
+                 va='center', fontsize=8.5, fontweight='bold', color='#111')
+        ax3.text(hi + 0.10, yi - 0.22, f'{ptxt}', va='center', fontsize=7.2, color='#555')
+    ax3.axvline(x=1, color='#333', linestyle='--', linewidth=1.1, alpha=0.7)
+    ax3.text(1, -0.44, 'OR = 1\n(no persistence)', ha='center', va='bottom',
+             fontsize=7.5, color='#555', linespacing=1.3)
+    ax3.set_yticks([0, 1])
+    ax3.set_yticklabels(['Sample A\nactive t-1 & t', 'Sample B\nexpanded risk set'],
+                        fontsize=8.5)
+    ax3.set_xlim(0.9, 4.3)
+    ax3.set_ylim(-0.75, 1.85)
+    ax3.set_xlabel("Odds ratio of a national project in year t\ngiven one in t-1 (logit, year FE, SE clustered by advisor)",
+                   fontweight='bold', fontsize=8.5)
+    ax3.set_title('(c) Path Dependence: Lagged Logistic\n(national project persistence t-1 -> t)', fontweight='bold', fontsize=9)
+    ax3.grid(axis='x', alpha=0.25, linewidth=0.5)
+
+    fig.suptitle('The Matthew Effect in National Project Allocation: Concentration AND Persistence',
+                 fontweight='bold', fontsize=11.5, y=1.02)
     fig.tight_layout()
     savefig(fig, 'Figure10_MatthewEffect')
 
@@ -871,7 +788,7 @@ def fig10_matthew_effect():
 # ================================================================
 def fig11_quadrant_summary():
     inp = 'topic_model/quadrant_overall_summary.csv'
-    provenance(11, 'Quadrant Summary Bars', inp)
+    provenance(11, 'Quadrant Summary Bars (clustered-only denominators; demoted to Supplementary)', inp)
     d = pd.read_csv(DATA / 'topic_model' / 'quadrant_overall_summary.csv')
     d = d.sort_values('quadrant')
     fig, axes = plt.subplots(1, 3, figsize=(11, 4))
@@ -889,19 +806,20 @@ def fig11_quadrant_summary():
     for i, v in enumerate(d['n_papers_total']):
         axes[1].text(i, v + 50, str(v), ha='center', fontweight='bold', fontsize=9)
     axes[1].set_ylabel('Number of papers', fontweight='bold')
-    axes[1].set_title('Paper documents', fontweight='bold')
+    axes[1].set_title('Clustered paper documents', fontweight='bold')
 
     # Subplot 3: n_projects
     axes[2].bar(short_labels, d['n_projects_total'], color=colors, alpha=0.8, width=0.6)
     for i, v in enumerate(d['n_projects_total']):
         axes[2].text(i, v + 15, str(v), ha='center', fontweight='bold', fontsize=9)
     axes[2].set_ylabel('Number of projects', fontweight='bold')
-    axes[2].set_title('Project documents', fontweight='bold')
+    axes[2].set_title('Clustered project documents', fontweight='bold')
 
-    fig.suptitle('Four-Quadrant Topic Summary: Research-Training Alignment Landscape',
-                 fontweight='bold', fontsize=11, y=1.02)
+    fig.suptitle('Four-Quadrant Topic Summary (v1.0-cand.4: demoted to Supplementary)\n'
+                 'Denominators = clustered documents only; BERTopic outliers (38.47% of docs) are outside the four quadrants',
+                 fontweight='bold', fontsize=10.5, y=1.04)
     fig.tight_layout()
-    savefig(fig, 'Figure11_QuadrantSummary')
+    savefig(fig, 'Figure11_QuadrantSummary', subdir='supp')
 
 # ================================================================
 # Figure 12: College RTAS Ranking (Top 20 + Bottom 5, fontsize=10)
@@ -927,7 +845,7 @@ def fig12_college_rtas_ranking():
     ax.set_yticklabels(rank_labels, fontsize=8)
     ax.set_xlabel('RTAS (mean)', fontweight='bold')
     ax.set_title(f'All {n_all} Colleges by RTAS — Full Ranking (Appendix)\n'
-                 'College ANOVA: F(38,3674)=195.45, p≈0, η²=66.90%',
+                 'College ANOVA: F(38,3674)=195.45, p < .001, η²=66.90%',
                  fontweight='bold', fontsize=10)
     for i, (val, n) in enumerate(zip(d['rtas_mean'], d['n_projects'])):
         ax.text(val + 0.003, i, f'{val:.3f} (n={n})', va='center', fontsize=6.5)
@@ -940,29 +858,32 @@ def fig12_college_rtas_ranking():
     savefig(fig, 'FigureS1_CollegeRTAS_Full40', subdir='supp')
 
 # ================================================================
-# Figure 13: Topic Yearly Prevalence Stacked Area (boundary_fontsize=6)
+# Figure 13: Temporal Topic Dynamics — TWO-PANEL (v1.0-cand.4; demoted to
+#   SUPPLEMENTARY in v1.0-cand.5 per reviewer verdict: second-layer finding)
+#   Panel A: Top-15 share vs clustered long-tail share (two lines, the
+#            diversification trend at one glance)
+#   Panel B: Top-15 topics × 2020-2024 heatmap of project-side prevalence
+#   (replaces the 15-colour stacked area. DENOMINATOR (v1.0-cand.5 correction,
+#    reviewer-audited): shares are percentages of ALL project documents per
+#    year — the frozen CSV's denom_project column sums to exactly 3,714 across
+#    2020-2024 (853+924+435+664+838), and Top-15 (17.6%) + Other clustered
+#    (29.5%) ≈ 47% = clustered share of all projects. The old "clustered docs"
+#    axis label was factually wrong. Topics shown = BERTopic clusters only;
+#    the "Other" band is explicitly "Other clustered topics".)
 # ================================================================
-def fig13_stacked_area():
+def fig13_topic_dynamics():
     inp = 'topic_model/topic_yearly_prevalence_for_diffusion_lag.csv + topic_model/topic_info.csv (topic words)'
-    provenance(13, 'Topic Yearly Stacked Area — Top-15 mainstream topics; top legend box explains band meanings', inp)
-    import matplotlib.patheffects as pe
+    provenance(13, 'Temporal Topic Dynamics — Top-15 vs clustered long tail (trend) + prevalence heatmap', inp)
     d = pd.read_csv(DATA / 'topic_model' / 'topic_yearly_prevalence_for_diffusion_lag.csv')
     ti = pd.read_csv(DATA / 'topic_model' / 'topic_info.csv')
-    # Pivot: year × topic → pct_project (project-side adoption over time)
     pivot = d.pivot_table(index='year', columns='topic_id', values='pct_project', fill_value=0)
-    # Top-15 mainstream topics only. The remaining 871 long-tail topics (~29-33% of
-    # projects, a flat heterogeneous "Other" mass) are EXCLUDED so the mainstream
-    # bands fill the plot area and boundary labels stay readable.
-    top_topics = pivot.sum().nlargest(15).index
-    pivot_top = pivot[top_topics].copy()
-    other_share = pivot.drop(columns=top_topics).sum(axis=1)
-    band_ids = [int(c) for c in pivot_top.columns]
-    band_vals = [pivot_top[c].values for c in pivot_top.columns]
-    top15_total = pivot_top.sum(axis=1)
+    top_topics = pivot.sum().nlargest(15).index          # by lifetime total share
+    pivot_top = pivot[top_topics]
+    top15_share = pivot_top.sum(axis=1)
+    longtail_share = pivot.drop(columns=top_topics).sum(axis=1)
+    years = pivot_top.index.values
 
-    # --- Topic meaning labels: curated short English glosses of c-TF-IDF top words ---
-    # (words verified from topic_info.csv Name/Representation; long-tail topics fall
-    # back to auto-parsed English tokens from the same frozen file)
+    # --- shared topic gloss (c-TF-IDF based short English labels) ---
     TOPIC_GLOSS = {
         5:   'Language learning (Chinese/English)',
         72:  'Robots / robotics',
@@ -990,62 +911,53 @@ def fig13_stacked_area():
             if t not in seen:
                 seen.append(t)
         return ' '.join(seen[:3]) if seen else f'Topic {tid}'
-    band_gloss = [TOPIC_GLOSS.get(t, auto_gloss(t)) for t in band_ids]
 
-    # --- Layout: figure height unchanged; plot deliberately VERY FLAT (30% of height,
-    # half of the previous 60% per user request) so the top ~60% holds the framed
-    # legend box explaining what each colour means.
-    fig = plt.figure(figsize=(12, 10))
-    ax = fig.add_axes([0.075, 0.105, 0.905, 0.30])
-    colors = plt.cm.tab20(np.linspace(0, 1, len(band_ids)))
-    stacks = ax.stackplot(pivot_top.index, *band_vals, colors=colors, alpha=0.82)
+    fig, (axA, axB) = plt.subplots(1, 2, figsize=(13.5, 6.2),
+                                   gridspec_kw=dict(width_ratios=[1.0, 1.15], wspace=0.24))
+    # ---- Panel A: two-line diversification trend ----
+    axA.plot(years, top15_share.values, 'o-', color=COLORS['blue'], linewidth=2.2, markersize=7,
+             label='Top-15 mainstream topics', zorder=4)
+    axA.plot(years, longtail_share.values, 's-', color=COLORS['orange'], linewidth=2.2, markersize=7,
+             label='Other clustered topics (long tail, 871 topics)', zorder=4)
+    for x_, y_ in zip(years, top15_share.values):
+        axA.annotate(f'{y_:.1f}', (x_, y_), textcoords='offset points', xytext=(0, -16),
+                     ha='center', fontsize=9, color=COLORS['blue'], fontweight='bold')
+    for x_, y_ in zip(years, longtail_share.values):
+        axA.annotate(f'{y_:.1f}', (x_, y_), textcoords='offset points', xytext=(0, 10),
+                     ha='center', fontsize=9, color='#b35c00', fontweight='bold')
+    axA.set_xticks(years)
+    axA.set_xlabel('Year', fontweight='bold', fontsize=11)
+    axA.set_ylabel('Share of all project documents (%)', fontweight='bold', fontsize=10)
+    axA.set_title('(a) Mainstream topics decline, long tail diversifies', fontweight='bold', fontsize=11)
+    axA.legend(fontsize=8.5, loc='center right', framealpha=0.9)
+    axA.set_ylim(0, max(longtail_share.max(), top15_share.max()) * 1.22)
+    axA.margins(x=0.06)
+    axA.grid(axis='y', alpha=0.25, linewidth=0.5)
 
-    # --- Dots + cumulative value at EVERY band's UPPER edge, at EVERY year ---
-    years = pivot_top.index.values
-    cum = np.zeros(len(years))
-    halo = [pe.withStroke(linewidth=1.8, foreground='white')]
-    for k, vals in enumerate(band_vals):
-        cum = cum + np.asarray(vals)
-        for yi, yr in enumerate(years):
-            yv = cum[yi]
-            ax.plot(yr, yv, 'o', ms=2.9, zorder=6,
-                    markerfacecolor='#222', markeredgecolor='white', markeredgewidth=0.6)
-            ax.text(yr + 0.045, yv, f'{yv:.1f}', ha='left', va='center',
-                    fontsize=6.0, color='#111', zorder=7, path_effects=halo, family='Consolas')
+    # ---- Panel B: 15 × 5 heatmap (rows sorted by lifetime share, top = largest) ----
+    order_desc = list(top_topics)  # nlargest already sorted desc
+    mat = pivot_top.loc[:, order_desc].T  # rows=topics, cols=years
+    row_labels = [f'T{int(tid)}  {TOPIC_GLOSS.get(tid, auto_gloss(tid))}' for tid in order_desc]
+    im = axB.imshow(mat.values, aspect='auto', cmap='YlOrRd', vmin=0)
+    axB.set_xticks(range(len(years)))
+    axB.set_xticklabels(years, fontsize=10)
+    axB.set_yticks(range(len(order_desc)))
+    axB.set_yticklabels(row_labels, fontsize=7.8)
+    vmax = mat.values.max()
+    for i in range(mat.shape[0]):
+        for j in range(mat.shape[1]):
+            v = mat.values[i, j]
+            axB.text(j, i, f'{v:.2f}', ha='center', va='center', fontsize=6.6,
+                     color='white' if v > vmax * 0.55 else '#222')
+    cbar = fig.colorbar(im, ax=axB, shrink=0.82, pad=0.015)
+    cbar.set_label('Project-side prevalence (% of all projects / yr)', fontsize=8)
+    cbar.ax.tick_params(labelsize=7)
+    axB.set_title('(b) Top-15 topic prevalence heatmap', fontweight='bold', fontsize=11)
 
-    ax.set_xlabel('Year', fontweight='bold', fontsize=11)
-    ax.set_ylabel('Cumulative project-side prevalence (%)',
-                  fontweight='bold', fontsize=9.5)
-    ax.set_xticks(years)
-    ax.set_xticklabels(years, fontsize=10)
-    ax.set_ylim(0, None)
-    ax.margins(x=0.075)
-
-    # Top-15 total per year (top of the last band) — bold label
-    ymax = float(top15_total.max())
-    for yi, yr in enumerate(years):
-        total = float(top15_total.iloc[yi])
-        ax.text(yr, total + ymax * 0.04, f'Top-15 total {total:.1f}%', ha='center', fontsize=8.5,
-                fontweight='bold', color='#333', path_effects=halo)
-
-    # --- Top framed legend box: colour → topic MEANING (c-TF-IDF gloss) ---
-    handles = [plt.Rectangle((0, 0), 1, 1, facecolor=c, alpha=0.82, edgecolor='white') for c in colors]
-    labels = [f'T{tid}: {g}' for tid, g in zip(band_ids, band_gloss)]
-    leg = fig.legend(handles, labels, loc='upper center', bbox_to_anchor=(0.5, 0.875),
-                     ncol=3, fontsize=9.5, frameon=True, fancybox=True,
-                     edgecolor='#777777', borderpad=1.0, labelspacing=1.1,
-                     columnspacing=1.8, handlelength=1.6, handletextpad=0.6,
-                     title='What each colour band is  (c-TF-IDF top words; legend order = bottom → top stacking order)',
-                     title_fontsize=10)
-    leg.get_frame().set_facecolor('#fafafa')
-    fig.text(0.5, 0.985, 'Mainstream Topic Prevalence in Projects Over Time (Top 15 topics only; the other 871 long-tail topics are excluded)',
-             ha='center', va='top', fontsize=13, fontweight='bold')
-
-    # Footnote: excluded Other share per year
-    foot = 'Excluded "Other" (871 remaining long-tail topics): ' + \
-           ' / '.join(f'{int(yr)}: {float(other_share.iloc[yi]):.1f}%' for yi, yr in enumerate(years))
-    fig.text(0.5, 0.02, foot, ha='center', va='bottom', fontsize=8, color='#555', style='italic')
-    savefig(fig, 'Figure13_TopicStackedArea')
+    fig.suptitle('Temporal Topic Dynamics in ITTP Projects, 2020-2024  '
+                 '(shares of all projects per year; topics = BERTopic clusters)',
+                 fontweight='bold', fontsize=12.5, y=0.99)
+    savefig(fig, 'Figure13_TopicDynamics', subdir='supp')
 
 # ================================================================
 # MAIN
@@ -1062,15 +974,14 @@ if __name__ == '__main__':
     fig2_roadmap()
     fig3_quadrant_scatter()
     fig4_project_level()
-    fig5_top20_colleges()
+    fig5_college_caterpillar()   # MAIN-TEXT Figure 5 (model-adjusted, ICC-consistent)
     fig6_hlm_forest()
-    fig7_transition_matrix()
-    fig8_diffusion_histogram()
-    fig9_diffusion_by_quadrant()
+    fig7_transition_matrix()     # demoted -> supplementary (supervisor tercile, not the main path-dependence test)
+    fig8_diffusion_lag_patterns()  # merged old Fig8+Fig9 (two-panel)
     fig10_matthew_effect()
-    fig11_quadrant_summary()
-    fig12_college_rtas_ranking()
-    fig13_stacked_area()
+    fig11_quadrant_summary()     # demoted -> supplementary
+    fig12_college_rtas_ranking() # -> FigureS1 (supplementary)
+    fig13_topic_dynamics()       # redesigned two-panel (replaces 15-band stacked area)
 
     print()
     print(f'[10_generate_figures] DONE. {len(list(OUT_MAIN.glob("*.pdf")))} PDF + '

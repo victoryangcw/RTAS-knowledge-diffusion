@@ -8,7 +8,7 @@ Wuhan University innovation-training project titles and OpenAlex paper titles (2
 | Folder | Content |
 |--------|---------|
 | `01_README/` | Governance: protocol, config snapshot, changelog, checksums |
-| `02_FIGURES/` | 12 main figures + 1 supplementary figure (PDF + PNG) |
+| `02_FIGURES/` | 7 main figures + 4 supplementary figures (PDF + PNG) |
 | `03_CODE/` | Reproducible analysis scripts (01–10) + R script (09) |
 | `04_MANUSCRIPT/` | Manuscript draft (Markdown) |
 
@@ -41,11 +41,11 @@ pip install pandas numpy matplotlib scipy statsmodels sentence-transformers bert
 python 03_CODE/10_generate_figures.py
 ```
 
-## Key results (v0.9.1, frozen)
+## Key results (v1.0-cand.5, frozen)
 
 - 3,714 projects x 56,901 papers; K=886 BERTopic topics + 1 OUTLIER
 - ANOVA F(2,3711)=35.72, p=4.3e-16; Tukey HSD: U<P<=N (P-N p-adj=0.082 ns)
-- HLM: advisor_recent_3y_works_mean beta=+0.0085, p=4.5e-7 *** (sole clean predictor)
+- HLM (v2b MixedLM, REML): ICC=0.7376; advisor prior-3yr publications beta=+0.0043 ***; advisor prior cumulative supervision beta=-0.0063 *** (p=1.9e-5); year trend beta=+0.0031 ***; grant level ns
 - Diffusion lag: HRLT n=24, median +0.5 yr (research leads training)
 - Matthew effect: Gini=0.767, Top-5% share=34.0%, OR(top5%)=6.085
 
@@ -56,7 +56,8 @@ python 03_CODE/10_generate_figures.py
 | v0.1 | MiniLM x 5 RTAS variants experiment — done |
 | v0.2 | RTAS frozen (model/data/window/aggregation) — done |
 | v0.9 | All 6 downstream analyses + manuscript + figures — done |
-| v1.0 | Scientometrics submission + Zenodo DOI — pending |
+| v1.0-cand.5 | Figure freeze (7 main + 4 supplementary) + manuscript text freeze — done |
+| v1.0 | Scientometrics submission (this repo goes public) — pending |
 
 ## License
 

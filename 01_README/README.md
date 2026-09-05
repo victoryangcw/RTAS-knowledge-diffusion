@@ -16,14 +16,14 @@ This folder contains the protocol, configuration, and changelog for the RTAS stu
 ```
 RTAS/
 ├── 01_README/          ← governance (this folder)
-├── 02_FIGURES/         ← 12 main + 1 supplementary figure (PDF + PNG)
+├── 02_FIGURES/         ← 7 main + 4 supplementary figures (PDF + PNG)
 │   ├── main/
 │   └── supplementary/
 ├── 03_CODE/            ← reproducible analysis scripts (01–10)
 └── 04_MANUSCRIPT/      ← manuscript draft (Markdown)
 ```
 
-## Key numbers (v0.9.1 frozen)
+## Key numbers (v1.0-cand.5 frozen)
 
 | Number | What it is |
 |--------|------------|

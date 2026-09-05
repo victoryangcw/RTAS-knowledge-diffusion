@@ -1,7 +1,7 @@
 # 本科生科研训练与科研前沿的语义对齐：RTAS 方法体系与实证分析
 # （Research–Training Alignment Score: RTAS）
 
-*Manuscript Draft v1.0-cand.2 — 数据冻结版（2026-09-04，第十轮外审 P0 处置）*
+*Manuscript Draft v1.0-cand.5 — 数据冻结版（2026-09-05，第十三轮主图减法与口径修正 · Figure Freeze）*
 
 > 本文档基于 v1.0-cand 冻结数据撰写（v0.9.1 57K 全量 + 第九轮导师协变量血缘审计与 HLM 重跑（含 P0-a 扩散滞后口径对齐） + 第十轮外审 P0-b/c/d/e/f/g/h/i 处置）。所有数值来源于 `03_FINAL_ANALYSIS/` 下冻结 CSV 文件，
 > 图表由 `06_CODE/10_generate_figures.py` 从冻结 CSV 自动生成至 `05_FINAL_FIGURES/main/`。
@@ -41,7 +41,7 @@ RTAS 均值随项目等级单调递增（国家级 ≥ 省级 > 校级；注意�
 - **校级 vs 省级**：Δmean = +0.0179, 95% CI [+0.0117, +0.0240], p-adj ≈ 0 → ***
 - **校级 vs 国家级**：Δmean = +0.0248, 95% CI [+0.0170, +0.0327], p-adj ≈ 0 → ***
 - **省级 vs 国家级**：Δmean = +0.0070, 95% CI [−0.0007, +0.0146], **p-adj = 0.082 → ns（CI 跨 0，FAIL）**
-因此严格结论为 **University < Provincial ≤ National**（国家级比省级高 0.007 RTAS 单位的趋势虽存在，但在 Family-wise α=0.05 控制下不通过）。详见 Figure 4b：箱上方 3 条 verdict bracket 只标 Tukey 结论，完整 Welch + Tukey 双行数值对照表移到图下方独立信息框。
+因此严格结论为 **University < Provincial ≤ National**（国家级比省级高 0.007 RTAS 单位的趋势虽存在，但在 Family-wise α=0.05 控制下不通过）。详见 Figure 4：箱上方 3 条 verdict bracket 只标 Tukey 结论，完整 Welch + Tukey 数值对照见 §3.4 与 Figure 4 图注（v1.0-cand.3 起图面为 chart-only，信息框移入图注）。
 
 ### 1.1.5 数据纠正说明（v0.2 → v0.9.1）
 
@@ -60,7 +60,7 @@ RTAS 均值随项目等级单调递增（国家级 ≥ 省级 > 校级；注意�
 | 阶段 | SIE 匹配论文数 | SIE 项目数 | 处理方式 | 统计理由 |
 |------|----------------|-----------|---------|---------|
 | v0.2 (12K 池) | 0 篇 | 1 项 | **RTAS 无法计算 → NaN，HLM 直接剔除**（学院 substrate 39） | ANOVA 要求组内 n≥2，HLM 无法在学院层面估计无论文的随机效应 |
-| v0.9.1 (57K 池) | **≥ 1 篇** | 1 项 | HLM substrate 升级到 **40** 学院（不再剔除）；ANOVA 仍按 n≥2 规则自动取 39 组（组内仅 1 项目无法估计）；报告两者 df 并存 **by coincidence df_within = 3,674 与旧值完全相等**（巧合，3,713 − 39 = 3,674） | SIE 以留学生全中文授课、科研产出主要依赖跨学院联合署名，RTAS 分布本就特殊——保留其 1 条观测在 HLM 内做完整方差分解，但 ANOVA 因统计规则自动不纳入，两种处理各自合理且不矛盾。**特别说明：** SIE 唯一项目在 `college_rtas_summary_all.csv` 中 RTAS mean=0.000（rank=40），这是真实计算值（该项目标题与所有已匹配 SIE 作者的英文论文标题在 MiniLM 语义空间上的余弦相似度恰好为 0 或近似为 0），不是 NaN，因此 HLM（对 RTAS 数值做 OLS）可以合法纳入。该项目仍在 3,714 项总样本内（3,713 = 3,714 − 1 因 SIE 未入 ANOVA），未丢失。 |
+| v0.9.1 (57K 池) | **≥ 1 篇** | 1 项 | HLM substrate 升级到 **40** 学院（不再剔除）；ANOVA 仍按 n≥2 规则自动取 39 组（组内仅 1 项目无法估计）；报告两者 df 并存 **by coincidence df_within = 3,674 与旧值完全相等**（巧合，3,713 − 39 = 3,674） | SIE 样本仅 n=1，RTAS 分布本就特殊——v0.9.1 阶段的旧 RandomEffects 模型可保留该 1 条 RTAS 有效观测做完整方差分解；但当前 v1.0 Primary MixedLM 采用完整案例分析，SIE 因导师协变量缺失未进入正式模型（N=3,231, G=39），ANOVA 因组内 n=1 同样不纳入——历史 40 组 substrate 与正式模型 39 组是两个口径，并存不矛盾。**特别说明：** SIE 唯一项目在 `college_rtas_summary_all.csv` 中 RTAS mean=0.000（rank=40），这是真实计算值（该项目标题与所有已匹配 SIE 作者的英文论文标题在 MiniLM 语义空间上的余弦相似度恰好为 0 或近似为 0），不是 NaN；该观测在 RTAS 描述性分析中有效，并曾进入 v0.9.1 旧版模型，当前 v1.0 MixedLM 的处理见 §4.4。该项目仍在 3,714 项总样本内（3,713 = 3,714 − 1 因 SIE 未入 ANOVA），未丢失。 |
 
 ### 1.2 论文数据（v0.9.1，57K 全量）
 
@@ -294,7 +294,7 @@ v0.9 起统一采用**自适应 Top-20% 分位回退**：先尝试硬阈值，�
 
 ### 4.1 模型设计
 
-RTAS 的异质性分析表明，学院间方差占 RTAS 总方差的 **66.90%**（college ANOVA η² = 66.90%, F(38,3674)=195.45, p≈0），远超项目等级间方差（η² = 1.89%）。这表明 RTAS 的变异主要发生在学院层面（Level 2），而非项目层面（Level 1）。因此，采用两层**随机截距混合模型**（项目嵌套于学院）是统计上合理的：
+RTAS 的异质性分析表明，学院间方差占 RTAS 总方差的 **66.90%**（college ANOVA η² = 66.90%, F(38,3674)=195.45, p < .001），远超项目等级间方差（η² = 1.89%）。这表明 RTAS 的变异主要发生在学院层面（Level 2），而非项目层面（Level 1）。因此，采用两层**随机截距混合模型**（项目嵌套于学院）是统计上合理的：
 
 $$\text{RTAS}_{ij} = \beta_0 + \beta_1 \cdot \text{Provincial}_{ij} + \beta_2 \cdot \text{National}_{ij} + \beta_3 \cdot \text{Year}_i + \beta_4 \cdot \log(1+\text{Prior3yWorks}_{ij}) + \beta_5 \cdot \log(1+\text{SupervisedN}_{ij}) + u_j + \varepsilon_{ij}$$
 
@@ -358,7 +358,7 @@ $$u_j \sim N(0,\ \sigma^2_{college}),\qquad \varepsilon_{ij} \sim N(0,\ \sigma^2
 
 5. **学院语境是最大的结构性事实**：ICC=0.7376 意味着约四分之三的 RTAS 变异发生在学院之间。知识向培养端的对齐首先是一种**组织/学科层面的过程**，其次才由导师个体特征调节。
 
-> **Figure 6（HLM 森林图）读图提示（详细见§9图表解释）**：图区为蓝点（β）+ 95% CI 误差棒（绿=*** / 红=** / 灰=ns），绿带=正贡献、红带=负贡献；图下方灰框为完整系数表，黄框含读图规则与 v0.9.1 撤回声明。
+> **Figure 6（HLM 森林图）读图提示（详细见§9图表解释；v1.0-cand.5 文字同步）**：图区为蓝点（β）+ 灰色 95% CI 误差棒，系数右侧以星号（*** p<.001 / ** p<.01 / * p<.05 / ns）标注显著性——显著性定义见本图图注，不再编码于点色；v1.0-cand.3 起为 chart-only 版：图内无系数表、无色带与信息框，精确数字见 Table 6 与本图图注。
 
 ---
 
@@ -464,7 +464,7 @@ Top 5% 导师与其余导师在 RTAS 上无显著差异（d=−0.033）：马太
 
 机制解释（与 §3.5 象限定义一致但需精确表述）：lag 可定义要求论文端在某一**单年**达到约 ≥20 篇（0.2%）。LRHT/LRLT 按象限定义其**全期**论文总量就低于约 50 篇（累积 frac_paper < 0.0879%），论文在某一单年集中到约 20 篇规模的情形在本语料中从未发生——实测 **0/10 与 0/698**。需诚实说明：这是**本语料中的经验事实（合计 0/708）**，象限的低研属性使其高度可预期，但并非逻辑恒等（理论上全期 40 篇的主题可以在某一单年集中出现 20 篇，只是 2020–2024 数据中没有出现）。HRLT 中 149 个不可定义则是因为项目端（低训）全期项目不足 18.6 项、没有任何一个单年达到 ≥2 项。
 
-定义率 3.27% 远低于 12K 池 K=307 时的 69/307 = 22.5%：旧口径下论文年度门槛随该池论文总量缩水而形同虚设（0.2% 对应仅约 20 篇/年的门槛在 12K 池里被更低的年度分母进一步放松），虚报了定义率。**旧手稿中 "LRHT n=8, median = −1.5 yr" 一行来自 12K 池 K=307 的遗留数据，在 57K 全量口径下为假值，在此 RETRACTED**（Figure 9 中 LRHT / LRLT 两列以浅灰斜纹 N/A 面板显式标注，不伪造负数 lag）。
+定义率 3.27% 远低于 12K 池 K=307 时的 69/307 = 22.5%：旧口径下论文年度门槛随该池论文总量缩水而形同虚设（0.2% 对应仅约 20 篇/年的门槛在 12K 池里被更低的年度分母进一步放松），虚报了定义率。**旧手稿中 "LRHT n=8, median = −1.5 yr" 一行来自 12K 池 K=307 的遗留数据，在 57K 全量口径下为假值，在此 RETRACTED**（v1.0-cand.4 起旧独立 Figure 9 已删除、分象限结果并入 Figure 8 panel (b)；LRHT/LRLT 不再绘制斜纹 N/A 面板，改以图内一句斜体注释显式给出 0/10 与 0/698 未达标，不伪造负数 lag）。
 
 **整体统计（n=29，严格 v0.9.1 口径）：**
 - 中位 lag = 0 年
@@ -486,7 +486,7 @@ Top 5% 导师与其余导师在 RTAS 上无显著差异（d=−0.033）：马太
 **关键发现：**
 - HRLT 主题的中位 lag = +0.5 年，均值 +0.79 年——论文端先达到非平凡规模的主题，平均需要**半年到一年**才被培养体系的项目选题追上（这里"科研前沿"以学院论文组合为可观测代理，见 §2.1）。50%（12/24）的 HRLT 主题是正向滞后（paper 先出，project 随后跟进），37.5% 同步，只有 12.5% 反着走。
 - **LRHT 从"培养教过时 1.5 年"结论被推翻→** 真实结果是 LRHT 的 lag 在本语料中**无法计算**（论文端没有任何一个单年达到约 ≥20 篇的非平凡门槛，实测 0/10）。这说明我们原以为的"LRHT 10 个主题都是过时内容"是从 "12K 池 K=307, LRHT=25, n=8, med=-1.5" 的错误记忆中带过来的。严格 57K 口径下 LRHT 的真实语义是："这 10 个主题在 57K 全量论文中全期流行度低（累积 frac_paper < 0.0879%，即全期不足约 50 篇），但在项目体系中仍被持续选题（累积 frac_project ≥ 0.5%）。由于论文端从未在任一单年形成规模，我们无法得出 '科研冷退出时间 − 培养开始时间' 的 lag 值——无法确认培养内容是否真的滞后于科研。" LRHT 主题需要另一条分析链（§12 未来工作第 5 条：用培养方案/教材/课程大纲文本做反向核查，把这 10 个主题关键词去搜课程内容，找出"教了但科研早就不做了"的那些）。
-- HRLT vs HRHT 的组间差异（2026-09-03 从冻结 CSV 直接重算复核）：Welch t = +2.11, p = 0.054（ns）；Mann–Whitney U p = 0.095（ns）；Cohen d = +0.78（大效应）。方向上 HRLT 的正向 lag 均值（+0.79 yr）大于 HRHT（−0.40 yr），与"高研低训主题更需要课程更新"的机制一致，但 HRHT 仅 n=5，α=0.05 下统计功效不足，不作显著结论。结果显示在 Figure 9 图下方红边信息框中（不再堆叠在图内）。
+- HRLT vs HRHT 的组间差异（2026-09-03 从冻结 CSV 直接重算复核）：Welch t = +2.11, p = 0.054（ns）；Mann–Whitney U p = 0.095（ns）；Cohen d = +0.78（大效应）。方向上 HRLT 的正向 lag 均值（+0.79 yr）大于 HRHT（−0.40 yr），与"高研低训主题更需要课程更新"的机制一致，但 HRHT 仅 n=5，α=0.05 下统计功效不足，不作显著结论。该组间对照自 v1.0-cand.4 起随旧 Figure 9 一并并入 Figure 8 panel (b) 图注（不再有独立信息框）。
 
 ---
 
@@ -513,7 +513,7 @@ RI-CLPM（Random Intercept Cross-Lagged Panel Model，随机截距交叉滞后�
 - **40 学院 × 3 波 × 3 变量 = 360 个单元格**
 - **完整案例学院（3 构念 3 波全部无缺失） = 35 / 40（87.5%）**
 - 缺失集中在 2021 波：**2021 RTAS 缺 5 所学院（其中 1 所为 SIE n=1 RTAS=0 的特殊学院；其余 4 所为 2021 年项目不足 2 项无法估计组内 RTAS）**。`miss_rtas_w2021_pct=12.5%, miss_natgrantrate_w2021_pct=12.5%` 其余年份均 ≤2.5%（单一学院缺被引数据，不影响完整案例）
-- 审计：`ri_clpm_panel_audit.json` 中 `n_colleges=40, n_colleges_matches_canonical_39=0` (已升级)
+- 审计：`ri_clpm_panel_audit.json` 中 `n_colleges=40, n_colleges_matches_canonical_39=0` (已升级)；全变量 complete-case = **35 所学院**（40 − 2021 波 RTAS 缺失 5 所，SIE 因 w2021/w2023 RTAS 缺失在 complete-case 之外）。注：audit JSON 内 `rtas_unit_note` 的 "39 levels" 为生成时遗留的陈旧备注字段，以同文件 `n_colleges=40` 数值字段为准
 - Lavaan 模型脚本：`06_CODE/09_ri_clpm.R`（本机 Windows 无 R，需在 PowerShell 原生运行 Rscript，结果未回归填充——为 robustness RQ5，不影响主结论）
 
 ### 7.3 模型规格
@@ -561,7 +561,7 @@ R 脚本（`06_CODE/09_ri_clpm.R`）使用 lavaan 包的 FIML（全信息最大�
 | 扩散滞后总定义主题数 / 定义率 | — | 29 / 886 = 3.27%（仅 HRLT 24 + HRHT 5） | 规则 = 单年非平凡出现（论文端单年 ≥3 篇且 ≥0.2%、项目端单年 ≥2 项且 ≥0.2%），与四象限累积阈值刻意不同（§6.1） |
 | 扩散滞后 HRLT 中位 / 均值 | — | +0.5 年 / +0.79 年 | 50% HRLT 主题为正 lag（paper → project 传播方向） |
 | 扩散滞后 LRHT / LRLT 定义 | — | 0 / 10、0 / 698（本语料中 n.a.，非缺失） | 🔴 12K 池旧值 "LRHT n=8, med=−1.5" **RETRACTED** |
-| SIE n=1 项目 RTAS | — | = 0.0000 (rank 40 / 40) | 不是 NaN，HLM 正常纳入 §4.4 |
+| SIE n=1 项目 RTAS | — | = 0.0000 (rank 40 / 40) | RTAS 有效；但 v1.0 MixedLM complete-case 中因导师协变量 NA 未纳入（Primary N=3,231 / G=39）|
 
 ### 8.2 各分析模块输出文件汇总（v0.9.1，57K 池）
 
@@ -573,11 +573,11 @@ R 脚本（`06_CODE/09_ri_clpm.R`）使用 lavaan 包的 FIML（全信息最大�
 **①异质性分析** (`03_FINAL_ANALYSIS/heterogeneity/`):
 - `anova_project_level.csv` — F(2,3711)=35.72, p=4.3e-16, η²=1.89%
 - `project_level_summary.csv` — 校/省/国 RTAS 均值: 0.1212/0.1391/0.1460
-- `tukey_project_level_pairwise.csv` — 三对比较：U-P p≈0 ***, U-N p≈0 ***, **P-N p-adj=0.082 ns (95%Δ-CI [−0.0007, +0.0146] 跨 0)**（严格结论 U<P≤N）
+- `tukey_project_level_pairwise.csv` — 三对比较：U-P p<0.0001 ***, U-N p<0.0001 ***, **P-N p-adj=0.082 ns (95%Δ-CI [−0.0007, +0.0146] 跨 0)**（严格结论 U<P≤N）
 - `project_level_top_vs_bottom_cohensd.csv` — d=0.349, Welch p=2.9e-13
 - `anova_college.csv` — F(38,3674)=195.45, η²=66.90%
 - `college_rtas_summary_all.csv` — **40 学院** RTAS 完整描述（Figure S1 附录排名用）
-- `college_rtas_top20.csv` — Top 20 学院（Figure 5 主图用）
+- `college_rtas_top20.csv` — Top 20 学院 raw-mean 排名（**历史/辅助输出**；v1.0-cand.4 起 Figure 5 已改用 `hlm_v2b_college_random_effects.csv` caterpillar，本文件不再供主图使用）
 - `heterogeneity_audit_log.json` — 审计日志
 
 **②BERTopic 主题模型** (`03_FINAL_ANALYSIS/topic_model/`):
@@ -585,7 +585,7 @@ R 脚本（`06_CODE/09_ri_clpm.R`）使用 lavaan 包的 FIML（全信息最大�
 - `doc_topic_assignments.csv` — 60,615 行（3.7K proj + 57K papers）
 - `topic_quadrants_aggregate.csv` — 886 主题象限标签
 - `quadrant_overall_summary.csv` — 四象限汇总：HRHT=5, HRLT=173, LRHT=10, LRLT=698
-- `topic_yearly_prevalence_for_diffusion_lag.csv` — 886 非离群主题 × 5 年 = 4,430 行年度流行度矩阵（Figure 13 堆叠面积图的数据）
+- `topic_yearly_prevalence_for_diffusion_lag.csv` — 886 非离群主题 × 5 年 = 4,430 行年度流行度矩阵（Supplementary Figure 13 趋势双线 + Top-15 热力图两面板的数据；分母 = 全部项目/年，`denom_project` 逐年合计 = 3,714，v1.0-cand.5 口径澄清）
 - `threshold_sensitivity_15_20_25.csv` — v1.0 新增：15%/20%/25% 论文端分位阈值下四象限计数（HRLT 128/173/224，LRHT 10/10/8）+ 29 个 lag 主题归属（29/29 稳定）
 - `fit_audit.json` / `threshold_sensitivity_audit.json` — 审计日志（离群率 38.47%、阈值规则、敏感性结论）
 
@@ -615,7 +615,7 @@ R 脚本（`06_CODE/09_ri_clpm.R`）使用 lavaan 包的 FIML（全信息最大�
 - `logistic_national_vs_top5pct.csv` / `matthew_effect_audit.json` — v0.9 截面 Top5% 回归（OR=6.085）**因循环论证撤回**（§5.5），保留备查、不再引用
 
 **⑥RI-CLPM 面板**（`03_FINAL_ANALYSIS/ri_clpm/`，**设计稿未估计，见 §7 状态声明**）:
-- `ri_clpm_panel_college_wide.csv` — 39 学院宽格式面板（SIE n=1 无法构成 3 波面板已剔除；HLM substrate 仍为 40 组）；未来版本须改用非重叠年度波
+- `ri_clpm_panel_college_wide.csv` — **40 学院宽格式面板（v1.0-cand.5 勘误：旧稿误标 "39 学院 / SIE 已剔除"）**——实测 40 行、含 SIE=国际教育学院（其 w2021/w2023 RTAS 缺失、w2025=0.0），与 `ri_clpm_panel_audit.json` `n_colleges=40` 一致；全变量 complete-case 35 所（SIE 因 RTAS 缺失自然落在其外）。RI-CLPM 已降为未来工作；未来版本须改用非重叠年度波
 - `ri_clpm_variable_codebook.csv` — 变量代码簿
 - `ri_clpm_panel_audit.json` — 审计日志（数据搭建记录；无模型系数）
 
@@ -623,113 +623,110 @@ R 脚本（`06_CODE/09_ri_clpm.R`）使用 lavaan 包的 FIML（全信息最大�
 
 ## 九、图表清单与解读（v0.9.1，所有图由 `06_CODE/10_generate_figures.py` 从 `03_FINAL_ANALYSIS/` 冻结 CSV 单源生成；PDF 矢量 + PNG 600 dpi 同步输出）
 
-### Figure 2: 技术路线图
-**来源：** 研究方案协议 §2 的技术路线设计稿 → `Figure2_Roadmap.pdf/png`（11.5 × 6.2 inch）
-**视觉布局：** 三层严格水平分层（上层：4 个流水线方框；中层：5 个分析模块方框；下层：1 个下游 Robustness 方框）。所有箭头只有两种形态：**同层方框之间的水平左→右直箭头**（同阶段数据输入流），或 **上层方框中点 → 下层方框中点的垂直直箭头**（跨阶段输出→输入）。箭头绝不穿过任何方框本体。
-**读图：** 从左上角 Paper corpus + Project dataset 进入 Embedding encode → RTAS compute → RTAS freeze，然后垂直下传到中层五大分析模块（异质性 / BERTopic 四象限 + 扩散 / HLM 多层 / 马太效应 / RI-CLPM 面板），最后从 Diffusion 模块垂直下传到 Downstream 方框（培养改革干预）。颜色：蓝色=数据源，橙色=计算，绿色=冻结输出，紫色=分析模块，灰色=下游应用。
+### Figure 2: 技术路线图（v1.0-cand.4 重构双语料结构；v1.0-cand.5 修正 Heterogeneity 数据流箭头）
+**来源：** 研究方案协议 §2 的技术路线设计稿 → `Figure2_Roadmap.pdf/png`（11.5 × 7.0 inch）
+**视觉布局（4 行）：** Row 1 = **双语料显式化**——左侧实线框 Main RTAS corpus（3,714 ITTP projects (CN) + 56,901 OpenAlex papers (EN)，2020–2024），右侧灰虚线框 Auxiliary advisor-history corpus（22,438 OpenAlex papers 2017–2019 → 仅喂 HLM 立项前协变量窗口 [t−3, t−1]）；Row 2 = 方法流水线 Embedding → RTAS Computation → RTAS Frozen；Row 3 = 四大分析模块（Heterogeneity / BERTopic / Matthew / HLM）；Row 4 = Diffusion Lag。**Pairwise semantic validity ρ_s = .405 (n=150, p=2.6e-7) 从 RTAS Frozen 框移入 Embedding 框**——它是 embedding 级指标、5 种聚合变体共享；RTAS Frozen 框改为变体选择陈述（5 aggregation variants tested; Primary = mean, composite score .742）。**RI-CLPM "future work" 框整体删除**：从未估计的模型不进方法图（§7 状态声明与 §12.3 展望保留）。
+**读图：** 主语料 → Embedding（ρ_s = .405 在此）→ RTAS 计算 → 冻结（mean 变体以综合分 .742 胜出）；**冻结 RTAS 以正交肘线分叉下传 Heterogeneity / Matthew / HLM 三个分析模块**（v1.0-cand.5 修正：Heterogeneity 检验的对象是冻结 RTAS，数据流箭头不再从 Main corpus 直连），Embedding 另路下传 BERTopic、再下传扩散滞后；**辅助导师历史语料虚线直喂 HLM 立项前协变量窗口**——双语料各司其职，杜绝"单语料"误读。箭头绝不穿过方框本体。
 
 ### Figure 3: 四象限散点图
 **来源：** `topic_info.csv (887 rows = 886 non-outlier + 1 OUTLIER meta-row) → Figure3_QuadrantScatter.pdf/png`
 **坐标轴：** 横轴 = Paper Prevalence %（一个主题的论文数 / 总论文数 **56,901**，百分比，线性刻度）；纵轴 = Project Prevalence %（同一主题的项目数 / 总项目数 **3,714**，百分比，线性刻度）。**两轴显式从 (0,0) 起**，x=0 与 y=0 刻度在左下角重合为唯一原点（v0.9.1 修正旧版自动留白导致两个"0"错位的问题）。
-**点元素：** 每个圆点 = **1 个非 OUTLIER 主题**（886 个，不包括 quadrant='OUTLIER' 的那一行）。点大小 ∝ #documents（该主题 paper+project 文档总数）。点颜色 = 象限分色（与 Figure 9、Figure 11 同一套色板）：**红=HRHT，橙=HRLT，绿=LRHT，灰=LRLT**。
+**点元素：** 每个圆点 = **1 个非 OUTLIER 主题**（886 个，不包括 quadrant='OUTLIER' 的那一行）。点大小 ∝ #documents（该主题 paper+project 文档总数）。点颜色 = 象限分色（与 Figure 8 panel (b)、Figure 11 同一套色板）：**红=HRHT，橙=HRLT，绿=LRHT，灰=LRLT**。
 **阈值线：** 垂直虚线 = paper 侧 Top-20% 自适应分位阈值（0.0879% ≈ 全期 ≥50 篇论文/主题）；水平虚线 = project 侧阈值（0.5% ≈ 全期 ≥18.6 项/主题）。两条线把平面分 4 个象限。
 **象限水印（v0.9.1 修正归位）：** 四个缩写大字标注在各自真实象限区域内（竖线右/横线上 = 高；左/下 = 低）：右上 HRHT、**左上 LRHT**（论文冷、培养热）、**右下 HRLT**（论文热、培养冷）、左下 LRLT，均带白色描边保证压点可读。旧版水印放在图面四角、与点的实际分布错位（橙色 HRLT 点群实际在右下却标在左上），已修正。
+**v1.0-cand.4 新增：** ① **zoom inset**（0–0.25% × 0–1.2%，右上角带 indicate_inset_zoom 连接框）放大原点簇——698 个 LRLT 与大量小主题在原点附近的挤压结构首次可读（inset 右缘收窄，保证 x≈1.47% 的极端 HRHT 主题在主图仍可见）；② **bubble size 参考图例**（25 / 100 / 500 docs 三个空心参考圆，s = Count×0.3 同一映射）——读者可准确解码圆面积。
 **图例：** 右上角图例按象限列出缩写与主题数。
 **真实数值（冻结）：** HRHT=5（右上红）, HRLT=173（右下橙）, LRHT=10（左上绿）, LRLT=698（左下灰，贴原点），合计 886。
 
-### Figure 4: 项目等级 RTAS 对比（U vs P vs N）——**v0.9.1 拆为独立 Figure 4a 与 Figure 4b**（原单张双面板拥挤，数字框移出图区）
+### Figure 4: 项目等级 RTAS 对比（U vs P vs N）——**v1.0-cand.5 起单图一号（旧 4a/4b 合并为 Figure 4）：全分布箱线 + jitter**
 
-**Figure 4a — 均值 ± 95% CI 柱状图**
-**来源：** `heterogeneity/project_level_summary.csv → Figure4a_MeanCI.pdf/png`（7.6 × 6.0 inch）
-- 横轴 = 项目等级三档：University（校级 1,375，蓝）/ Provincial（省级 1,657，橙）/ National（国家级 682，红），按 mean 升序。
-- 纵轴 = RTAS 均值。柱高 = 档内 RTAS 均值（0.1212 / 0.1391 / 0.1460，柱顶上方黑体标注）。
-- 误差棒 = 95% CI = 1.96 × SEM（SD / √n），capsize=7。柱内白字粗体 = n=1,375 / 1,657 / 682。
-- 超标题：ANOVA 整体 F(2,3711)=35.72, p=4.3×10⁻¹⁶, η²=1.89%（动态从冻结 CSV 读取）。
+**Figure 4 — 全分布箱线 + 3,714 条 jitter 散点（v1.0-cand.5 起为唯一 Figure 4：由旧 Figure 4b 更名；旧 Figure 4a 均值 ± 95% CI 点图因与均值菱形信息高度重复而删除，其 ANOVA 信息移入本图注）**
+**来源：** `project_level_summary.csv + table5_project_dataset_n3714_full.csv (raw 3,714 projects) + tukey_project_level_pairwise.csv → Figure4_Distribution.pdf/png`（10.5 × 7.0 inch，图形区占满图面）
+- 横轴 = 项目等级三档：University（校级 1,375，蓝）/ Provincial（省级 1,657，橙）/ National（国家级 682，红）；纵轴 = 单项目 RTAS 原始值（约 −0.058 ~ 0.396）。箱元素：半透明彩箱 = Q1–Q3；粗黑横线 = 中位数；白菱形 = 均值；须 = Tukey 1.5·IQR。3,714 个 jitter 散点（seed 42，s=5，alpha=0.22）展示个体项目真实波动。
+- **箱上方仅保留 3 条 verdict bracket**（不标检验方法名，只留显著性符号）：navy `***`（U–P）、棕色 `#aa5500 ns`（P–N）、红色 `***`（U–N）。检验方法（Tukey HSD）在本图注与 §3.4 正文说明。
+- **图注统计（v1.0-cand.3 起由图内信息框移入）：** ANOVA 整体：F(2,3711)=35.72, p=4.3×10⁻¹⁶, η²=1.89%——组间均值差异显著但三组分布大量重叠（jitter 可见），对应小效应叙事。分档摘要：校级 n=1,375, mean=0.1212, SD=0.0693, med=0.1177；省级 n=1,657, mean=0.1391, SD=0.0728, med=0.1431；国家级 n=682, mean=0.1460, SD=0.0731, med=0.1494。两两 Tukey HSD：U vs P — p-adj<0.0001 ***，Δ=+0.0179 [+0.0117, +0.0240]；P vs N — **p-adj=0.0821 ns**，Δ=−0.0070 [−0.0146, +0.0007] 跨 0（Welch 单对比较为边界 *，p≈0.036，但多组校正下不通过）；U vs N — p-adj<0.0001 ***，Δ=−0.0248 [−0.0327, −0.0170]。严格结论：**University < Provincial ≤ National**。
 
-**Figure 4b — 全分布箱线 + 3,714 条 jitter 散点（统计数字全部移到图下方独立信息区，图区内只有图形元素）**
-**来源：** `project_level_summary.csv + table5_project_dataset_n3714_full.csv (raw 3,714 projects) + tukey_project_level_pairwise.csv → Figure4b_Distribution.pdf/png`（10.5 × 9.6 inch；上半 ~50% 为 axes，下半 ~40% 为两块独立信息框）
-- 上半 axes：横轴三档同 4a；纵轴 = 单项目 RTAS 原始值（约 −0.058 ~ 0.396）。箱元素：半透明彩箱 = Q1–Q3；粗黑横线 = 中位数；白菱形 = 均值；须 = Tukey 1.5·IQR。3,714 个 jitter 散点（seed 42，s=5，alpha=0.22）展示个体项目真实波动。
-- **箱上方仅保留 3 条 verdict bracket**（不标检验方法名，只留显著性符号）：navy `***`（U–P）、棕色 `#aa5500 ns`（P–N）、红色 `***`（U–N）。检验方法（Tukey HSD）在图注与本节正文中说明。
-- **下方左侧 3 个色边小框（figure 坐标锚定，固定宽度字体）：** 每档 8 行摘要 n / mean / ±SD / med / Q1·Q3 / IQR / whisk / range。
-- **下方右侧灰色 Welch + Tukey 对照表：** 3 行（U vs P / P vs N / U vs N）× Welch p + 星号 + Cohen d / Tukey p-adj + 星号 / Tukey 95% Δ-CI / verdict（PASS *** 或 FAIL ns）；表下一行结论："University < Provincial ≤ National；P vs N 在 Welch 中为边界 *（p≈0.036）但 FAILS Tukey（p-adj=0.082），严格 Family-wise α=0.05 下不通过"。
+### Figure 5: 学院随机效应 Caterpillar 图（**v1.0-cand.4 起为主文学院图，替代旧 Top-20 raw-mean 排名**）
+**来源：** `hlm/hlm_v2b_college_random_effects.csv`（BLUP + conditional SE；对冻结 v2b MixedLM 做 identity-guarded refit，系数逐项匹配到 1e-8）→ `Figure5_CollegeCaterpillar.pdf/png`（高度 = max(8.5, 0.30×39+1.5) inch）
+**坐标轴：** 纵轴 = 39 所学院（v2b complete-case 模型内学院；y-tick = "rank. 学院英文名 (n=项目数)"，按 BLUP 降序、**rank 1 在最顶**）；横轴 = 学院随机截距 BLUP（对数尺度无关，线性刻度）；x=0 黑虚线 = 总体均值。
+**图面元素：** 灰横线 = 95% CI（BLUP ± 1.96·conditional SE，两端小竖帽）；navy 蓝点 = BLUP 点估计。标题动态写入 "33 of 39 colleges have CIs excluding 0"（从冻结 CSV 逐行计算，非硬编码）。
+**换图理由（reviewer audit）：** raw mean 排名会视觉放大小样本学院（旧 Top-20 第一名 n=8、附近有 n=9），审稿人会质疑主文用 raw mean 排名的合理性；caterpillar 直接可视化 **ICC=0.7376 的学院层随机效应**——与 HLM 主线完全一致、显示不确定性（CI 宽度 ∝ 1/√n）、不夸大小 n 均值。旧的 raw-mean Top-20 排名（旧 Figure S2）已于 **v1.0-cand.5 直接删除**——与 Figure 5（model-adjusted）+ Figure S1（全 40 学院）信息重复，且继续视觉放大小样本学院。
+**冻结真值：** 冠军 中国南极测绘研究中心 BLUP=+0.200 [0.172, 0.229]（n=8）；亚军 工业科学研究院 +0.142 [0.106, 0.177]（n=5）；第三 化学与分子科学学院 +0.108 [0.098, 0.118]（n=67）。SIE（n=1）因导师协变量缺失未进入 v2b 模型，不在图内（其 raw-mean 处理见 §1.1.5 与 Figure S1）。
+> **小样本警示（外审 P0-i，保留）：** 冠军学院仅 **n=8** 个项目，均值估计不稳定，不应解读为"该学院培养质量最优"的强证据；但其 RTAS 分布紧凑且方向高度专门化（极地测绘），高对齐更多反映"学科聚焦度"。caterpillar 的 CI 宽度已把这种不确定性可视化——读者可自行判断排名稳健性；n≥50 学院中排名最高为化学与分子科学学院（n=67，BLUP rank 3）。
 
-### Figure 5: Top-20 学院 RTAS 水平柱状图
-**来源：** `heterogeneity/college_rtas_top20.csv → Figure5_Top20Colleges.pdf/png`（9 × 8 inch）
-**坐标轴：** 纵轴 = 学院英文名（20 个，字体 9pt；按 RTAS_mean asc 排序，最差学院在顶，最好学院在底）；横轴 = RTAS 均值（连续线性刻度 0 ~ max×1.25）。
-**柱颜色：** 映射的是 **RTAS 均值连续值（非排名）**：cmap=RdYlGn，norm 覆盖 20 所学院的 min→max；**红=低 RTAS（差对齐），绿=高 RTAS（好对齐），黄=中间。** 颜色条在图右侧。
-**柱右端白标签：** 每柱右侧标注 `X.XXX (n=Y)`（RTAS 均值 + 该学院项目数 n_projects，字体 7pt）。
-**色条图例：** 右侧 colorbar（shrink=0.55, pad=0.12），标签 "RTAS color scale: red = lower alignment → green = higher alignment"，tick 字体 7pt。颜色语义与 Figure S1（附录全 40 学院排名）完全一致（用同一个归一化 norm），所以 Figure 5 的绿色和 Figure S1 上的绿色强度对应同一个 RTAS 数值范围（可互相比）。
-**真实冠军（冻结）：** 中国南极测绘研究中心 RTAS=0.360（Figure S1 rank 1）。
-> **小样本警示（外审 P0-i）：** 冠军学院仅 **n=8** 个项目（2020–2024 累计），均值估计不稳定，不应解读为"该学院培养质量最优"的强证据；但其 RTAS 分布很紧凑（SD=0.024，范围 0.332–0.396，8 个项目全部高于全局均值 0.136），且该中心科研方向高度专门化（极地测绘），高对齐与其说是"绩效"不如说是"学科聚焦度"的机械结果。Top-20 中工业科学研究院同样仅 n=9；n≥50 的学院中排名最高为化学与分子科学学院（n=74，RTAS=0.256，rank 2），结论引用学院排名时应以 n 充分的学院为主。
-
-### Figure S1（附录）: 40 学院 RTAS 完整排名（Figure 5 的 Top-20 是本图的下半截取，两图不重复）
+### Figure S1（附录）: 40 学院 RTAS 完整排名
 **来源：** `heterogeneity/college_rtas_summary_all.csv → supplementary/FigureS1_CollegeRTAS_Full40.pdf/png`（高度 = max(10 inch, 0.32·40 + 2)）
-**坐标轴：** 纵轴 = 40 学院英文名，y-tick 标签格式 "**N.  College-Name**"（从顶到底 40 → 1，不用 #；Figure 5 不做 rank 标注，因为 Top-20 本身就是截取）。横轴同 Figure 5。每学院右标签 `X.XXX (n=Y)`。**SIE（School of International Education）在最顶 rank=40，RTAS=0.000，n=1**。
-**色条：** 同 Figure 5 相同 RdYlGn 连续值映射 + 相同文字标签。
-**标题：** `All 40 Colleges by RTAS — Full Ranking (Appendix)  /  College ANOVA: F(38,3674)=195.45, p≈0, η²=66.90%`（注意 ANOVA n_groups=39，与 Figure S1 40 学院并存但不矛盾——SIE n=1 无法估计组内方差被 ANOVA 自动排除，见 §1.1.5）。
+**坐标轴：** 纵轴 = 40 学院英文名，y-tick 标签格式 "**N.  College-Name**"（**从顶到底 1 → 40**，不用 #；CSV 按 RTAS_mean 升序读入，matplotlib barh 把 y=0 画在最底，故 **rank 1 冠军在最顶、rank 40 SIE 在最底**——v1.0-cand.4 修正旧说明文字的方向颠倒）。横轴 = RTAS 均值。每学院右标签 `X.XXX (n=Y)`。**SIE（School of International Education）在最底 rank=40，RTAS=0.000，n=1**。
+**色条：** RdYlGn 连续值映射（norm 覆盖 40 所的 min→max RTAS 值，非排名），标签 "RTAS color scale: red = lower alignment → green = higher alignment"；v1.0-cand.5 起本图为唯一 raw-mean 排名图（旧 Figure S2 已删除）。
+**标题：** `All 40 Colleges by RTAS — Full Ranking (Appendix)  /  College ANOVA: F(38,3674)=195.45, p < .001, η²=66.90%`（注意 ANOVA n_groups=39，与 Figure S1 40 学院并存但不矛盾——SIE n=1 无法估计组内方差被 ANOVA 自动排除，见 §1.1.5）。投稿时建议另备 **Supplementary Table S1**（College | N | Mean RTAS | SD | 95% CI | Rank），比长 PNG 更实用。
 
-### Figure 6: HLM 森林图（Table 6 同一单源 `hlm_mixedlm_v2b_primary_coefficients.csv`；**v1.0-cand.3 clean 前置指导数随机截距混合模型；数字表在图下方独立灰框，图区内只有点 + CI + 星号**）
-**来源：** `hlm/hlm_mixedlm_v2b_primary_coefficients.csv + hlm_mixedlm_v2b_primary_summary.txt (动态读 ICC/n/groups) → Figure6_HLM_Forest.pdf/png`（9.8 × 7.6 inch；axes 占上方 ~44%，下方为系数表 + 提示框）
-**上半 axes（刻意保持干净）：** 纵轴 = 5 个预测变量（不含截距）友好标签，按 β 估计值升序；横轴 = β。β>0 右半淡绿（正贡献），β<0 左半淡红（负贡献）；x=0 黑色虚线。深蓝实心点 = β 点估计；水平误差棒 + cap = 95% CI；点右侧同色小星号。误差棒颜色按显著性：**绿色 = ***（p<0.001）、红色 = **（p<0.01）、灰色 = ns**（本版：导师立项前 3 年发文绿 ***、导师立项前累计指导项目数绿 ***（CI 在负区）、年份绿 ***，省级/国家级灰 ns）。CI 不跨 0 = 显著。
-**下方信息区（figure 坐标锚定）：**
-- 灰色等宽字体表：5 行 × Predictor / β / 95% CI [low, high] / p-value / sig。
-- 橙色提示框：读图规则 + 前置窗口口径说明（含 v2.0b 泄漏修复说明）+ 撤回声明（v0.9.1 "recent-3y β=+0.0085, p=4.5e-7" 为脏列假阳性）。
+### Figure S2（已删除，v1.0-cand.5）: Top-20 学院 raw mean RTAS 排名
+**处置（reviewer verdict）：** v1.0-cand.5 起**直接删除**，不再保留于任何位置——Figure 5（model-adjusted caterpillar）已承担主文学院间差异，Figure S1 已给出全 40 学院 raw-mean 排名；本图无增量信息，且把 n=8/n=9 小样本 raw mean 排名视觉放大。
+
+### Figure 6: HLM 森林图（Table 6 同一单源 `hlm_mixedlm_v2b_primary_coefficients.csv`；**v1.0-cand.3 clean 前置指导数随机截距混合模型；chart-only 版：图内无表格与提示框，精确数字见 Table 6 与本图注**）
+**来源：** `hlm/hlm_mixedlm_v2b_primary_coefficients.csv + hlm_mixedlm_v2b_primary_summary.txt (动态读 ICC/n/groups) → Figure6_HLM_Forest.pdf/png`（9.8 × 6.2 inch，森林图占满图面）
+**读图（图注版，v1.0-cand.5 同步当前图面）：** 纵轴 = 5 个预测变量（不含截距）友好标签，按 β 估计值升序；横轴 = 系数 β with 95% CI；x=0 黑色虚线 = 无效应。深蓝实心点 = β 点估计；水平误差棒 + cap = 95% CI；星号 = 显著性（\* p<0.05，\*\* p<0.01，\*\*\* p<0.001；ns = 不显著）——**显著性定义自 v1.0-cand.5 起移入图注，图内不再出现定义文字**。本版：导师立项前 3 年发文 ***、导师立项前累计指导项目数 ***（CI 在负区）、年份 ***，省级/国家级 ns。CI 不跨 0 = 显著。
+**图注统计（v1.0-cand.3 起由图内表格/提示框移入）：** 精确 β / SE / 95% CI / p 一律以 §4.4 **Table 6** 为准（同一 CSV 单源）。导师协变量用立项前窗口：发文 [t−3, t−1]（2017–2024 池），指导数严格 year < focal year（v2.0b 泄漏修复——旧全期计数含未来项目，仅作稳健性对照）；未匹配导师记 NA 而非 0。旧版图内曾标注的 "recent-3y β=+0.0085, p=4.5e-7" 已因脏列撤回（§4.2），本图不含该系数。
 **超标题：** 两层随机截距混合模型（projects nested in colleges），ICC=0.7376, n=3,231 projects × 39 college groups；高置信匹配 sensitivity（n=2,750）符号与显著性完全一致（见 §4.4）。
 
-### Figure 7: 导师活动量三分位转移矩阵热力图
-**来源：** `matthew_effect/transition_probabilities_year_tercile.csv → Figure7_TransitionMatrix.pdf/png`（5.5 × 5 inch）
+### Figure 7（Supplementary，v1.0-cand.4 降级）: 导师活动量三分位转移矩阵热力图
+**来源：** `matthew_effect/transition_probabilities_year_tercile.csv → supplementary/Figure7_TransitionMatrix.pdf/png`（5.5 × 5 inch）
+**降级原因：** 它讲的是 supervisor activity tercile 的**位置固化**，不是国家级项目路径依赖的主检验（主检验 = Figure 10c lagged Logit OR=2.25***）；两者互为佐证但信息有主次，主文不再单占一个图号。
 **坐标轴：** 横轴 = To（下一年三分位：T1 低 / T2 中 / T3 高），纵轴 = From（当年三分位：T1 低 / T2 中 / T3 高）。
 **颜色：** cmap=YlOrRd，白黄→深红褐色，vmin=0%, vmax=70%（颜色越深 = 转移概率越大）。每个格子中心有三行百分比数字（白字>40%、黑字<40%，黑体 11pt）= 转移概率 %。
 **数据：** n=736 个 consecutive 导师-年份对（当年有指导项目、下一年也有；分位按导师当年**总项目数**在当年截面的三分位划分）。对角线概率：62–66%，即指导活动量的分位高度持续。国家级项目获取的年度路径依赖（OR≈2.3）见 §5.5 滞后 Logit。
 **colorbar：** 右侧 "Transition probability (%)" 标签 8pt。
 
-### Figure 8: 扩散滞后直方图（可计算 lag 的 29 个主题的分布）
-**来源：** `diffusion_lag/diffusion_lag_histogram_bins.csv + diffusion_lag/diffusion_lag_aggregate_stats.csv (标题动态读 OVERALL 行) → Figure8_DiffusionLag.pdf/png`
-**坐标轴：** 横轴 = lag 年份（整数分桶 -4 ~ +4；lag=0 桶 = 同步；负桶=培养先出，正桶=科研先出）；纵轴 = 主题数（绝对计数）。
-**颜色：** 正 lag 红色、零 lag 浅灰、负 lag 绿色（语义与 Figure 9 的正负区淡红/淡绿一致）。每个柱顶有标签 "count (pct of 29)"。
-**超标题：** 动态从 aggregate_stats 的 OVERALL 行拼出："(29/886 topics with defined lag, median={med:.1f}, mean={mean:+.2f} yr)"（**避免硬编码 69/307 这类历史假数字**）。
-**注意：** 仅 HRLT 24 + HRHT 5 = 29 个主题入此直方图（LRHT/LRLT 无定义不在图中，占比 886-29=857 未出，这也是直方图总柱高只有 29 的原因）。
+### Figure 8: 扩散滞后双面板（**v1.0-cand.4 合并旧 Figure 8 + Figure 9**：panel (a) 整体离散分布 + panel (b) 分象限箱线；v1.0-cand.5 副标题措辞中性化）
+**来源：** `diffusion_lag/diffusion_lag_histogram_bins.csv + diffusion_lag_aggregate_stats.csv (标题动态读 OVERALL 行) + diffusion_lag/topic_first_year_adoption.csv + topic_model/quadrant_overall_summary.csv → Figure8_DiffusionLagPatterns.pdf/png`（13.0 × 5.4 inch）
+**合并理由（reviewer audit）：** 旧 Figure 9 的 LRHT/LRLT 斜纹 N/A 面板占据约 50% 横向空间却只表达"没有数据"，视觉主角是斜纹本身；合并后 panel (b) 只画有定义的两列，LRHT/LRLT 未定义改用一句斜体注释交代，整章扩散滞后一张图讲完。
+**Panel (a) — Overall lag distribution（离散整数柱状图）：** 横轴 = lag 年份（整数刻度 −4…+4，**xlim 锁定 −4.6~4.6，修复旧版横轴拉到 +10 的右侧大片空白**；空桶不画）；纵轴 = 主题数。正 lag 红（科研先出）/ 0 灰（同步）/ 负绿（培养先出），每柱顶标 "count (pct%)"。超标题动态从 aggregate_stats 的 OVERALL 行拼出 "(29/886 topics defined; median=0.0, mean=+0.59 yr)"（**避免硬编码 69/307 这类历史假数字**）。
+**副标题（v1.0-cand.5 中性化）：** "Positive lag = research precedes training; negative lag = training precedes research."——删除旧版 "course update needed / training uses already-cold content" 等超出数据直接观测的解读性措辞（课程内容未被直接观测，负 lag 亦不能自动解读为"内容过时"；机制讨论留在 §6.2 与 §12）。
+**Panel (b) — Defined lag by quadrant（只画有数据的两列）：** 横轴 = HRLT (n_defined=24 / 173) 与 HRHT (5 / 5) 两列；纵轴 = lag(年) = `year(project first non-trivial presence) − year(paper first non-trivial presence)`，范围 −5.1 ~ +5.1；y>0 淡红（科研先出）/ y<0 淡绿（培养先出）/ y=0 黑虚线。箱元素同 Figure 4（半透明彩箱 + 粗黑中值 + 白菱形均值 + 1.5·IQR 须）+ jitter 散点（seed 7）。HRHT 上方白框标注 "4 at lag 0 (synchronized), 1 at lag −2 (training first)"，防退化箱线被误读。**左上角斜体注释**："Lag was undefined for ALL LRHT (0/10) and LRLT (0/698) topics under the frozen single-year non-trivial-presence rule."——不再绘制巨型斜纹 N/A 面板。
+**图注统计（原 Figure 9 图注内容，全部保留）：**
+- HRLT（n=24）：mean=+0.79 yr，SD=1.96，med=+0.5，Q1/Q3=0.0/+2.0；lag>0 占 50%、=0 占 38%、<0 占 12%；one-sample t vs 0：t=1.98，p=0.059（方向为正但未达显著）。
+- HRHT（n=5）：mean=−0.40 yr，SD=0.89，med=0.0（4/5 主题 lag=0、1 个 lag=−2）；one-sample t vs 0：p=0.374 ns。
+- 组间（HRLT vs HRHT）：Welch t=+2.11, p=0.054（ns）；Mann–Whitney U p=0.095（ns）；Cohen d=+0.78（大效应、方向一致，但 HRHT n=5 功效不足，不作显著结论）。
+- **定义（frozen）**：lag 要求两端在同一年达到单年非平凡规模（论文端 ≥3 篇且 ≥0.2%、项目端 ≥2 项且 ≥0.2%，见 §6.1）；LRHT（0/10）与 LRLT（0/698）在 2020–2024 语料中从未满足 → lag 未定义（与其低研究象限属性一致）。旧 12K 池 "LRHT n=8, med=−1.5 yr" 来自 K=307 遗留数据，**已 RETRACTED**。
 
-### Figure 9: 分象限扩散滞后箱线图（🔴 v0.9.1 硬纠正：LRHT/LRLT 为斜纹 N/A 面板；统计框移到图下方）
-**来源：** `diffusion_lag/topic_first_year_adoption.csv (lag_defined==True n=29) + topic_model/quadrant_overall_summary.csv (象限主题总数) → Figure9_DiffusionByQuadrant.pdf/png`（11.5 × 9.6 inch；上半 ~48% 为 axes，下半为两个统计框 + 组间检验框）
-**上半 axes：** 横轴 = **固定四列**（HRLT / HRHT / LRHT / LRLT），刻度标签同时给出"n_defined = X (该象限总题数)"；纵轴 = lag(年) = `year(project first non-trivial presence) − year(paper first non-trivial presence)`，单年非平凡出现规则（论文端单年 ≥3 篇且 ≥0.2%、项目端单年 ≥2 项且 ≥0.2%，见 §6.1），范围固定 −5.1 ~ +5.1。y>0 淡红（科研先出，培养需要赶上），y<0 淡绿（培养先出），y=0 黑色虚线。
-- HRLT（n=24）/ HRHT（n=5）：半透明彩箱（Q1–Q3）+ 粗黑中值线 + 白菱形均值 + 1.5·IQR 须 + jitter 散点（seed 7，s=46）。HRHT 箱线因 4/5 主题 lag=0 退化为 0 处平线，故在其上方加白框直接标注 "n = 5 topics；4 at lag 0 (synchronized)；1 at lag −2 (training first)"，防止退化箱线被误读为数据缺失。
-- LRHT / LRLT：**浅灰斜纹（hatch）N/A 面板**——用满高灰色斜纹矩形 + 居中灰字显式表达"该列有意不画数据"（不是漏画也不是坏图）：LRHT 标注 "lag undefined in this corpus — paper side never reaches non-trivial yearly presence (>=3 papers & >=0.2%/yr)"，LRLT 标注 "neither side reaches non-trivial yearly presence (paper >=3 & 0.2%/yr; project >=2 & 0.2%/yr)"。旧版虚线 [ ! ] 占位框观感近似坏掉的箱线图，已弃用。
-**下方信息区（figure 坐标锚定）：**
-- HRLT / HRHT 两个色边小框：n / mean / ±SD / med（附 one-sample t vs 0 的 p）/ Q1·Q3 / whisk / lag>0·=0·<0 三向百分比。
-- 红边大框：**HRLT vs HRHT 组间 Welch t=+2.11, p=0.054（ns）；Mann–Whitney U p=0.095（ns）；Cohen d=+0.78（大效应、方向一致，但 HRHT n=5 功效不足，不作显著结论）** + 读图规则（lag>0 = 论文端先达到单年非平凡规模）+ "旧 12K 池 LRHT n=8, med=−1.5 yr 已 RETRACTED" 撤回声明。
-
-### Figure 10: 马太效应 Lorenz + Pareto 双面板
-**来源：** `matthew_effect/supervisor_gini_pareto.csv (右面板) + table5_project_dataset_n3714_full.csv (左面板由脚本内重算国家级分配) + matthew_effect/matthew_effect_audit.json (Gini/Pareto权威值) → Figure10_MatthewEffect.pdf/png`（11 × 5 inch）
-**左 (a) 面板 — Lorenz 曲线：**
+### Figure 10: 马太效应三联面板（**v1.0-cand.4 升级**：(a) Lorenz + (b) Pareto + (c) Lagged path-dependence OR）
+**来源：** `matthew_effect/supervisor_gini_pareto.csv + table5_project_dataset_n3714_full.csv (Lorenz 由脚本重算) + matthew_effect/matthew_effect_audit.json (权威值) + lagged_logit_national_path_dependence.csv → Figure10_MatthewEffect.pdf/png`
+**升级理由：** 把"截面集中 (a,b)"与"跨年持续 (c)"合成一张完整证据链——资源不仅集中，而且优势跨年度自我复制；Figure 7 转移矩阵因此可安心下放 Supplementary。
+**Panel (a) — Lorenz 曲线：**
 - 横轴 = 累计导师比例（从最穷国家级项目到最富国家级项目排序，0–1 线性 0–100%）。
 - 纵轴 = 累计国家级项目份额（同样排序后累加，0–1 线性 0–100%）。
 - 45° 黑虚线 = Perfect equality。红色 Lorenz 实线与 45° 线之间的红色阴影面积 = 不均等面积。Gini 系数 = 该面积的 2 倍。
 - 图例：标签 "National grants (Gini=0.767)" 动态从 audit 读。
-**右 (b) 面板 — Pareto 柱状图：**
+**Panel (b) — Pareto 柱状图：**
 - 横轴 = Top N% 导师切片（top1 / top5 / top10 / top20 / top50）。
 - 纵轴 = 该切片导师持有的国家级项目份额 (%)。
 - 颜色：红=top1，橙=top5/top10，蓝=top20，灰=top50。柱顶标签 "X.X%" 黑体。
 - 水平黑色虚线 = 5%（Equal share 基准线，即 Top5% 应该拿 5%，实际 Top5% = 34.0% → 是基准线的 6.8×）。
-**冻结权威值：** Gini(national projects) = 0.767（audit 验证 0.766658）；Top 5% share = 34.0%（34.0176%）；Top 20% share = 76.8%。
+**Panel (c) — Lagged path-dependence OR 森林（v1.0-cand.4 新增）：**
+- 两个样本各一行：navy 点 = OR，深灰横线 = 95% CI（带端帽）；黑虚线 OR=1 = "no persistence"；CI 右侧标 "OR = x.xx [lo, hi] ***"，第二行标 p 值。
+- 模型 = 滞后 t−1→t Logit：P(national project in year t) ~ nat_{t−1} + log(1+load_{t−1}) + 年份 FE，SE 按导师聚类。Sample A = active t−1 & t（736 cells / 491 advisors）；Sample B = expanded risk set（inactive t 编码 0；2,302 cells / 1,621 advisors）——v1.0-cand.5 措辞修正，避免 "zero-filled" 被误读为粗暴缺失值填补。
+**冻结权威值：** Gini(national projects) = 0.767（audit 验证 0.766658）；Top 5% share = 34.0%（34.0176%）；Top 20% share = 76.8%；**OR(A)=2.25 [1.57, 3.22], p=1.0×10⁻⁵ ***；OR(B)=2.28 [1.68, 3.09], p=1.4×10⁻⁷ ***（§5.5 同一冻结 CSV 单源）**。
 
-### Figure 11: 四象限汇总柱状图（三子图）
-**来源：** `topic_model/quadrant_overall_summary.csv → Figure11_QuadrantSummary.pdf/png`
+### Figure 11（Supplementary，v1.0-cand.4 降级）: 四象限汇总柱状图（三子图，clustered 口径）
+**来源：** `topic_model/quadrant_overall_summary.csv → supplementary/Figure11_QuadrantSummary.pdf/png`
+**降级原因：** 与 Figure 3 信息高度重复（象限计数与文档量已在散点空间表达），主文不再单占一个图号。
 **三子图：** 同 Figure 3 象限颜色。
 - 子图 (a) 左：横轴=四象限缩写，纵轴=主题数（绝对数）。每柱顶标注数字（5/173/10/698）。
-- 子图 (b) 中：纵轴=论文总数（paper_count，56,901 中的该象限归属）。每柱顶标注（2090/18141/219/15097）。
-- 子图 (c) 右：纵轴=项目总数（project_count，3,714 中的该象限归属）。每柱顶标注（308/399/278/765）。
+- 子图 (b) 中：标题 = **Clustered paper documents**。每柱顶标注（2090/18141/219/15097）。
+- 子图 (c) 右：标题 = **Clustered project documents**。每柱顶标注（308/399/278/765）。
+- **分母诚实（v1.0-cand.4）**：图题声明 "Denominators = clustered documents only; BERTopic outliers (38.47% of docs) are outside the four quadrants"——四象限论文合计 35,547 ≠ 56,901、项目合计 1,750 ≠ 3,714，差额 = OUTLIER 文档，图自己说清楚。
 **读图口诀：** HRLT 中柱（b 超高论文数 ≈18K，但 c 矮项目数 ≈399 → "研究做透了但培养没跟上"）= 课程改革靶点。LRHT 相反 (b 矮 219, c 高 278 → "培养内容教了科研没做") = 教学大纲核查靶点。
 
-### Figure 13: 主流主题年度流行度堆叠面积图（**只画 Top-15 主流题；顶部框解释每条色带是什么主题**）
-**来源：** `topic_model/topic_yearly_prevalence_for_diffusion_lag.csv (886 × 5 = 4,430 rows) + topic_model/topic_info.csv (c-TF-IDF 主题词) → Figure13_TopicStackedArea.pdf/png`（12 × 10 inch）
-**顶部主题含义框：** 图面顶部灰框（3 列 × 5 行）以"色板 + 英文释义"逐条解释 15 条色带对应的主题内容，释义取自 BERTopic 的 c-TF-IDF top words（少数中文主导主题的英文释义取自其 Representation 列英文词）：T5 Language learning (Chinese/English)；T72 Robots/robotics；T125 Drones/unmanned vehicles；T22 Dental implants；T216 Online learning/big data；T6 Urban land/ecology；T160 College English/talent education；T429 Internet platforms & legal governance；T333 Event cameras/imagers；T3 Blockchain/privacy computing；T196 Deep learning；T140 Food safety；T2 Lithium-ion batteries；T345 Elderly care/aging；T81 Video quality/coding。框内每列自上而下 = 堆叠自底向上的顺序。
-**布局口径（图高不变、图区压扁）：** 图幅仍为 12×10 inch，axes 二次压扁至约占 **30%** 高度（用户要求色带再扁一半，上一版为 60%），顶部 ~60% 留给主题含义框；纵轴范围 0–18%（只含 Top-15，底蓝带从 0 起逐层累加）。871 个长尾主题合并的 Other（约 30–33% 份额）整带剔除，份额在图底斜体脚注逐年透明列出（2020: 29.5% / 2021: 31.2% / 2022: 29.4% / 2023: 33.3% / 2024: 33.1%），与主流题份额相加可对账全量总盘 47.1/48.2/44.8/47.9/46.5%（2024 因四舍五入差 0.1%）。
-**圆点 + 数字（读图重点）：** **每条色带 × 每个年份的上边界**放白边深色小点（ms=2.9），点右侧标注从 0 到该带上边缘的累计百分比（6.0pt 白色描边）。读法：相邻两色带同年数字之差 = 上层色带自身厚度；同一色带 5 个年份数字之差 = 该主题在培养体系中的年度扩张/收缩。
-**年度总量：** 每年栈顶粗体 "Top-15 total" = 15 个主流题当年合计份额（17.6% / 17.0% / 15.4% / 14.6% / 13.5%）。
-**一个可观察的结构性趋势：** 主流题合计份额 17.6%→13.5% 缓降而长尾 Other 29.5%→33.1% 缓升（全量总盘 ~47% 基本稳定），提示培养体系选题在从少数热门题向长尾缓慢分散；最底蓝带 T5（语言学习）7.3%→4.1% 逐年降温，T216（在线学习/大数据）2020 年后持续扩张。
+### Figure 13（Supplementary，v1.0-cand.5 降级）: 时间主题动态双面板（**v1.0-cand.4 重做、v1.0-cand.5 修分母口径**：panel (a) 趋势双线 + panel (b) Top-15 热力图）
+**来源：** `topic_model/topic_yearly_prevalence_for_diffusion_lag.csv (886 × 5 = 4,430 rows) + topic_model/topic_info.csv (c-TF-IDF 主题词) → supplementary/Figure13_TopicDynamics.pdf/png`（13.5 × 6.2 inch）。
+**降级原因（v1.0-cand.5，reviewer verdict）：** "主流降、长尾升"属第二层发现，不为回答 RQ 的主证据链所必需；主文减法至 7 图号后移入附录。
+**换图种理由（reviewer audit）：** 旧堆叠面积图要求读者同时处理 15 种颜色 × 15 个主题名 × 5 年色带 × 上下边界差值 × 几十个累计数字，是全套图认知负担最高的一张；新版只回答一个问题——**培养选题在集中还是分散？**
+**Panel (a) — Mainstream decline, long-tail diversification（两条线）：** 蓝线圆点 = Top-15 mainstream topics 合计份额（按生命周期总份额选出）：**17.6% → 13.5% 缓降**，数值标点下方；橙线方块 = **Other clustered topics**（其余 871 个 clustered 主题长尾合计）：**29.5% → 33.1% 缓升**，数值标点上方。纵轴 = Share of **all** project documents (%)——分母为**全部 3,714 个项目文档**（v1.0-cand.5 口径修正：旧稿误标 "clustered"，但两线合计 17.6%+29.5%≈47.1% 恰为 clustered 项目占全部项目之比；若分母真是 clustered docs 应合计 100%。已核冻结 CSV：`pct_project` 的分母列 `denom_project` 逐年合计 = 3,714）。长尾线命名 "Other clustered topics" 仍指 871 个 clustered 主题——unclustered（OUTLIER）项目不属于任何 clustered 主题（不进入两线分子），但仍计入全部项目分母（与 "Share of all project documents" 口径自洽）。
+**Panel (b) — Top-15 topic prevalence heatmap（15 行 × 5 列）：** 行 = Top-15 主题（生命周期份额降序，首行 = 最大主题），行标签 = "T编号 + c-TF-IDF 英文简义"（如 T5 Language learning、T72 Robots/robotics、T125 Drones/unmanned vehicles）；列 = 2020–2024；cell = 该主题当年项目侧流行度 %（YlOrRd，格内标数值）；右侧 colorbar = "Project-side prevalence (% of all projects / yr)"（v1.0-cand.5 同步修正）。
+**分母诚实（v1.0-cand.5）：** 图题声明 "shares of all projects per year; topics = BERTopic clusters"——分母 = 全部项目文档。注意与 Figure 11（clustered-only 口径）不同，两图百分比不可直接互比；38.47% 离群文档不属于任何 clustered 主题（不在两线分子中），但仍计入全部项目分母。
+**冻结真值：** T5 语言学习 7.27% → 4.06% 逐年降温（heatmap 首行）；主流合计 17.6→13.5% 缓降、长尾 29.5→33.1% 缓升（两线合计 ≈47% = clustered 项目占全部项目之比，逐年稳定）→ 培养体系选题从少数热门题向长尾**缓慢分散化**；T216 在线学习/大数据 1.64% → 0.12% 波动收缩。
 
-> 注意：原 Figure 12（Top-20 学院）与 Figure 5 重复，**已被删除并重新命名为 Figure S1（附录全 40 学院排名，见上文）**。主图 12 张 = Figure 2–11, 13（补号）+ Figure S1 附录。详细文件树见 `05_FINAL_FIGURES/main/*.pdf`（12 张）与 `05_FINAL_FIGURES/supplementary/FigureS1*.pdf`。
+> 注意：原 Figure 12（Top-20 学院）与旧 Figure 5 重复，已删除并更名为 Figure S1（附录全 40 学院排名）。**v1.0-cand.5 主图减法后的主文图 = 7 个文件 / 7 个图号：Figure 2, 3, 4, 5, 6, 8, 10**（叙事链：方法路线 → 知识结构 → 项目层分布 → 学院结构 → 导师机制 → 时间扩散 → 资源累积优势）；**Supplementary 4 图 = Figure 7, 11, 13, S1**（Figure 13 自 v1.0-cand.5 起降级；Figure S2（旧 Top-20 raw-mean）自 v1.0-cand.5 起直接删除；旧 Figure 4a 并入 Figure 4 后删除）。详细文件树见 `05_FINAL_FIGURES/main/`（7 张）与 `05_FINAL_FIGURES/supplementary/`（4 张）。
 
 ---
 
@@ -800,6 +797,19 @@ R 脚本（`06_CODE/09_ri_clpm.R`）使用 lavaan 包的 FIML（全信息最大�
   - **修复**：重算为 `advisor_prior_supervised_projects`（严格 year < focal year，多导师原子取均值；旧列保留不覆盖，数据集 append-only 更新）。诊断：corr(旧,新)=0.649（旧均值 3.7 vs 新均值 1.1）；按届左截断（2020 届恒 0、2021 届均值 0.74、2024 届均值 1.96）——左截断非泄漏，效应识别主要来自 2022–2024 年内变异。
   - **HLM 重跑（v2b，规格与 v2 完全一致，仅替换指导数变量）**：Primary n=3,231/39 学院，ICC=0.7376（v2 为 0.7393）；立项前 3 年发文 β=+0.0043 ***（不变）；**立项前累计指导 β=−0.0063, p=1.9×10⁻⁵ ***（v2 全期版 −0.0065, p=1.1×10⁻⁴，同号同显著）；年份 β 由 +0.0018** 强化至 +0.0031***（clean 前置变量释放了被全期计数吸收的年份趋势）；省级/国家级仍 ns。Sensitivity（matched-only n=2,750）同号同显著，无一反转。**全部结论方向与显著性不变，"包工头"负效应不依赖窗口口径。**
   - **冻结与同步**：新增 `hlm_mixedlm_v2b_*` 系数/摘要 + `hlm_v2_vs_v2b_supervision_comparison.csv` 对照表；v2 全期版降级为稳健性对照披露于 §4.4；Table 6、§2.2、§4、§8.1、§9 Fig6 图注、§12 同步；Figure 2（ICC 0.738）与 Figure 6 重生成；§2.3 重写为 2017–2019/2020–2024 双语料分工说明并删除"所有下游分析同一窗口"旧句（该说法与各分析实际窗口不符）。
+- **1️⃣2️⃣ 第十二轮（v1.0-cand.4）：图表审计 Figure Freeze（Scientometrics 投稿口径；纯可视化轮，冻结数值零改动）**：
+  - **主文收缩为 9 文件 / 8 图号**（Figure 2, 3, 4a, 4b, 5, 6, 8, 10, 13）：**Figure 13 重做**为双面板（panel (a) Top-15 主流主题与 Other clustered topics 趋势双线 + panel (b) Top-15 × 5 年流行度热力图，替换 15 色堆叠面积图）；**旧 Figure 9 并入 Figure 8**（panel (a) 整体离散棒棒糖分布、xlim [−4.5, 4.5] 整数刻度 + panel (b) HRLT/HRHT 分象限箱线；LRHT/LRLT 不再绘制斜纹 N/A 面板，改一句斜体注释给出 0/10 与 0/698 未达标）；**Figure 2 双语料重构**（主 RTAS 语料 2020–2024 实线框 vs 辅助导师历史语料 2017–2019 灰虚线框仅喂 HLM 立项前协变量；ρ=.405 移入 Embedding 框；从未估计的 RI-CLPM 从方法图删除）；**Figure 5 换为学院随机效应 caterpillar**（v2b BLUP ± 95% CI、直接对应 ICC=0.7376，替代 raw-mean Top-20 排名，避免小样本学院被放大）；**Figure 10 升级三联**（(a) Lorenz + (b) Pareto + (c) 滞后路径 OR 森林，"截面集中 + 跨年自我复制"一条证据链）；**Figure 4a 柱状改 point + 95% CI**；**Figure 6 去红绿底色与 CI 颜色编码**（只留蓝点 + CI + 星号）；**Figure 3 加 zoom inset（原点簇 698 LRLT 可读）+ bubble size 参考图例（25/100/500 docs）**。
+  - **Supplementary 4 图 = Figure 7（转移矩阵）, 11（象限汇总，图例改 Clustered paper/project documents 并声明 38.47% 离群在四象限之外）, S1（40 学院 raw-mean 全排名，y 轴 rank 1 在顶的方向修正）, S2（Top-20 raw-mean，自旧主文 Figure 5 降级）**。
+  - **同步**：gallery.html 全卡片改版（v1.0-cand.4 Figure Book）；本稿图表章节（§1.2/§3/§4/§5/§6/§9）图注全部改为 chart-only + 统计入图注口径；`00_README/CHANGELOG.md` 新增 v1.0-cand.4 条目。**全部冻结 CSV 零改动**——本轮只动可视化与图注位置。
+- **1️⃣3️⃣ 第十三轮（v1.0-cand.5）：主图减法与口径修正（Figure Freeze 确认轮，冻结数值零改动）**：
+  - **主文减法至 7 文件 / 7 图号**（Figure 2, 3, 4, 5, 6, 8, 10）：**旧 Figure 4a（均值 ± 95% CI 点图）删除**——与 Figure 4 均值菱形信息高度重复，其 ANOVA 信息移入 Figure 4 图注；Figure 4b 更名为 **Figure 4**（教学式长标题缩短，元素定义全部入图注）；**旧 Figure S2（Top-20 raw-mean）直接删除**（无增量信息且放大小样本）；**Figure 13 降级 Supplementary**——"主流降、长尾升"属第二层发现，不为回答 RQ 的主证据链所必需。
+  - **Figure 13 分母口径修正（本轮最重要修复）**：panel (a) 纵轴由 "Share of clustered project documents (%)" 改为 **"Share of all project documents (%)"**，panel (b) colorbar 由 "% of clustered docs / yr" 改为 **"% of all projects / yr"**，图题同步 "shares of all projects per year"。依据：两线合计 17.6%+29.5%≈47.1% 恰为 clustered 项目占全部项目之比；若分母为 clustered docs 应合计 100%。已核 `pct_project` 的分母列 `denom_project` 逐年合计 = 3,714。本稿 §9 Figure 13 描述同步改写。
+  - **Figure 2 数据流闭环**：Heterogeneity 的输入箭头由 "Main corpus 直连" 改为**从 RTAS Frozen 正交肘线分叉**（异质性检验的对象是冻结 RTAS，不是原始语料）；Spearman 记号规范为 **ρ_s = .405**。
+  - **措辞中性化**：Figure 8 副标题改为 "Positive lag = research precedes training; negative lag = training precedes research."（删除 "course update needed / training uses already-cold content" 等数据未直接支持的解读）；Figure 10 panel (c) "Sample B: zero-filled" 改为 **"Sample B: expanded risk set"**（避免被误读为粗暴缺失值填补）；Figure S1 标题 "p≈0" 改为 **"p < .001"**；Figure 6 显著性定义文字移入图注（图内只留星号）。
+  - **同步**：`10_generate_figures.py` 完成上述修改并一次性重生成全部 11 张图（main 7 + supplementary 4，删除旧 Figure4a / Figure4b / FigureS2 / main 下 Figure13 共 8 个陈旧文件）；gallery.html 同步 v1.0-cand.5 图册；`00_README/CHANGELOG.md` 新增 v1.0-cand.5 条目。**全部冻结 CSV 零改动。**
+  - **手稿文本补漏（cand.5 复审 5 处，纯文字同步）**：§4.4 Figure 6 读图提示按 chart-only 现图重写（蓝点+灰色 CI+星号，删除旧绿/红色带与灰框/黄框描述）；§8.1 对账表 SIE 行改为 "RTAS 有效，但 v1.0 MixedLM complete-case 因导师协变量 NA 未纳入（Primary N=3,231 / G=39）"；§8.2 `college_rtas_top20.csv` 降级标注为历史/辅助输出（Figure 5 已改用 `hlm_v2b_college_random_effects.csv`）；§12.2 局限第 6 条 "Figure S1/S2" 改为仅 "Figure S1"；§9 Figure 13 OUTLIER 逻辑修正——离群项目不属于任何 clustered 主题（不在两线分子），但仍计入全部项目分母。冻结 CSV / 图 / 数值零改动。
+  - **手稿文本补漏 II（cand.5 复审 2 处，纯文字同步）**：§12.1 SIE 条目改写为「RTAS 有效但因导师协变量缺失未进入 Primary MixedLM complete-case（N=3,231/G=39），ANOVA 因组内 n=1 自动排除，仅保留于描述性排名」；§8.2 `ri_clpm_panel_college_wide.csv` 勘误为 **40 学院宽表**（实测含 SIE，w2021/w2023 RTAS 缺失——旧稿 "39 学院 / SIE 已剔除" 有误），与 audit JSON `n_colleges=40` 一致；§7.2 补记全变量 complete-case=35。RI-CLPM 已降为未来工作，不影响主结论。冻结 CSV / 图 / 数值零改动。
+  - **手稿文本补漏 III（cand.5 冻结前，§1.1.5 历史口径消歧）**：v0.9.1 行 "保留其 1 条观测在 HLM 内做完整方差分解" 改写为 "v0.9.1 旧 RandomEffects 模型可保留该 1 条 RTAS 有效观测；当前 v1.0 Primary MixedLM complete-case 因导师协变量 NA 未纳入（N=3,231/G=39），ANOVA 因组内 n=1 同样排除"——显式区分历史 40 组 substrate 与正式模型 39 组；"因此 HLM（对 RTAS 数值做 OLS）可以合法纳入" 改为 "该观测在 RTAS 描述性分析中有效，曾进入 v0.9.1 旧版模型，当前处理见 §4.4"；删除 §1.1.5 与 §12.1 中无制度文件支持的 "留学生全中文授课 / 科研产出依赖跨学院合作" 解释性背景，统一降调为 "样本仅 n=1，不作绩效式比较"。纯文字同步，冻结 CSV / 图 / 数值零改动。
 
 ---
 
@@ -827,7 +837,9 @@ R 脚本（`06_CODE/09_ri_clpm.R`）使用 lavaan 包的 FIML（全信息最大�
 | **v0.9.1** | **57K 全量论文纠正（56,901 篇 / K=886非离群+1OUTLIER=887CSV行 / ICC=0.762 / 国家级βns / Tukey 国-省 ns / LRHT lag n.a. 撤回）** | 已完成（被 v1.0-cand 取代；旧导师 3y 发文 *** 结论撤回） |
 | v1.0-cand | 导师协变量血缘审计 + HLM 重跑：79,339 篇论文池（2017–2024）/ 立项前窗口 [t−3,t−1] / 未匹配=NA / MixedLM 随机截距 ICC=0.7393 / 导师立项前发文 β=+0.0043 ***、指导负荷 β=−0.0065 ***、年份 β=+0.0018 **、等级 ns | 已完成（被 v1.0-cand.2 补充取代） |
 | **v1.0-cand.2** | **外审 P0 处置：循环 OR=6.085 撤回改滞后路径模型（OR=2.25/2.28）/ RI-CLPM 降级未来工作 / 选型表去伪造（composite 0.742 mean 选中）/ 阈值 15-20-25% 敏感性 / C1 正名 pairwise semantic validity / 前沿代理声明 / outlier 与小 n caveat** | 已完成（被 v1.0-cand.3 补充取代） |
-| **v1.0-cand.3** | **supervision 协变量未来泄漏修复：全期计数 → 严格 year<t 前置累计，HLM v2b 重跑（ICC=0.7376；指导负荷 β=−0.0063*** 同号同显著；年份 β 强化至 +0.0031***；等级 ns），结论无一反转；§2.3 双语料分工说明；Fig 2/6 重生成** | **当前正式版本 ✅（2026-09-04，Research Audit 收口）** |
+| **v1.0-cand.3** | **supervision 协变量未来泄漏修复：全期计数 → 严格 year<t 前置累计，HLM v2b 重跑（ICC=0.7376；指导负荷 β=−0.0063*** 同号同显著；年份 β 强化至 +0.0031***；等级 ns），结论无一反转；§2.3 双语料分工说明；Fig 2/6 重生成** | 已完成（被 v1.0-cand.4 补充取代） |
+| **v1.0-cand.4** | **第十二轮图表审计 Figure Freeze：主文收缩 9 文件 / 8 图号（Fig13 两面板重做、Fig9 并入 Fig8、Fig2 双语料重构删 RI-CLPM、Fig5 换学院 caterpillar、Fig10 三联、Fig4a 改 point+CI、Fig3 加 inset+bubble legend、Fig6 去冗余装饰；Fig7/11 降级 Supplementary、旧 Top-20 降级 Figure S2），全部冻结数值零改动** | 已完成（被 v1.0-cand.5 补充取代） |
+| **v1.0-cand.5** | **第十三轮主图减法与口径修正（Figure Freeze 确认）：主文收缩 7 文件 / 7 图号（删 Fig4a、删 FigS2、Fig4b 更名 Figure 4、Fig13 降级 Supplementary）；Fig13 分母口径修正 clustered→all projects（y 轴/colorbar/图题 + §9 同步）；Fig2 Heterogeneity 箭头改从 RTAS Frozen 分叉 + ρ_s = .405；Fig8 副标题中性化；Fig10c zero-filled→expanded risk set；FigS1 p≈0→p<.001；Fig6 显著性定义入图注；全部冻结数值零改动** | **当前正式版本 ✅（2026-09-05，Figure Freeze）** |
 | v1.0 | 投稿版（GitHub 仓库转公开） | 待定 |
 
 ### 11.4 软件环境
@@ -842,7 +854,7 @@ R 脚本（`06_CODE/09_ri_clpm.R`）使用 lavaan 包的 FIML（全信息最大�
 
 1. **语料内容**：57K 论文仅有**标题（无摘要、无全文）**，RTAS 是标题↔标题余弦相似度；项目也仅有**项目标题（无项目摘要/研究内容细节）**。标题是主题的强压缩表示——若未来开放摘要/全文，可做标题+摘要串联的 RTAS 鲁棒性检验
 2. **论文-导师匹配率**：58.5%（33,312/56,901）的论文成功通过拼音姓名匹配到学院；剩余 41.5% 因 OpenAlex 作者字段缺失机构、或姓名拼音歧义被保守跳过。这部分未匹配论文可能包含许多跨学院合作研究，RTAS 估计可能略微保守
-3. **International Education 学院样本极小**（SIE n=1 project，RTAS=0.0000, rank 40/40）：留学生中文授课、科研产出依赖跨学院合作——它的 RTAS 在 HLM 中是一条权重极小的观测，ANOVA 因 n≥2 统计规则被自动排除；两种处理各自合理，但不可把它和工科院系一起比排名
+3. **International Education 学院样本极小**（SIE n=1 project，RTAS=0.0000, rank 40/40）：其 RTAS 值有效，但因导师协变量缺失，未进入 v1.0 Primary MixedLM 的 complete-case 样本（N=3,231 / G=39）；ANOVA 亦因组内 n=1 被自动排除。因此该学院仅保留于描述性学院排名（Figure S1）中，不宜与大样本学院作绩效式比较
 4. **语言不对称**：项目标题 92% 中文、论文标题 100% 英文，尽管用了多语 MiniLM，跨语言语义对齐仍然是潜在损失点
 5. **RI-CLPM 未估计（方向性证据缺位）**：交叉滞后面板在本稿中只完成数据搭建、从未估计（环境无 R/lavaan，无系数）；且原三波设计使用累积窗口、波次嵌套、2025 波无数据（§7）。导师级面板本身也因稀疏性不可行（导师跨 1–2 波参与率低）。因此"RTAS↔国家级项目率"的方向性在本稿中无统计证据，仅靠 HLM 协变量的立项前时间窗（§4.2）提供部分时间先后
 6. **省级 vs 国家级的等级差异仅为趋势**：Tukey HSD 严格多重比较中 **P-N p-adj=0.082 (ns, Δ-CI [−0.0007,+0.0146] 跨 0)**，Welch/MWU 单对单比较是边界 *（p≈0.036）。因为是多组 3 对比场景，Family-wise α=0.05 应按 Tukey 为准，所以**严格结论只能写成 "U < P ≤ N" 而非 "严格单调 U < P < N"**——投稿时审稿人可能要求把 "国家级显著高于省级" 这句删掉，这里先给出保守表述
@@ -854,7 +866,7 @@ R 脚本（`06_CODE/09_ri_clpm.R`）使用 lavaan 包的 FIML（全信息最大�
 3. **HLM 解释度与导师匹配**：v1.0-cand.3 混合模型 ICC=0.7376，约 74% 的 RTAS 方差在学院层面，组内 $R^2$ 有限——设计内的项目/导师变量解释了部分变异，但学院间大部分差异仍由未观测的学科与组织特征驱动。导师-论文拼音匹配存在歧义子集（ambiguous 748 项）与未匹配子集（unmatched 216 项），主模型用完整案例 + 高置信匹配 sensitivity 双规格处理，但同名导师的精确身份消解（OpenAlex author ID 级）仍是未来改进方向
 4. **RI-CLPM 缺位**：该模型在本稿**未估计**（§7 状态声明），"RTAS↔国家级项目率"的方向性无统计结果可报；未来即便按非重叠年度波估计，3–5 波观测面板的方向性证据仍不等同因果，表述应限于"预测"
 5. **RTAS 聚合与选型口径**：Primary RTAS 为项目标题与学院 [2020,t] 论文集的**平均余弦相似度**（MiniLM mean；5 个聚合变体经预注册综合得分评估选定 mean，见 §2.2）。C1 效度证据为嵌入层级的成对语义一致性（150 对人工评分，r=0.4055；仅第一标注人、无评分者间信度），不是完整构念效度认证；C5 收敛效度为对 SBERT 主题分的代理相关，BGE-M3 跨模型一致性待未来检验（§12.3 项 1）
-6. **离群子集与小单元外推**：象限与扩散分析条件于 886 个非离群主题（覆盖 61.53% 文档，离群率 38.47%，§3.3 caveat），结论推广范围为"可稳定成簇的研究主题"；阈值敏感性（15%/20%/25%）下结论稳定（§3.4）。学院排名中部分高排位学院样本很小（冠军南极测绘中心 n=8、工业科学研究院 n=9，§9 Figure 5 caveat），其高 RTAS 反映学科聚焦度而非绩效
+6. **离群子集与小单元外推**：象限与扩散分析条件于 886 个非离群主题（覆盖 61.53% 文档，离群率 38.47%，§3.3 caveat），结论推广范围为"可稳定成簇的研究主题"；阈值敏感性（15%/20%/25%）下结论稳定（§3.4）。学院排名中部分高排位学院样本很小（冠军南极测绘中心 n=8；工业科学研究院在 Figure 5 caterpillar 模型样本内仅 n=5、raw 口径 n=9 见 Figure S1；§9 Figure 5 caveat），其高 RTAS 反映学科聚焦度而非绩效
 7. **"科研前沿"为代理度量**：RTAS 度量的是选题与学院**同期已发表论文组合**的语义一致性，不直接度量论文新颖性或影响力（标题数据无引用网络与期刊层级，§2.1 操作化声明）；高对齐应解读为"落在学院真实研究组合内"，而非"处在学科最前沿"
 
 ### 12.3 未来方向
@@ -869,4 +881,4 @@ R 脚本（`06_CODE/09_ri_clpm.R`）使用 lavaan 包的 FIML（全信息最大�
 
 ---
 
-*本手稿为 **v1.0-cand.2**（v0.9.1 57K 全量正式版 + 第九轮导师协变量血缘审计与 HLM 重跑 + 第十轮外审 P0-b–i 处置：循环 OR 撤回改滞后路径模型、RI-CLPM 降级、选型表去伪造、阈值敏感性、小样本 caveat）。所有数值来源于 `03_FINAL_ANALYSIS/` 与 `02_RTAS_MODEL_SELECTION/` 冻结 CSV 结果文件，任何数值修订都必须从原始数据重新运行分析管线生成，不允许手工编辑结果。Figure 5（Top-20）与 Figure S1（40 学院附录）互为补充、不重复。详细 35,721 / 12,000 / 56,901 三组数字差异澄清见 §1.1.5，国际教育学院的处理理由也在 §1.1.5。HLM v1.0 的协变量口径与撤回声明见 §4.2、§10 第九轮；第十轮全部口径变更见 §10 第十轮。*
+*本手稿为 **v1.0-cand.5**（v0.9.1 57K 全量正式版 + 第九轮导师协变量血缘审计与 HLM 重跑 + 第十轮外审 P0-b–i 处置 + 第十二轮图表审计 Figure Freeze + 第十三轮主图减法与口径修正：删 Fig4a 与 FigS2、Fig4b 更名 Figure 4、Fig13 降级 Supplementary 并修正分母口径 clustered→all projects、Fig2 Heterogeneity 箭头改从 RTAS Frozen 分叉 + ρ_s = .405、Fig8 副标题中性化、Fig10c expanded risk set、FigS1 p<.001、Fig6 显著性定义入图注；**主文 7 文件 / 7 图号 + Supplementary 4 图（Fig 7, 11, 13, S1）**，全部冻结数值零改动）。所有数值来源于 `03_FINAL_ANALYSIS/` 与 `02_RTAS_MODEL_SELECTION/` 冻结 CSV 结果文件，任何数值修订都必须从原始数据重新运行分析管线生成，不允许手工编辑结果。Figure 5（学院 caterpillar）承担主文学院间差异，Figure S1（40 学院 raw-mean 全排名）作附录参考。详细 35,721 / 12,000 / 56,901 三组数字差异澄清见 §1.1.5，国际教育学院的处理理由也在 §1.1.5。HLM v1.0 的协变量口径与撤回声明见 §4.2、§10 第九轮；第十轮口径变更见 §10 第十轮；第十一轮 supervision 口径见 §10 第十一轮；第十二/十三轮图表审计与减法见 §10。*

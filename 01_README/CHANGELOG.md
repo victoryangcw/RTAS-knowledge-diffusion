@@ -5,93 +5,103 @@ config, data, or code that could affect downstream numbers.
 
 ---
 
-## [v1.0-cand.3] — 2026-09-04 — Supervision covariate future-leak fix (last audit item before Analysis Freeze)
+## [v1.0-cand.5] — 2026-09-05 — THIRTEENTH ROUND: MAIN-TEXT SUBTRACTION & DENOMINATOR CORRECTION (FIGURE FREEZE, FINAL)
 
-### Found & fixed
-- **Future leakage in `advisor_total_supervised_projects`:** the covariate was a
-  FULL-PERIOD 2020-2024 count of projects advised by the advisor (no year filter
-  vs the focal project), so a 2020 focal project's covariate included projects
-  advised in 2021-2024 AND the focal project itself. Inconsistent with the
-  strictly pre-project windows used for all paper-side covariates in the same
-  audit script.
-- **Fix:** recomputed as `advisor_prior_supervised_projects` = number of projects
-  advised by the same advisor atom STRICTLY BEFORE the focal year (year < t),
-  mean across atoms. Old columns kept untouched (append-only) in
-  `table5_project_dataset_n3714_full.csv`.
+Milestone status: ✅ **FIGURE FREEZE (final).** Visualization-only round: all frozen
+CSVs in `03_FINAL_ANALYSIS/` and `02_RTAS_MODEL_SELECTION/` unchanged (zero numeric
+drift). Main text contracted to **7 figure numbers** (Fig 2, 3, 4, 5, 6, 8, 10);
+Supplementary = 4 (Fig 7, 11, 13, S1).
 
-### HLM v2b re-run (identical spec, only the supervision term swapped)
-- Primary (n=3,231 / 39 colleges): ICC=0.7376 (v2: 0.7393); prior-3y works
-  β=+0.0043 *** (unchanged); **prior supervised β=−0.0063, p=1.9e-5 *** (v2
-  full-period: −0.0065, p=1.1e-4 — same sign, same significance)**; year
-  β strengthened +0.0018** → +0.0031*** (the clean prior variable releases the
-  year trend absorbed by the full-period count); Provincial/National remain ns.
-- Sensitivity matched-only (n=2,750): same signs and significance, no reversal.
-- **Every substantive conclusion survives; the "serial-supervisor" negative
-  effect does not depend on the window definition.**
-- Left-truncation disclosed (not leakage): project data start 2020, so the 2020
-  cohort is 0 by construction (identification from within-year variation,
-  mainly 2022-2024).
+### Deleted (figures, `06_CODE/10_generate_figures.py` → `05_FINAL_FIGURES/`)
+- **Figure4a_MeanCI** deleted — information redundant with Figure 4 mean diamonds
+  (pairwise stats already in Figure 4 caption / Table).
+- **FigureS2_Top20Colleges** deleted — raw-mean ranking visually amplifies small-n
+  colleges (n=8/9); covered by Figure 5 caterpillar + Figure S1 full-40 ranking.
 
-### Synced
-- New frozen outputs: `hlm_mixedlm_v2b_primary/sensitivity_matched_only`
-  coefficients + summaries, `hlm_v2_vs_v2b_supervision_comparison.csv`; v2
-  full-period version demoted to robustness disclosure (§4.4).
-- Table 6, §2.3, §4, §8.1, §9 Fig6 caption, §12 updated; §2.3 rewritten as the
-  2017-2019 / 2020-2024 dual-corpus division of labor and the stale "all
-  downstream analyses share one window" sentence removed; Figure 2 (ICC 0.738)
-  and Figure 6 (v2b source) regenerated; gallery synced.
+### Renamed / demoted
+- **Figure 4b → Figure 4** (`Figure4_Distribution.pdf`): teaching-style long title
+  shortened; box/diamond/jitter/Tukey definitions moved to the manuscript caption.
+- **Figure 13 demoted to Supplementary** (`supplementary/Figure13_TopicDynamics.pdf`):
+  second-layer finding, not required to answer the RQs.
 
----
+### Corrected (freeze-blocking denominator / data flow / wording)
+- **Figure 13 denominator fix:** y-axis = "Share of **all** project documents (%)"
+  (denominator = all 3,714 project docs/yr; 17.6% + 29.5% ≈ 47.1% is the clustered
+  share of ALL projects — the old "clustered docs denominator" label was wrong);
+  colorbar = "% of all projects / yr"; subtitle "shares of all projects per year;
+  topics = BERTopic clusters". Manuscript §9 wording synced.
+- **Figure 2 roadmap:** Heterogeneity branch now fed from **RTAS Frozen** via
+  orthogonal elbow connector (no longer from the raw corpus — heterogeneity analyses
+  operate on frozen RTAS values); Spearman written as **ρ_s = .405**.
+- **Figure 8:** neutral lag wording only — "Positive lag = research precedes
+  training; negative lag = training precedes research" (speculative "course update
+  needed" / "training uses already-cold content" removed).
+- **Figure 10 panel (c):** "Sample B zero-filled" → "Sample B: expanded risk set
+  (inactive t coded 0)".
+- **Figure S1 title:** "p≈0" → "p < .001".
+- **Figure 6:** significance definitions moved from the image into the caption.
 
-## [v1.0-cand.2] — 2026-09-04 — External-review P0 remediation (no frozen number changes in existing analyses)
+### Docs
+- `05_FINAL_FIGURES/gallery.html` synced to cand.5 (7 main / 4 supplementary;
+  4a & S2 cards and book pages removed; Fig13 moved to Supplementary with corrected
+  denominator) — applied via atomic patch script after recurrence of the IDE
+  stale-buffer overwrite issue.
+- Manuscript `07_MANUSCRIPT/manuscript_draft_v0.9.md` → v1.0-cand.5 (13th-round
+  changelog, milestone table, endnotes, §9 denominator wording, removal of all live
+  references to Fig4a/FigS2).
+- Manuscript 5-spot text audit fix (post-review, text-only): §4.4 Fig6 reading guide rewritten to the
+  chart-only reality (blue dots + gray CI + asterisks; color bands/info boxes removed); §8.1 SIE row
+  corrected to "RTAS valid but excluded from v1.0 MixedLM complete-case (advisor covariate NA,
+  N=3,231/G=39)"; §8.2 `college_rtas_top20.csv` re-tagged as historical/auxiliary output (Fig5 uses
+  `hlm_v2b_college_random_effects.csv`); §12.2 "Figure S1/S2" → "Figure S1"; §9 Fig13 OUTLIER logic
+  fixed (outliers are not in the clustered-topic numerator but remain inside the all-projects
+  denominator). Frozen CSVs/figures/numbers untouched.
+- Manuscript text audit fix II (post-review, text-only): §12.1 SIE entry rewritten (RTAS valid but
+  excluded from v1.0 Primary MixedLM complete-case due to advisor covariate NA, N=3,231/G=39; ANOVA
+  auto-excluded at n=1; descriptive ranking only); §8.2 `ri_clpm_panel_college_wide.csv` corrected
+  from "39 colleges / SIE dropped" to the actual 40-college wide panel (SIE present; RTAS missing at
+  w2021/w2023, 0.0 at w2025), consistent with `ri_clpm_panel_audit.json` n_colleges=40; §7.2
+  complete-case (all three vars) = 35 noted. RI-CLPM remains future work; frozen CSVs/figures/numbers
+  untouched.
+- Manuscript text audit fix III (pre-freeze, text-only): §1.1.5 SIE history table disambiguated —
+  the v0.9.1 row now separates the historical 40-college substrate (old RandomEffects kept the single
+  SIE observation) from the current v1.0 Primary MixedLM complete-case (SIE excluded due to advisor
+  covariate NA, N=3,231/G=39; ANOVA excluded at n=1); "HLM (OLS) can legitimately include it"
+  reworded to descriptive-analysis validity with a pointer to §4.4; unsupported institutional
+  background claims ("all-Chinese instruction / cross-college co-authorship dependence") removed from
+  §1.1.5 and §12.1, reduced to "n=1 only, no performance-style comparison". Frozen CSVs/figures/numbers
+  untouched.
 
-### Withdrawn
-- **Circular Matthew-effect logistic (RETRACTED):** the v0.9 cross-sectional
-  `logit P(national) ~ Top5%-supervisor indicator` (OR=6.085, p=2.31e-65) was
-  tautological — the Top5% group was defined BY cumulative national-project
-  attainment. Removed from manuscript §5.5 and from the Figure 2 roadmap box.
-- **RI-CLPM demoted to future work (manuscript §7):** the lavaan model was never
-  estimated (no R runtime; no coefficients exist), and the designed 2021/2023/2025
-  waves used CUMULATIVE nested windows plus a 2025 wave with no underlying data.
-  No RI-CLPM result is cited anywhere; a valid future version requires
-  non-overlapping annual waves (e.g. 2020/2022/2024) or ≥5 waves.
-- **Fabricated model-selection table removed:** manuscript §2.2 previously listed
-  per-variant C1 values 0.405/0.388/0.372/0.351/0.334 that exist in no frozen
-  file. C1 is embedding-level (direct title-pair cosine vs human scores, n=150,
-  r=0.4055, p=2.64e-7) and is therefore shared by all 5 aggregation variants.
+## [v1.0-cand.4] — 2026-09-05 — TWELFTH-ROUND FIGURE AUDIT (FIGURE FREEZE)
 
-### Added (real re-runs, seed 42, frozen in private analysis repo)
-- **Lagged path-dependence logistic on the advisor-year panel** (`08_matthew_effect.py`
-  provenance block): `P(nat_t) ~ nat_{t-1} + log(1+load_{t-1}) + year FE`, SE clustered
-  by advisor. Sample A (active in t-1 AND t): n=736 cells / 491 advisors, raw
-  persistence 35.2% vs 20.7%, adjusted **OR=2.25, 95% CI [1.57, 3.22], p=1.0e-5**.
-  Robustness sample B (inactive t zero-filled): n=2,302 / 1,621 advisors,
-  **OR=2.28 [1.68, 3.09], p=1.4e-7**.
-- **Quadrant threshold sensitivity (15/20/25%)** recomputed from frozen
-  `topic_quadrants_aggregate.csv` (K=886): HRLT = 128/173/224, LRHT = 10/10/8,
-  HRHT = 5/5/7; all 29 lag-defined topics stay HRLT/HRHT at every cutoff (29/29).
-- `rtas_selection_composite_v1.csv`: pre-registered composite (0.45·C2 eta2 +
-  0.30·C4 stability + 0.25·C3 K-stability, min-max normalized; Top-K only within
-  95% of best) — mean 0.742 chosen; top5/top10/top20/centroid = 0.480/0.447/0.398/0.300.
+Milestone status: ✅ **FIGURE FREEZE.** Visualization-only round: all frozen CSVs
+in `03_FINAL_ANALYSIS/` and `02_RTAS_MODEL_SELECTION/` unchanged (zero numeric
+drift). Intermediate cand.1–cand.3 data/protocol changes are documented in
+`07_MANUSCRIPT/manuscript_draft_v0.9.md` §10 (rounds 9–11).
 
-### Corrected text/disclosures (no result numbers altered)
-- C1 renamed "construct validity" → **pairwise semantic validity**; annotation
-  source disclosed as human+LLM mixed, annotator1 only (1–4 scale), annotator2
-  entirely NaN → no inter-rater reliability reported; C4 college ICC column empty
-  (singular fit); C5 is a SBERT proxy (BGE-M3 inter-model check still deferred).
-- "Research frontier" operationalized explicitly as observable proxy = the
-  college's concurrent published-paper portfolio (RTAS does not measure novelty
-  or impact; no citation-network / journal-tier data in titles).
-- Threshold reading fix: paper quadrant cutoff Top-20% = 0.0879% ≈ **~50
-  lifetime papers/topic** (~178 topics enter the high-research tail); earlier
-  text misread an audit string as "≥177 papers/topic".
-- Caveats added: 38.47% BERTopic outlier rate — quadrant/diffusion findings
-  condition on the 886 clustered topics (61.5% of docs); Figure 5 champion
-  college (Chinese Antarctic Center, RTAS=0.360) has n=8 projects → small-n warning.
-- Figure 2 roadmap regenerated (ICC 0.762→0.739 HLM MixedLM 39 colleges;
-  OR=6.08***→lag-OR=2.25***; RI-CLPM marked "panel built, not estimated";
-  diffusion box now "29/886 defined"). Figure 9 already regenerated under the
-  single-year non-trivial-presence rule (no cumulative-threshold wording).
+### Changed (figures, `06_CODE/10_generate_figures.py` → `05_FINAL_FIGURES/`)
+- Main text contracted to **9 files / 8 figure numbers** (Fig 2, 3, 4a, 4b, 5, 6, 8, 10, 13):
+  - Figure 13 redesigned as two panels ((a) Top-15 + Other-clustered trend lines,
+    (b) 15×5 yearly prevalence heatmap; 15-band stacked area retired).
+  - Old Figure 9 merged into Figure 8 ((a) overall discrete lag distribution,
+    xlim [−4.5, 4.5] integer ticks; (b) HRLT/HRHT quadrant boxplots; LRHT/LRLT
+    annotated 0/10 and 0/698 undefined — hatched N/A panels retired).
+  - Figure 2 rebuilt as dual-corpus roadmap (main RTAS corpus 2020–2024 solid box
+    vs auxiliary advisor-history corpus 2017–2019 dashed grey box feeding HLM
+    pre-grant covariates only; ρ=.405 moved into the Embedding box; RI-CLPM removed).
+  - Figure 5 replaced by college random-effects caterpillar
+    (`03_FINAL_ANALYSIS/hlm/hlm_v2b_college_random_effects.csv`, ICC=0.7376),
+    replacing the raw-mean Top-20 ranking.
+  - Figure 10 expanded to three panels ((a) Lorenz, (b) Pareto, (c) lagged-logit OR forest).
+  - Figure 4a switched to point + 95% CI; Figure 6 simplified to blue points + CI
+    + stars (red/green shading and CI colour coding removed); Figure 3 gained a
+    zoom inset + bubble-size reference legend (25/100/500 docs).
+- Supplementary: Figure 7 (transition matrix) and Figure 11 (quadrant summary)
+  demoted from main text; old main-text Figure 5 (Top-20 raw-mean) demoted to
+  Figure S2; Figure S1 = full 40-college raw-mean ranking (label direction fixed).
+  Layout: `05_FINAL_FIGURES/main/` (9 files) + `05_FINAL_FIGURES/supplementary/` (4 files).
+- `05_FINAL_FIGURES/gallery.html` retitled "RTAS v1.0-cand.4 Figure Book" and
+  synced card-by-card with the above.
 
 ---
 
