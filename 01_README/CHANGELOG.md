@@ -5,6 +5,56 @@ config, data, or code that could affect downstream numbers.
 
 ---
 
+## [v1.0-cand.8] — 2026-09-05 — SIXTEENTH ROUND: MANUSCRIPT PRECISION PASS (LAG TERMINOLOGY, TUKEY DIRECTION, CORPUS TIERS, NON-CAUSAL WORDING)
+
+Milestone status: ✅ Text-only precision pass + one figure-label regeneration.
+All frozen CSVs and all frozen statistics unchanged; no estimated number touched.
+
+### Changed (figures, `06_CODE/10_generate_figures.py` → `05_FINAL_FIGURES/`)
+- **Figure 8a label terminology frozen** (user-approved wording): x-axis
+  `"Lag (years): project adoption − paper emergence / positive = research leads
+  training"` → `"Lag (years): year(project first non-trivial presence) −
+  year(paper first non-trivial presence)"` (direction note now carried by the
+  legend); legend `"Zero lag (synchronized)"` → `"Zero lag (same-year first
+  presence)"`. `Figure8a_LagDistribution.pdf/png` + `Figure8b_LagByQuadrant.*`
+  regenerated from frozen CSVs (8b content unchanged).
+
+### Changed (manuscript, `07_MANUSCRIPT/manuscript_draft_v0.9.md`)
+- **Tukey Δ direction unified manuscript-wide** to *higher level − lower level*
+  (P−U / N−U / N−P, positive = higher tier scores higher): §1.1 results block,
+  §10 summary-table row, Figure 4 caption (was "U vs N Δ=−0.0248" style, mixed
+  conventions across sections), §12.1/§12.3 items. Pair labels in Figure 4
+  brackets (U–P etc.) unchanged — they identify pairs, not contrast direction.
+- **§1.3 three-tier corpus clarification** (new table + note): ① OpenAlex
+  retrieval corpus 56,901 (BERTopic paper-side denominator) → ② advisor-matched
+  college portfolio 33,312 = the ONLY subset entering R_c(t) → ③ BERTopic joint
+  corpus 60,615 = 56,901 + 3,714. "College research portfolio" explicitly glossed
+  as *observed advisor-linked college research portfolio* (no independent roster).
+- **§3.4 descriptive-statement added**: the funding-tier contrast is descriptive,
+  not an independent confirmatory validation of RTAS selection (known-groups
+  weighting in the composite score creates partial circularity); all 5
+  aggregation variants agree in sign/significance → conclusion not
+  selection-dependent.
+- **η² vs ICC estimand note (§4.4)**: college ANOVA η² = 66.90% (full-sample,
+  fixed-effects partition, 3,713/39) vs ICC = 0.7376 (complete-case REML random
+  intercept, 3,231/39, covariate-adjusted) — different estimands, not mutually
+  derivable, coexist without contradiction.
+- **College-effect interpretation de-performized** (§4.4 item 5 + §12.2 item 3):
+  college-level differences mix organizational context with RTAS measurement
+  sensitivity to disciplinary specialization, portfolio breadth, title-language
+  conventions, and portfolio heterogeneity; rankings must not be read as
+  performance.
+- **HLM wording non-causal** (§4.4 item 2 + §12.3 item 5): supervision-load
+  effect described as *consistent with a capacity-dilution interpretation, but
+  not identified causally*; "包工头效应" flagged as an explanatory label only.
+- Version table: cand.6 / cand.7 rows added, footer bumped to v1.0-cand.8.
+
+### Docs
+- `05_FINAL_FIGURES/gallery.html`: no changes needed (Figure 8a/8b filenames and
+  captions unchanged).
+
+---
+
 ## [v1.0-cand.7] — 2026-09-05 — FIFTEENTH ROUND: FIGURE 13 FILE SPLIT & COHEN'S d CONVENTION FIX (USER VISUAL + REVIEWER AUDIT)
 
 Milestone status: ✅ Visualization + one numeric-convention fix. All frozen CSVs

@@ -629,8 +629,9 @@ def fig8_diffusion_lag_patterns():
     axA.axvline(x=0, color='#333', linestyle='--', linewidth=1, alpha=0.5)
     axA.set_xlim(-4.6, 4.6)
     axA.set_xticks(range(-4, 5))
-    axA.set_xlabel('Lag (years): project adoption − paper emergence\n'
-                   'positive = research leads training', fontweight='bold', fontsize=9.5)
+    # v1.0-cand.8: frozen lag terminology (direction note lives in the legend)
+    axA.set_xlabel('Lag (years): year(project first non-trivial presence) −\n'
+                   'year(paper first non-trivial presence)', fontweight='bold', fontsize=9.5)
     axA.set_ylabel('Number of topics', fontweight='bold', fontsize=10)
     axA.set_title(f'(a) Overall lag distribution ({n_lag}/886 topics defined; median={lag_med:.1f}, mean={lag_mean:+.2f} yr)',
                   fontweight='bold', fontsize=10.5)
@@ -640,7 +641,7 @@ def fig8_diffusion_lag_patterns():
     axA.set_ylim(0, d['n_topics'].max() * 1.24)
     legend_elements = [
         mpatches.Patch(facecolor=COLORS['red'], alpha=0.75, label='Positive lag (research → training)'),
-        mpatches.Patch(facecolor=COLORS['gray'], alpha=0.75, label='Zero lag (synchronized)'),
+        mpatches.Patch(facecolor=COLORS['gray'], alpha=0.75, label='Zero lag (same-year first presence)'),
         mpatches.Patch(facecolor=COLORS['green'], alpha=0.75, label='Negative lag (training → research)'),
     ]
     axA.legend(handles=legend_elements, loc='upper left', bbox_to_anchor=(1.01, 1.0),
