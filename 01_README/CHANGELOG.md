@@ -5,6 +5,43 @@ config, data, or code that could affect downstream numbers.
 
 ---
 
+## [v1.0-cand.6] — 2026-09-05 — FOURTEENTH ROUND: FIGURE 8 FILE SPLIT & FIGURE 10 VISUAL CLEANUP (USER VISUAL REVIEW)
+
+Milestone status: ✅ Visualization-only round (user visual review of inserted figures).
+All frozen CSVs in `03_FINAL_ANALYSIS/` and `02_RTAS_MODEL_SELECTION/` unchanged
+(zero numeric drift). Main text remains **7 figure numbers**; Figure 8 now ships as
+**two standalone files** (main-text figure files: 8).
+
+### Changed (figures, `06_CODE/10_generate_figures.py` → `05_FINAL_FIGURES/`)
+- **Figure 8 split into two standalone files** (user request: place the two panels
+  side-by-side in one manuscript row at reduced width):
+  - `Figure8a_LagDistribution.pdf/png` (7.9 × 5.6 inch): overall discrete lag
+    distribution; **color legend moved OUTSIDE the axes to the right**
+    (`bbox_to_anchor=(1.01, 1.0)`) — no longer floats over the bar-top counts.
+  - `Figure8b_LagByQuadrant.pdf/png` (6.9 × 5.9 inch, taller canvas): defined lag
+    by quadrant; **red-border HRHT value box deleted** ("n = 5 topics / 4 at lag 0 /
+    1 at lag −2") — fully redundant with the scatter points and the `n_defined`
+    tick labels; exact counts live in the manuscript caption.
+  - `Figure8_DiffusionLagPatterns.*` (old merged 13.0 × 5.4 file) **removed**.
+- **Figure 10** (`Figure10_MatthewEffect.pdf/png`, 14.2 × 5.0 inch):
+  - **top50 Pareto bar removed** — a constant 100% gray slab carried no information,
+    dwarfed the informative bars, and squeezed panel (c)'s y-tick labels;
+    bars now top1/top5/top10/top20.
+  - Panel spacing widened (`wspace=0.44`) — resolves panel (b)/(c) mutual overlap
+    (Sample B label no longer obscured).
+
+### Docs
+- `07_MANUSCRIPT/manuscript_draft_v0.9.md`: Figure 8 section rewritten for the
+  8a/8b split (sources, sizes, split rationale; panel (b) box sentence replaced by
+  the deletion note); Figure 10 header + Pareto bullets updated (top50 removed,
+  wspace/figsize noted).
+- `05_FINAL_FIGURES/gallery.html`: synced to cand.6 via atomic patch script
+  (title/h1/footer version bump; Figure 8 grid card split into 8a + 8b cards;
+  Fig 8 book page shows both files; Fig 10 badge/legend text updated; top50
+  mentions removed) — 10 replacements, 3 s post-write verification passed.
+
+---
+
 ## [v1.0-cand.5] — 2026-09-05 — THIRTEENTH ROUND: MAIN-TEXT SUBTRACTION & DENOMINATOR CORRECTION (FIGURE FREEZE, FINAL)
 
 Milestone status: ✅ **FIGURE FREEZE (final).** Visualization-only round: all frozen

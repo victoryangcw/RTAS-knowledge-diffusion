@@ -57,6 +57,7 @@ python 03_CODE/10_generate_figures.py
 | v0.2 | RTAS frozen (model/data/window/aggregation) — done |
 | v0.9 | All 6 downstream analyses + manuscript + figures — done |
 | v1.0-cand.5 | Figure freeze (7 main + 4 supplementary) + manuscript text freeze — done |
+| v1.0-cand.6 | Figure 8 split into standalone 8a/8b files + Figure 10 visual cleanup — done |
 | v1.0 | Scientometrics submission (this repo goes public) — pending |
 
 ## License

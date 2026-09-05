@@ -677,19 +677,20 @@ R 脚本（`06_CODE/09_ri_clpm.R`）使用 lavaan 包的 FIML（全信息最大�
 **数据：** n=736 个 consecutive 导师-年份对（当年有指导项目、下一年也有；分位按导师当年**总项目数**在当年截面的三分位划分）。对角线概率：62–66%，即指导活动量的分位高度持续。国家级项目获取的年度路径依赖（OR≈2.3）见 §5.5 滞后 Logit。
 **colorbar：** 右侧 "Transition probability (%)" 标签 8pt。
 
-### Figure 8: 扩散滞后双面板（**v1.0-cand.4 合并旧 Figure 8 + Figure 9**：panel (a) 整体离散分布 + panel (b) 分象限箱线；v1.0-cand.5 副标题措辞中性化）
-**来源：** `diffusion_lag/diffusion_lag_histogram_bins.csv + diffusion_lag_aggregate_stats.csv (标题动态读 OVERALL 行) + diffusion_lag/topic_first_year_adoption.csv + topic_model/quadrant_overall_summary.csv → Figure8_DiffusionLagPatterns.pdf/png`（13.0 × 5.4 inch）
+### Figure 8: 扩散滞后（**v1.0-cand.6 拆分为两个独立文件**：Figure8a 整体离散分布 + Figure8b 分象限箱线；v1.0-cand.4 合并旧 Figure 8 + Figure 9；v1.0-cand.5 副标题措辞中性化）
+**来源：** `diffusion_lag/diffusion_lag_histogram_bins.csv + diffusion_lag_aggregate_stats.csv (标题动态读 OVERALL 行) + diffusion_lag/topic_first_year_adoption.csv + topic_model/quadrant_overall_summary.csv → Figure8a_LagDistribution.pdf/png（7.9 × 5.6 inch）+ Figure8b_LagByQuadrant.pdf/png（6.9 × 5.9 inch）`
+**拆分理由（v1.0-cand.6 用户视觉评审）：** 两个 panel 各自成文件，论文排版时可并排同一行、各自缩放不损失可读性；8a 图例移出绘图区右侧（不再悬浮遮挡柱顶数字）；8b 删除 HRHT 红边白框数值标注（与散点、刻度标签完全冗余，精确计数移图注），画幅拉高。
 **合并理由（reviewer audit）：** 旧 Figure 9 的 LRHT/LRLT 斜纹 N/A 面板占据约 50% 横向空间却只表达"没有数据"，视觉主角是斜纹本身；合并后 panel (b) 只画有定义的两列，LRHT/LRLT 未定义改用一句斜体注释交代，整章扩散滞后一张图讲完。
 **Panel (a) — Overall lag distribution（离散整数柱状图）：** 横轴 = lag 年份（整数刻度 −4…+4，**xlim 锁定 −4.6~4.6，修复旧版横轴拉到 +10 的右侧大片空白**；空桶不画）；纵轴 = 主题数。正 lag 红（科研先出）/ 0 灰（同步）/ 负绿（培养先出），每柱顶标 "count (pct%)"。超标题动态从 aggregate_stats 的 OVERALL 行拼出 "(29/886 topics defined; median=0.0, mean=+0.59 yr)"（**避免硬编码 69/307 这类历史假数字**）。
 **副标题（v1.0-cand.5 中性化）：** "Positive lag = research precedes training; negative lag = training precedes research."——删除旧版 "course update needed / training uses already-cold content" 等超出数据直接观测的解读性措辞（课程内容未被直接观测，负 lag 亦不能自动解读为"内容过时"；机制讨论留在 §6.2 与 §12）。
-**Panel (b) — Defined lag by quadrant（只画有数据的两列）：** 横轴 = HRLT (n_defined=24 / 173) 与 HRHT (5 / 5) 两列；纵轴 = lag(年) = `year(project first non-trivial presence) − year(paper first non-trivial presence)`，范围 −5.1 ~ +5.1；y>0 淡红（科研先出）/ y<0 淡绿（培养先出）/ y=0 黑虚线。箱元素同 Figure 4（半透明彩箱 + 粗黑中值 + 白菱形均值 + 1.5·IQR 须）+ jitter 散点（seed 7）。HRHT 上方白框标注 "4 at lag 0 (synchronized), 1 at lag −2 (training first)"，防退化箱线被误读。**左上角斜体注释**："Lag was undefined for ALL LRHT (0/10) and LRLT (0/698) topics under the frozen single-year non-trivial-presence rule."——不再绘制巨型斜纹 N/A 面板。
+**Panel (b) — Defined lag by quadrant（只画有数据的两列）：** 横轴 = HRLT (n_defined=24 / 173) 与 HRHT (5 / 5) 两列；纵轴 = lag(年) = `year(project first non-trivial presence) − year(paper first non-trivial presence)`，范围 −5.1 ~ +5.1；y>0 淡红（科研先出）/ y<0 淡绿（培养先出）/ y=0 黑虚线。箱元素同 Figure 4（半透明彩箱 + 粗黑中值 + 白菱形均值 + 1.5·IQR 须）+ jitter 散点（seed 7）。**v1.0-cand.6：删除 HRHT 上方红边白框数值标注**（原 "4 at lag 0 (synchronized), 1 at lag −2 (training first)" 与散点、n_defined 刻度标签完全冗余；精确计数保留在下方图注）。**左上角斜体注释**："Lag was undefined for ALL LRHT (0/10) and LRLT (0/698) topics under the frozen single-year non-trivial-presence rule."——不再绘制巨型斜纹 N/A 面板。
 **图注统计（原 Figure 9 图注内容，全部保留）：**
 - HRLT（n=24）：mean=+0.79 yr，SD=1.96，med=+0.5，Q1/Q3=0.0/+2.0；lag>0 占 50%、=0 占 38%、<0 占 12%；one-sample t vs 0：t=1.98，p=0.059（方向为正但未达显著）。
 - HRHT（n=5）：mean=−0.40 yr，SD=0.89，med=0.0（4/5 主题 lag=0、1 个 lag=−2）；one-sample t vs 0：p=0.374 ns。
 - 组间（HRLT vs HRHT）：Welch t=+2.11, p=0.054（ns）；Mann–Whitney U p=0.095（ns）；Cohen d=+0.78（大效应、方向一致，但 HRHT n=5 功效不足，不作显著结论）。
 - **定义（frozen）**：lag 要求两端在同一年达到单年非平凡规模（论文端 ≥3 篇且 ≥0.2%、项目端 ≥2 项且 ≥0.2%，见 §6.1）；LRHT（0/10）与 LRLT（0/698）在 2020–2024 语料中从未满足 → lag 未定义（与其低研究象限属性一致）。旧 12K 池 "LRHT n=8, med=−1.5 yr" 来自 K=307 遗留数据，**已 RETRACTED**。
 
-### Figure 10: 马太效应三联面板（**v1.0-cand.4 升级**：(a) Lorenz + (b) Pareto + (c) Lagged path-dependence OR）
+### Figure 10: 马太效应三联面板（**v1.0-cand.4 升级**：(a) Lorenz + (b) Pareto + (c) Lagged path-dependence OR；**v1.0-cand.6 视觉修正**：删 top50 灰柱、panel 间距加宽至 wspace=0.44、figsize 14.2×5.0，消除 b/c 相互遮挡）
 **来源：** `matthew_effect/supervisor_gini_pareto.csv + table5_project_dataset_n3714_full.csv (Lorenz 由脚本重算) + matthew_effect/matthew_effect_audit.json (权威值) + lagged_logit_national_path_dependence.csv → Figure10_MatthewEffect.pdf/png`
 **升级理由：** 把"截面集中 (a,b)"与"跨年持续 (c)"合成一张完整证据链——资源不仅集中，而且优势跨年度自我复制；Figure 7 转移矩阵因此可安心下放 Supplementary。
 **Panel (a) — Lorenz 曲线：**
@@ -698,9 +699,9 @@ R 脚本（`06_CODE/09_ri_clpm.R`）使用 lavaan 包的 FIML（全信息最大�
 - 45° 黑虚线 = Perfect equality。红色 Lorenz 实线与 45° 线之间的红色阴影面积 = 不均等面积。Gini 系数 = 该面积的 2 倍。
 - 图例：标签 "National grants (Gini=0.767)" 动态从 audit 读。
 **Panel (b) — Pareto 柱状图：**
-- 横轴 = Top N% 导师切片（top1 / top5 / top10 / top20 / top50）。
+- 横轴 = Top N% 导师切片（top1 / top5 / top10 / top20；**v1.0-cand.6 删除 top50**——恒为 100% 的灰色柱无信息量，且挤压 panel (c) 纵轴标签空间）。
 - 纵轴 = 该切片导师持有的国家级项目份额 (%)。
-- 颜色：红=top1，橙=top5/top10，蓝=top20，灰=top50。柱顶标签 "X.X%" 黑体。
+- 颜色：红=top1，橙=top5/top10，蓝=top20。柱顶标签 "X.X%" 黑体。
 - 水平黑色虚线 = 5%（Equal share 基准线，即 Top5% 应该拿 5%，实际 Top5% = 34.0% → 是基准线的 6.8×）。
 **Panel (c) — Lagged path-dependence OR 森林（v1.0-cand.4 新增）：**
 - 两个样本各一行：navy 点 = OR，深灰横线 = 95% CI（带端帽）；黑虚线 OR=1 = "no persistence"；CI 右侧标 "OR = x.xx [lo, hi] ***"，第二行标 p 值。

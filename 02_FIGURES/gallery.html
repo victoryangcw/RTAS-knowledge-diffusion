@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RTAS v1.0-cand.5 Figure Book — 官方图册页 (Figure Freeze 2026-09-05)</title>
+<title>RTAS v1.0-cand.6 Figure Book — 官方图册页 (Figure Freeze 2026-09-05)</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
@@ -202,7 +202,7 @@
 <body>
 
 <header>
-  <h1>RTAS v1.0-cand.5 — 官方图册 + 数据审计画廊（Figure Freeze 版）</h1>
+  <h1>RTAS v1.0-cand.6 — 官方图册 + 数据审计画廊（Figure Freeze 版）</h1>
   <p>56,901 OpenAlex papers × 3,714 projects · HLM v2b ICC=0.7376 · K=886 (+1 OUTLIER) · 主文 7 图号 + Supplementary 4 图 · All figures single-source from `03_FINAL_ANALYSIS/`</p>
 
   <div class="tab-bar">
@@ -311,12 +311,22 @@
   </div>
 
   <div class="figure-card">
-    <img src="main/Figure8_DiffusionLagPatterns.png" onclick="document.getElementById('lb').src=this.src;document.querySelector('.lightbox').style.display='flex'">
+    <img src="main/Figure8a_LagDistribution.png" onclick="document.getElementById('lb').src=this.src;document.querySelector('.lightbox').style.display='flex'">
     <div class="figure-info">
-      <h2>Figure 8: 扩散滞后双面板（v1.0-cand.4 合并旧 Fig8+Fig9：整体分布 + 分象限箱线）</h2>
-      <div class="source">← diffusion_lag/diffusion_lag_histogram_bins.csv + diffusion_lag/topic_first_year_adoption.csv → 10_generate_figures.py</div>
-      <p><b>Panel (a) 整体离散分布</b>：整数 lag 柱状图，xlim 锁定 −4.6~4.6（修掉旧版右侧大片空白）、刻度 −4…+4；正 lag 红（research → training）/ 0 灰（同步）/ 负绿（training → research），每柱顶标 "count (pct%)"，标题动态读取 aggregate_stats OVERALL 行；<b>v1.0-cand.5 措辞中性化</b>：图内注释改为 "Positive lag = research precedes training;  negative lag = training precedes research"（数据未直接观测课程内容，不写 "course update needed / cold content" 等强解读）。<b>Panel (b) Defined lag by quadrant</b>：只画 HRLT (n=24) 与 HRHT (n=5) 两列箱线 + jitter，HRHT 上方白框标明 "4 at lag 0 / 1 at lag −2"；<b>LRHT/LRLT 不再画巨型斜纹 N/A 面板</b>，改用左上角一句斜体注释 "Lag was undefined for ALL LRHT (0/10) and LRLT (0/698) topics under the frozen single-year non-trivial-presence rule."</p>
-      <div class="key-finding">总 29/886 主题 (3.27%) — median=0 mean=+0.59; 41.38% 正 / 44.83% 零 / 13.79% 负。HRLT mean=+0.79 (med +0.5) vs HRHT mean=−0.40 (80% 零)；Welch p=0.054 ns、MWU p=0.095 ns、d=+0.78（n=5 功效不足，不作显著结论）。lag 口径 = 单年非平凡出现（论文端单年 ≥3 篇且 ≥0.2%/年）</div>
+      <h2>Figure 8a: 扩散滞后 — 整体离散分布（v1.0-cand.6 拆分为独立文件）</h2>
+      <div class="source">← diffusion_lag/diffusion_lag_histogram_bins.csv + diffusion_lag_aggregate_stats.csv (OVERALL 动态标题) → 10_generate_figures.py</div>
+      <p>整数 lag 柱状图，xlim 锁定 −4.6~4.6（修掉旧版右侧大片空白）、刻度 −4…+4；正 lag 红（research → training）/ 0 灰（同步）/ 负绿（training → research），每柱顶标 "count (pct%)"，标题动态读取 aggregate_stats OVERALL 行；<b>v1.0-cand.6 图例移出绘图区右侧</b>（不再悬浮遮挡柱顶数字）；v1.0-cand.5 措辞中性化（"Positive lag = research precedes training;  negative lag = training precedes research"）。拆分后论文排版可 8a/8b 并排一行、各自缩放不损失可读性</p>
+      <div class="key-finding">总 29/886 主题 (3.27%) — median=0 mean=+0.59; 41.38% 正 / 44.83% 零 / 13.79% 负</div>
+    </div>
+  </div>
+
+  <div class="figure-card">
+    <img src="main/Figure8b_LagByQuadrant.png" onclick="document.getElementById('lb').src=this.src;document.querySelector('.lightbox').style.display='flex'">
+    <div class="figure-info">
+      <h2>Figure 8b: 扩散滞后 — 分象限箱线（v1.0-cand.6 拆分为独立文件）</h2>
+      <div class="source">← diffusion_lag/topic_first_year_adoption.csv + topic_model/quadrant_overall_summary.csv → 10_generate_figures.py</div>
+      <p>只画 HRLT (n_defined=24/173) 与 HRHT (5/5) 两列箱线 + jitter（箱元素同 Figure 4）；<b>v1.0-cand.6 删除 HRHT 红边白框数值标注</b>（与散点、n_defined 刻度标签完全冗余——精确计数移图注），画幅拉高至 6.9×5.9 inch；<b>LRHT/LRLT 不再画巨型斜纹 N/A 面板</b>，改用左上角一句斜体注释 "Lag was undefined for ALL LRHT (0/10) and LRLT (0/698) topics under the frozen single-year non-trivial-presence rule."</p>
+      <div class="key-finding">HRLT mean=+0.79 (med +0.5) vs HRHT mean=−0.40 (80% 零)；Welch p=0.054 ns、MWU p=0.095 ns、d=+0.78（n=5 功效不足，不作显著结论）。lag 口径 = 单年非平凡出现（论文端单年 ≥3 篇且 ≥0.2%/年）</div>
     </div>
   </div>
 
@@ -325,7 +335,7 @@
     <div class="figure-info">
       <h2>Figure 10: 马太效应 — 三联面板（v1.0-cand.4: Lorenz + Pareto + Lagged OR）</h2>
       <div class="source">← supervisor_gini_pareto.csv + table5_project_dataset_n3714_full.csv (Lorenz 由脚本重算) + lagged_logit_national_path_dependence*.csv → 10_generate_figures.py</div>
-      <p><b>(a)</b> Lorenz: X累计导师比例, Y累计国家级项目份额; 红实线与45°虚线间阴影=不均等; Gini=0.767。<b>(b)</b> Pareto: Top1/5/10/20/50% 导师持国家级项目份额, 5% 均等基准线。<b>(c) 新增 lagged path-dependence 森林面板</b>：两个样本的 nat_lag OR ± 95% CI（t-1→t national project persistence；样本 A active 736 cells/491 导师，样本 B expanded risk set（inactive t coded 0）2,302/1,621；v1.0-cand.5 弃用 "zero-filled" 表述），p 值标在 CI 下方的第二行——把"截面集中 + 跨年持续"两个发现合成为一张完整证据链</p>
+      <p><b>(a)</b> Lorenz: X累计导师比例, Y累计国家级项目份额; 红实线与45°虚线间阴影=不均等; Gini=0.767。<b>(b)</b> Pareto: Top1/5/10/20% 导师持国家级项目份额, 5% 均等基准线（v1.0-cand.6 删 top50 灰柱）。<b>(c) 新增 lagged path-dependence 森林面板</b>：两个样本的 nat_lag OR ± 95% CI（t-1→t national project persistence；样本 A active 736 cells/491 导师，样本 B expanded risk set（inactive t coded 0）2,302/1,621；v1.0-cand.5 弃用 "zero-filled" 表述），p 值标在 CI 下方的第二行——把"截面集中 + 跨年持续"两个发现合成为一张完整证据链</p>
       <div class="key-finding">Gini=0.767, Top5%=34.0% (基准 6.8×), Top20%=76.8%; <b>OR(A)=2.25 [1.57,3.22] p=1.0e-5 ***; OR(B)=2.28 [1.68,3.09] p=1.4e-7 ***</b> → 优势跨年度持续</div>
     </div>
   </div>
@@ -553,10 +563,11 @@
 <!-- ============ FIG 8 (TWO-PANEL, MERGES OLD FIG 8 + FIG 9) ============ -->
 <div class="fb-page">
   <div class="fb-head">
-    <h2>Figure 8 — Diffusion-Lag Patterns (v1.0-cand.4 two-panel; old Figure 9 merged in)</h2>
-    <span class="badge">Figure8_DiffusionLagPatterns.pdf | 13.0×5.4 inch | 29/886 topics defined; LRHT/LRLT as compact annotation</span>
+    <h2>Figure 8 — Diffusion-Lag Patterns (v1.0-cand.6 split into two standalone files: 8a overall distribution + 8b defined lag by quadrant)</h2>
+    <span class="badge">Figure8a_LagDistribution.pdf (7.9×5.6) + Figure8b_LagByQuadrant.pdf (6.9×5.9) | 29/886 topics defined; LRHT/LRLT as compact annotation</span>
   </div>
-  <div class="fb-figure-wrap"><img src="main/Figure8_DiffusionLagPatterns.png" onclick="document.getElementById('lb').src=this.src;document.querySelector('.lightbox').style.display='flex'"></div>
+  <div class="fb-figure-wrap"><img src="main/Figure8a_LagDistribution.png" onclick="document.getElementById('lb').src=this.src;document.querySelector('.lightbox').style.display='flex'"></div>
+  <div class="fb-figure-wrap"><img src="main/Figure8b_LagByQuadrant.png" onclick="document.getElementById('lb').src=this.src;document.querySelector('.lightbox').style.display='flex'"></div>
   <div class="fb-caption">
     <div class="src">SOURCE: diffusion_lag/diffusion_lag_histogram_bins.csv + diffusion_lag_aggregate_stats.csv (OVERALL row, dynamic title) + diffusion_lag/topic_first_year_adoption.csv + topic_model/quadrant_overall_summary.csv → fig8_diffusion_lag_patterns()</div>
 
@@ -565,12 +576,13 @@
       <li>X 轴 = lag 年份 = year(project adoption) − year(paper emergence)，整数刻度 −4…+4，<b>xlim 锁定 −4.6~4.6</b>（v1.0-cand.4 修复：旧版横轴拉到 +10、右侧大片留白）；空桶不画。</li>
       <li>颜色：正 lag 红 = research → training；0 灰 = 同步；负 lag 绿 = training → research。<b>v1.0-cand.5 措辞中性化</b>：图内注释改为 "Positive lag = research precedes training;  negative lag = training precedes research"（数据未直接观测课程内容，不写 "course update needed / cold content" 等强解读）。每柱顶标 "count (pct%)"。</li>
       <li>标题动态拼出 "(29/886 topics defined; median=0.0, mean=+0.59 yr)"——数字全部来自 aggregate_stats OVERALL 行，禁止硬编码。</li>
+      <li><b>v1.0-cand.6：</b>颜色图例移出绘图区右侧（不再悬浮遮挡柱顶数字）；文件拆分为独立 Figure8a_LagDistribution（7.9×5.6 inch），论文排版两 panel 可并排缩放。</li>
     </ul>
 
     <h3>Panel (b) — Defined lag by quadrant（只画有数据的两列）</h3>
     <ul>
       <li>只画 <b>HRLT (n_defined=24 / 173 in quadrant)</b> 与 <b>HRHT (5 / 5)</b> 两列箱线 + jitter（箱元素同 Figure 4：半透明彩箱、粗黑中值、白菱形均值、1.5IQR 须）；y&gt;0 淡红区 / y&lt;0 淡绿区 / y=0 黑虚线。</li>
-      <li>HRHT 上方白框："n=5 topics, 4 at lag 0 (synchronized), 1 at lag −2 (training first)"——避免退化平箱线被误读为缺数据。</li>
+      <li><b>v1.0-cand.6 删除 HRHT 红边白框数值标注</b>（原 "n=5 topics, 4 at lag 0 (synchronized), 1 at lag −2 (training first)" 与散点、n_defined 刻度标签完全冗余——精确计数移入图注）；画幅拉高至 6.9×5.9 inch。</li>
       <li><b>LRHT/LRLT 不再画两个巨型斜纹 N/A 面板</b>（旧 Figure 9 的 50% 横向空间在展示"没有数据"，斜纹反成视觉主角）：改为左上角一句斜体注释 "Lag was undefined for ALL LRHT (0/10) and LRLT (0/698) topics under the frozen single-year non-trivial-presence rule."</li>
     </ul>
 
@@ -583,7 +595,7 @@
 <div class="fb-page">
   <div class="fb-head">
     <h2>Figure 10 — Matthew Effect: Lorenz Curve + Pareto Bar (dual-panel)</h2>
-    <span class="badge">Figure10_MatthewEffect.pdf | 11×5 inch | Gini = 0.767 (national projects)</span>
+    <span class="badge">Figure10_MatthewEffect.pdf | 14.2×5.0 inch | v1.0-cand.6: top50 bar removed, wspace=0.44 | Gini = 0.767 (national projects)</span>
   </div>
   <div class="fb-figure-wrap"><img src="main/Figure10_MatthewEffect.png" onclick="document.getElementById('lb').src=this.src;document.querySelector('.lightbox').style.display='flex'"></div>
   <div class="fb-caption">
@@ -599,7 +611,7 @@
 
     <h3>右面板 (b) — Pareto 柱状图（Top N% 切片国家级项目份额）</h3>
     <ul>
-      <li>横轴 = Top N% 导师切片：top1 / top5 / top10 / top20 / top50。颜色：红=top1 / 橙=top5,top10 / 蓝=top20 / 灰=top50。</li>
+      <li>横轴 = Top N% 导师切片：top1 / top5 / top10 / top20。颜色：红=top1 / 橙=top5,top10 / 蓝=top20。<b>v1.0-cand.6 删除 top50</b>（恒为 100% 的灰色柱无信息量，且挤压 panel (c) 纵轴标签空间）。</li>
       <li>纵轴 = 该切片导师持有的国家级项目份额 (%)。柱顶标签 "X.X%"（黑体 8pt）。</li>
       <li>水平黑色虚线 y=5 = Equal share 基准线（如 Pareto 公平，Top-5% 切片应持有正好 5% 份额；实际持有 34.0% = 基准的 6.8×）。</li>
     </ul>
@@ -708,7 +720,7 @@
 </div>
 
 <footer>
-  <p>RTAS v1.0-cand.5 Figure Freeze Figure Book · 2026-09-05 · 主文 7 个图号（Fig 2, 3, 4, 5, 6, 8, 10）+ Supplementary 4 图（Fig 7, 11, 13, S1）· v1.0-cand.5 删除 Figure 4a 与 Figure S2、Figure 13 降级 Supplementary· All figures generated by 06_CODE/10_generate_figures.py single-sourced from 03_FINAL_ANALYSIS/ frozen CSVs.
+  <p>RTAS v1.0-cand.6 Figure Freeze Figure Book · 2026-09-05 · 主文 7 个图号 / 8 个图文件（Fig 2, 3, 4, 5, 6, 8a, 8b, 10）+ Supplementary 4 图（Fig 7, 11, 13, S1）· v1.0-cand.5 删除 Figure 4a 与 Figure S2、Figure 13 降级 Supplementary；v1.0-cand.6 Figure 8 拆分为 8a/8b 双文件、Figure 10 删 top50 灰柱· All figures generated by 06_CODE/10_generate_figures.py single-sourced from 03_FINAL_ANALYSIS/ frozen CSVs.
   <br><b>Ctrl+P / Print to PDF</b> = 一键导出为 A4 图册（@media print CSS 已配置：自动只打印 📖 Figure Book Tab，每页一张大图，节省纸张）。
   </p>
 </footer>

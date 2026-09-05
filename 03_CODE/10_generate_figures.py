@@ -17,8 +17,8 @@ Figures generated (v1.0-cand.5 final freeze — 7 main + 4 supplementary):
   Figure 4  Project-Level Dist.    <-- project_level_summary.csv + table5_project_dataset_n3714_full.csv (box+jitter; ex-Fig4b; old 4a DELETED as redundant) --(10_generate_figures.py)--> Figure4_Distribution.pdf
   Figure 5  College Caterpillar    <-- hlm_v2b_college_random_effects.csv (BLUPs, ICC=0.738) --(10_generate_figures.py)--> Figure5_CollegeCaterpillar.pdf
   Figure 6  HLM Forest Plot        <-- hlm_mixedlm_v2b_primary_coefficients.csv (SAME source as Table 6; sig defs moved to caption) --(10_generate_figures.py)--> Figure6_HLM_Forest.pdf
-  Figure 8  Diffusion-Lag 2-panel  <-- diffusion_lag_histogram_bins.csv + topic_first_year_adoption.csv (neutral lag wording; merges old Fig8+Fig9) --(10_generate_figures.py)--> Figure8_DiffusionLagPatterns.pdf
-  Figure 10 Matthew 3-panel        <-- supervisor_gini_pareto.csv + lagged_logit_national_path_dependence*.csv (panel c "Expanded risk set") --(10_generate_figures.py)--> Figure10_MatthewEffect.pdf
+  Figure 8  Diffusion-Lag split    <-- diffusion_lag_histogram_bins.csv + topic_first_year_adoption.csv (v1.0-cand.6 split into TWO files: 8a legend outside-right; 8b red-border value box DELETED, taller canvas) --(10_generate_figures.py)--> Figure8a_LagDistribution.pdf + Figure8b_LagByQuadrant.pdf
+  Figure 10 Matthew 3-panel        <-- supervisor_gini_pareto.csv + lagged_logit_national_path_dependence*.csv (panel c "Expanded risk set"; v1.0-cand.6 top50 100% gray bar removed, wspace widened) --(10_generate_figures.py)--> Figure10_MatthewEffect.pdf
   SUPPLEMENTARY (4):
   Figure S1 College Full Ranking   <-- college_rtas_summary_all.csv (p < .001, not p≈0) --(10_generate_figures.py)--> supplementary/FigureS1_CollegeRTAS_Full40.pdf
   Figure 7  Transition Matrix      <-- transition_probabilities_year_tercile.csv --(10_generate_figures.py)--> supplementary/Figure7_TransitionMatrix.pdf
@@ -595,17 +595,26 @@ def fig7_transition_matrix():
 #   quadrants stated in a compact annotation instead of hatched N/A columns)
 # ================================================================
 def fig8_diffusion_lag_patterns():
+    # v1.0-cand.6 SPLIT (user visual review): two standalone files so the manuscript
+    # can place them side-by-side in one row at reduced width:
+    #   Figure8a_LagDistribution  — (a) overall discrete lag histogram;
+    #       legend moved OUTSIDE the axes to the right (was floating over the plot).
+    #   Figure8b_LagByQuadrant    — (b) HRLT/HRHT boxplots; the red-border HRHT
+    #       value box ("n=5 / 4 at lag 0 / 1 at lag -2") DELETED — fully redundant
+    #       with the scatter points and tick labels (exact counts -> caption);
+    #       canvas made taller per user request.
     inp = 'diffusion_lag/diffusion_lag_histogram_bins.csv + diffusion_lag/topic_first_year_adoption.csv'
-    provenance(8, 'Diffusion-Lag Patterns (two-panel: overall discrete distribution + defined-lag quadrants)', inp)
+    provenance(8, 'Diffusion-Lag Patterns (split files: overall distribution + defined-lag quadrants)', inp)
     d = pd.read_csv(DATA / 'diffusion_lag' / 'diffusion_lag_histogram_bins.csv')
     agg = pd.read_csv(DATA / 'diffusion_lag' / 'diffusion_lag_aggregate_stats.csv')
     agg_row = agg[agg['group'] == 'OVERALL'].iloc[0]
     n_lag = int(agg_row['n_topics_with_defined_lag'])
     lag_med = float(agg_row['lag_median']); lag_mean = float(agg_row['lag_mean'])
+    lag_note = ('Positive lag = research precedes training;  '
+                'negative lag = training precedes research.')
 
-    fig, (axA, axB) = plt.subplots(1, 2, figsize=(13.0, 5.4),
-                                   gridspec_kw=dict(width_ratios=[1.0, 1.05], wspace=0.22))
-    # ---- Panel A: discrete integer bar chart, compact xlim (reviewer audit fix) ----
+    # ---- 8a: discrete integer bar chart, compact xlim (reviewer audit fix) ----
+    fig, axA = plt.subplots(figsize=(7.9, 5.6))
     d = d[d['n_topics'] > 0].copy()          # drop empty integer bins
     colors = [COLORS['red'] if c > 0 else COLORS['green'] if c < 0 else COLORS['gray']
               for c in d['lag_year_bin_center']]
@@ -628,10 +637,15 @@ def fig8_diffusion_lag_patterns():
         mpatches.Patch(facecolor=COLORS['gray'], alpha=0.75, label='Zero lag (synchronized)'),
         mpatches.Patch(facecolor=COLORS['green'], alpha=0.75, label='Negative lag (training → research)'),
     ]
-    axA.legend(handles=legend_elements, loc='upper right', fontsize=7.5)
+    axA.legend(handles=legend_elements, loc='upper left', bbox_to_anchor=(1.01, 1.0),
+               fontsize=8, frameon=False)
     axA.grid(axis='y', alpha=0.25, linewidth=0.5)
+    fig.suptitle('Diffusion-Lag Patterns: Research → Training Adoption Delay\n' + lag_note,
+                 fontweight='bold', fontsize=11, y=1.00)
+    fig.tight_layout(rect=[0, 0, 1, 0.93])
+    savefig(fig, 'Figure8a_LagDistribution')
 
-    # ---- Panel B: defined-lag quadrants (HRLT / HRHT only) ----
+    # ---- 8b: defined-lag quadrants (HRLT / HRHT only) ----
     # FROZEN DEFINITION: lag uses the SINGLE-YEAR non-trivial-presence rule —
     # paper side: n_paper(y) >= 3 AND pct_paper(y) >= 0.2%; project side:
     # n_project(y) >= 2 AND pct_project(y) >= 0.2%. Empirically 0/10 LRHT and
@@ -645,6 +659,7 @@ def fig8_diffusion_lag_patterns():
     box_vals = [dd[dd['quadrant'] == q]['lag_years'].dropna().values for q in quadrants_order]
     box_colors = [QUADRANT_COLORS[q] for q in quadrants_order]
 
+    fig, axB = plt.subplots(figsize=(6.9, 5.9))   # taller canvas (v1.0-cand.6 user review)
     bp = axB.boxplot(box_vals, positions=[0, 1], widths=0.34, patch_artist=True, showmeans=True,
                      meanprops=dict(marker='D', markerfacecolor='white', markeredgecolor='#111', markersize=8),
                      medianprops=dict(color='#111', linewidth=1.8),
@@ -664,15 +679,10 @@ def fig8_diffusion_lag_patterns():
         jx = rng.normal(xi, 0.05, len(vals))
         axB.scatter(jx, vals, c=color, alpha=0.9, s=46, zorder=3,
                     edgecolors='white', linewidth=0.7)
-        if len(vals) <= 6:  # HRHT: annotate actual values (flat box at 0 otherwise reads as missing)
-            n_zero = int((vals == 0).sum()); n_neg = int((vals < 0).sum())
-            note = f"n = {len(vals)} topics\n{n_zero} at lag 0 (synchronized)"
-            if n_neg:
-                note += f"\n{n_neg} at lag {int(vals.min())} (training first)"
-            axB.text(xi, 4.10, note, ha='center', va='top', fontsize=7.8, color='#333',
-                     linespacing=1.4,
-                     bbox=dict(boxstyle='round,pad=0.35', facecolor='white', alpha=0.9,
-                               edgecolor=color, linewidth=0.9))
+        # v1.0-cand.6: the red-border HRHT value box ("n = 5 topics / 4 at lag 0 /
+        # 1 at lag -2") was deleted per user visual review — the scatter points and
+        # the n_defined tick label already carry this information; exact counts
+        # belong in the manuscript caption, not boxed inside the image.
     axB.axhline(y=0, color='#333', linestyle='--', linewidth=1.1, alpha=0.6, zorder=1)
     axB.axhspan(-5.5, -0.02, color=COLORS['green'], alpha=0.07, zorder=0)
     axB.axhspan(0.02, 5.5, color=COLORS['red'], alpha=0.07, zorder=0)
@@ -681,19 +691,17 @@ def fig8_diffusion_lag_patterns():
     axB.set_ylabel('Lag (years), same definition as panel (a)', fontweight='bold', fontsize=9.5)
     axB.set_ylim(-5.1, 5.1)
     axB.set_title('(b) Defined lag by quadrant', fontweight='bold', fontsize=10.5)
-    # Top-LEFT placement (ha='left') so the note cannot collide with the HRHT
-    # value box at the top-right (v1.0-cand.4 visual fix).
+    # Top-LEFT gray note kept (v1.0-cand.4): states why LRHT/LRLT have no boxes.
     axB.text(0.02, 0.965,
              'Lag was undefined for ALL LRHT (0/10) and LRLT (0/698) topics\n'
              'under the frozen single-year non-trivial-presence rule.',
              transform=axB.transAxes, ha='left', va='top', fontsize=7.8, color='#555',
              style='italic', linespacing=1.4)
 
-    fig.suptitle('Diffusion-Lag Patterns: Research → Training Adoption Delay\n'
-                 'Positive lag = research precedes training;  negative lag = training precedes research.',
-                 fontweight='bold', fontsize=11.5, y=1.00)
-    fig.tight_layout(rect=[0, 0, 1, 0.94])
-    savefig(fig, 'Figure8_DiffusionLagPatterns')
+    fig.suptitle('Diffusion-Lag Patterns: Defined Lag by Quadrant\n' + lag_note,
+                 fontweight='bold', fontsize=11, y=1.00)
+    fig.tight_layout(rect=[0, 0, 1, 0.93])
+    savefig(fig, 'Figure8b_LagByQuadrant')
 
 # ================================================================
 # Figure 10: Matthew Effect — Lorenz Curve + Pareto Bar
@@ -722,8 +730,8 @@ def fig10_matthew_effect():
     natA = lgA[lgA['term'] == 'nat_lag'].iloc[0]
     natB = lgB[lgB['term'] == 'nat_lag'].iloc[0]
 
-    fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(13.5, 4.8),
-                                        gridspec_kw=dict(width_ratios=[1.0, 0.85, 1.0], wspace=0.30))
+    fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(14.2, 5.0),
+                                        gridspec_kw=dict(width_ratios=[1.0, 0.85, 1.0], wspace=0.44))
     # (a) Lorenz curve
     ax1.plot(lorenz_x, lorenz_y, color=COLORS['red'], linewidth=2, label=f'National grants (Gini={audit["gini"]["value_national_projects"]:.3f})')
     ax1.plot([0, 1], [0, 1], '--', color=COLORS['gray'], linewidth=1, label='Perfect equality')
@@ -735,10 +743,13 @@ def fig10_matthew_effect():
 
     # (b) Pareto bar
     pareto_data = audit['gini']['pareto_national_shares_pct']
-    pcts = ['top1', 'top5', 'top10', 'top20', 'top50']
+    # v1.0-cand.6: top50 bar removed (user visual review) - a constant 100% gray
+    # slab carried no information, dwarfed the informative bars, and squeezed
+    # panel (c)'s y-tick labels in the inter-panel gutter.
+    pcts = ['top1', 'top5', 'top10', 'top20']
     vals_p = [pareto_data.get(f'{p}_national_share_pct', 0) for p in pcts]
     bars = ax2.bar(pcts, vals_p, color=[COLORS['red'], COLORS['orange'], COLORS['orange'],
-                                         COLORS['blue'], COLORS['gray']], alpha=0.8, width=0.6)
+                                         COLORS['blue']], alpha=0.8, width=0.6)
     ax2.axhline(y=5, color='#999', linestyle='--', linewidth=0.8, label='Equal share line')
     for bar, v in zip(bars, vals_p):
         ax2.text(bar.get_x() + bar.get_width()/2, v + 1, f'{v:.1f}%', ha='center', fontsize=8, fontweight='bold')
@@ -977,7 +988,7 @@ if __name__ == '__main__':
     fig5_college_caterpillar()   # MAIN-TEXT Figure 5 (model-adjusted, ICC-consistent)
     fig6_hlm_forest()
     fig7_transition_matrix()     # demoted -> supplementary (supervisor tercile, not the main path-dependence test)
-    fig8_diffusion_lag_patterns()  # merged old Fig8+Fig9 (two-panel)
+    fig8_diffusion_lag_patterns()  # v1.0-cand.6: split into Figure8a + Figure8b (two standalone files)
     fig10_matthew_effect()
     fig11_quadrant_summary()     # demoted -> supplementary
     fig12_college_rtas_ranking() # -> FigureS1 (supplementary)
