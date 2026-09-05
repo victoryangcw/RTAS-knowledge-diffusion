@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RTAS v1.0-cand.7 Figure Book — 官方图册页 (Figure Freeze 2026-09-05)</title>
+<title>RTAS v1.0-cand.8 Figure Book — 官方图册页 (Figure Freeze 2026-09-05)</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
@@ -202,7 +202,7 @@
 <body>
 
 <header>
-  <h1>RTAS v1.0-cand.7 — 官方图册 + 数据审计画廊（Figure Freeze 版）</h1>
+  <h1>RTAS v1.0-cand.8 — 官方图册 + 数据审计画廊（Figure Freeze 版）</h1>
   <p>56,901 OpenAlex papers × 3,714 projects · HLM v2b ICC=0.7376 · K=886 (+1 OUTLIER) · 主文 7 图号 + Supplementary 4 图 · All figures single-source from `03_FINAL_ANALYSIS/`</p>
 
   <div class="tab-bar">
@@ -583,7 +583,7 @@
 
     <h3>Panel (a) — Overall lag distribution（离散整数柱状图）</h3>
     <ul>
-      <li>X 轴 = lag 年份 = year(project adoption) − year(paper emergence)，整数刻度 −4…+4，<b>xlim 锁定 −4.6~4.6</b>（v1.0-cand.4 修复：旧版横轴拉到 +10、右侧大片留白）；空桶不画。</li>
+      <li>X 轴 = lag 年份 = year(project first non-trivial presence) − year(paper first non-trivial presence)（v1.0-cand.8 术语冻结：替换旧 adoption/emergence 措辞，与重生成图面一致），整数刻度 −4…+4，<b>xlim 锁定 −4.6~4.6</b>（v1.0-cand.4 修复：旧版横轴拉到 +10、右侧大片留白）；空桶不画。</li>
       <li>颜色：正 lag 红 = research → training；0 灰 = 同步；负 lag 绿 = training → research。<b>v1.0-cand.5 措辞中性化</b>：图内注释改为 "Positive lag = research precedes training;  negative lag = training precedes research"（数据未直接观测课程内容，不写 "course update needed / cold content" 等强解读）。每柱顶标 "count (pct%)"。</li>
       <li>标题动态拼出 "(29/886 topics defined; median=0.0, mean=+0.59 yr)"——数字全部来自 aggregate_stats OVERALL 行，禁止硬编码。</li>
       <li><b>v1.0-cand.6：</b>颜色图例移出绘图区右侧（不再悬浮遮挡柱顶数字）；文件拆分为独立 Figure8a_LagDistribution（7.9×5.6 inch），论文排版两 panel 可并排缩放。</li>
