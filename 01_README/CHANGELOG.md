@@ -5,6 +5,56 @@ config, data, or code that could affect downstream numbers.
 
 ---
 
+## [v1.0-cand.9] — 2026-09-05 — SEVENTEENTH ROUND: SINGLE-RATER VALIDATION HARDENING (SECONDARY; FROZEN NUMBERS UNTOUCHED)
+
+Milestone status: ✅ Robustness add-on package for the 150-pair single-rater
+construct-validity check. No frozen CSV or estimated number changed; the frozen
+point estimate remains Spearman rho = +0.405.
+
+### New analyses (`06_CODE/11_validation_robustness.py`, seed 42, B=10,000)
+- Replicates the frozen C1 pipeline (exact-title match 150/150; rho = +0.4055 ✓).
+- **R4 dichotomized discrimination (headline)**: embedding cosine separates
+  rater-relevant (>=2, n=16) from irrelevant (=1, n=134) pairs with
+  **AUC = 0.880 [0.793, 0.949]**, point-biserial r = +0.459 — directly answers
+  the "134/150 ties" reviewer concern.
+- R1 bootstrap 95% CI for rho: **[+0.281, +0.509]** (excludes 0).
+- R3 permutation p < .001; R2 Kendall tau-b = +0.327 [+0.229, +0.410].
+- R6 leave-one-out: max |delta rho| = 0.018 (no single pair drives the result).
+- R5 informative-subset rho (n=16) = -0.253, reported for transparency only
+  (n too small for inference); validity claim rests on AUC + full-sample rank
+  correlation, not fine-grained ranking within relevant pairs.
+- Outputs: `02_RTAS_MODEL_SELECTION/human_validation/robustness/`
+  (`validation_robustness_stats.csv`, `150pairs_with_cos_mini.csv`).
+
+### New protocol & instruments (`02_RTAS_MODEL_SELECTION/human_validation/`)
+- `RATING_RUBRIC.md`: 1-4 English anchor definitions (verbatim LLM prompt v1),
+  blinding rules, LLM second-rater / test-retest / second-human-rater
+  protocols; protocol + forms committed to the repo BEFORE retest execution
+  (pre-specified timestamping).
+- `retest_40pairs_form.csv` (intra-rater test-retest, >=2-week washout, seed 42)
+  and `second_rater_50pairs_form.csv` (optional independent second rater);
+  both blinded (no first-round scores).
+- `06_CODE/12_llm_second_rater.py`: GPT-4o temp=0 blind re-rating of all 150
+  pairs into the pre-registered `annotator2` slot (prompt v1, JSON output,
+  checkpointed, idempotent); reports human-LLM agreement (quadratic weighted
+  kappa, Spearman, exact %) + RTAS-LLM triangulation. **PENDING API KEY**
+  (env `OPENAI_API_KEY` or `06_CODE/.openai_key`); run: `python 12_llm_second_rater.py`.
+
+### Manuscript (`07_MANUSCRIPT/manuscript_draft_v0.9.md`)
+- §2.2 C1 item: robustness numbers (AUC/CI/permutation/LOO) + protocol pointer,
+  explicitly secondary and consistent with the "single-rater reference
+  relevance ratings" framing.
+- §10 data dictionary: new validation files listed.
+- §12.2 item 5: hardening summarized; single-rater baseline framing unchanged.
+
+### Repo
+- New `05_VALIDATION/` directory: RATING_RUBRIC.md, annotation CSV, per-pair
+  cosine CSV, both blinded forms, robustness stats (aggregate only); scripts
+  added to `03_CODE/`. Committing the protocol before execution is itself the
+  pre-specification evidence.
+
+---
+
 ## [v1.0-cand.8] — 2026-09-05 — SIXTEENTH ROUND: MANUSCRIPT PRECISION PASS (LAG TERMINOLOGY, TUKEY DIRECTION, CORPUS TIERS, NON-CAUSAL WORDING)
 
 Milestone status: ✅ Text-only precision pass + one figure-label regeneration.

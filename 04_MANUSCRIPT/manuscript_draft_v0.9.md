@@ -152,6 +152,7 @@ $$\text{RTAS}(p, c, t) = \frac{1}{|P_{c,t}|} \sum_{j \in P_{c,t}} \cos(\mathbf{e
 1. 语种覆盖：项目标题 92% 中文 + 论文标题 100% 英文，需要多语言模型处理中英混合语料
 2. 计算效率：384 维远轻于 BGE-M3 的 1024 维，适合 60,615 篇文档的联合主题建模
 3. **成对语义效度（C1，pairwise semantic validity）**：在 150 对"项目标题–论文标题"人工评分配对上，直接计算两句嵌入的余弦相似度并与人工相关度评分求 Spearman 相关：**r = 0.405（p = 2.6×10⁻⁷，n = 150 对）**。该验证在**嵌入层级**进行——检验嵌入空间是否保序地反映人的语义相关判断，与下游聚合方式无关，因此 5 个聚合变体共享同一 C1 值。需明确：它是**成对语义判别效度**证据，**不是**构念效度（construct validity）的完整认证。标注来源为人工评分（原始标注任务文件标注为"人工+LLM 混合"，落盘 `human_validation/150pairs_human_annotations.csv` 保留第一标注人评分，1–4 分）；第二标注人列未覆盖（全 NaN），故本稿不报告评分者间信度（inter-rater reliability），相关系数 0.405 仅反映机器-人工的成对一致性。
+   **v1.0-cand.9 稳健化加固（secondary，未改动冻结点估计）**：134/150 对评 1 分是随机配对的预期结果，针对该偏态补充——① **二分判别**：余弦相似度区分人工判定"相关（≥2）vs 不相关（=1）"的 **AUC = 0.880（95% bootstrap CI [0.793, 0.949]，B=10,000，seed 42）**，点二列 r = +0.459；② ρ 的 **bootstrap 95% CI = [+0.281, +0.509]**（不含 0），置换检验 p < .001，Kendall τ-b = +0.327 [+0.229, +0.410]；③ 逐对剔除无单点驱动（max |Δρ| = 0.018）；④ 仅相关子集（n=16）ρ = −0.253 **仅透明报告、n 过小不作推断**——本验证的效力主张建立在"相关 vs 不相关"判别（AUC）与全样本秩相关上，不主张相关对内部的精细排序。评分 rubric（1–4 英文锚点）、LLM 第二评分协议（gpt-4o, temp=0, 盲评, prompt v1）、重测信度协议（40 对, ≥2 周洗脱）与第二人类评分者协议（50 对）见 `02_RTAS_MODEL_SELECTION/human_validation/RATING_RUBRIC.md`——**协议与表单先于重测执行冻结入库（pre-specified）**。
 
 **聚合方式选择（5 个候选变体，预注册规则；数值冻结于 `02_RTAS_MODEL_SELECTION/rtas_model_selection.csv` 与 `rtas_selection_composite_v1.csv`）：**
 
@@ -583,6 +584,10 @@ R 脚本（`06_CODE/09_ri_clpm.R`）使用 lavaan 包的 FIML（全信息最大�
 - `rtas_model_selection.csv` — 5 聚合变体 C1–C5 冻结指标（C1=0.4055 嵌入层级共享；C4 学院 ICC 列因奇异拟合为空）
 - `rtas_selection_composite_v1.csv` — v1.0 新增：预注册综合得分（0.45·C2 + 0.30·C4 + 0.25·C3，min-max 归一）+ chosen_primary 列（mean=0.742 选中）
 - `human_validation/150pairs_human_annotations.csv` — 150 对人工评分（annotator1_score，1–4 分；annotator2 全空，无评分者间信度）
+- `human_validation/RATING_RUBRIC.md` — v1.0-cand.9：评分 rubric（1–4 英文锚点）+ LLM 第二评分/重测/第二评分者协议（协议与表单 pre-specified 入库）
+- `human_validation/robustness/validation_robustness_stats.csv` — v1.0-cand.9：ρ bootstrap CI [+0.281, +0.509]、置换 p<.001、Kendall τ-b +0.327、二分判别 **AUC=0.880 [0.793, 0.949]**、LOO max |Δρ|=0.018（secondary，seed 42）
+- `human_validation/150pairs_with_cos_mini.csv` — v1.0-cand.9：150 对逐对余弦值（与人工分数，供一致性/三角验证复用）
+- `human_validation/retest_40pairs_form.csv`、`second_rater_50pairs_form.csv` — v1.0-cand.9：重测（≥2 周洗脱后自评）与第二评分者盲评表单（seed 42，不含首轮分数）
 
 **①异质性分析** (`03_FINAL_ANALYSIS/heterogeneity/`):
 - `anova_project_level.csv` — F(2,3711)=35.72, p=4.3e-16, η²=1.89%
@@ -884,7 +889,7 @@ R 脚本（`06_CODE/09_ri_clpm.R`）使用 lavaan 包的 FIML（全信息最大�
 2. **扩散滞后定义率极低（29/886 = 3.27%）**：而且实测**只有 HRLT（n=24）和 HRHT（n=5）象限有定义**，LRHT 10 个主题和 LRLT 698 个主题在单年非平凡出现规则下（论文端需单年 ≥3 篇且 ≥0.2%，约单年 ≥20 篇）双侧从未同时达标（0/10、0/698），lag 在这两个象限不可定义。这是本语料中的经验事实（象限低研属性使其高度可预期，但非逻辑恒等，见 §6.1）。无法像旧 12K 池一样给出"LRHT med=−1.5 yr"这种培养内容过时的定量结论；只能定性说 "LRHT 10 个主题在项目端流行但论文端冷"，但不能算 lag。定义率下降本身来自 57K 全量下年度分母更大、单年 0.2% 门槛对应约 20 篇/年的真实规模要求，是诚实的损失
 3. **HLM 解释度与导师匹配**：v1.0-cand.3 混合模型 ICC=0.7376，约 74% 的 RTAS 方差在学院层面，组内 $R^2$ 有限——设计内的项目/导师变量解释了部分变异，但学院间大部分差异仍由未观测的学科与组织特征驱动。**且学院层差异本身混合了两类来源（v1.0-cand.8）：真实的组织情境（organizational context），与 RTAS 度量对学科专门化（disciplinary specialization）、研究组合宽度（portfolio breadth）、标题语言习惯（title-language conventions）与组合异质性（portfolio heterogeneity）的敏感性——高 RTAS 学院可能只是研究组合更聚焦、标题风格与项目标题更接近，而非"更前沿"；因此学院排名与 caterpillar 图一律不作绩效解读。** 导师-论文拼音匹配存在歧义子集（ambiguous 748 项）与未匹配子集（unmatched 216 项），主模型用完整案例 + 高置信匹配 sensitivity 双规格处理，但同名导师的精确身份消解（OpenAlex author ID 级）仍是未来改进方向
 4. **RI-CLPM 缺位**：该模型在本稿**未估计**（§7 状态声明），"RTAS↔国家级项目率"的方向性无统计结果可报；未来即便按非重叠年度波估计，3–5 波观测面板的方向性证据仍不等同因果，表述应限于"预测"
-5. **RTAS 聚合与选型口径**：Primary RTAS 为项目标题与学院 [2020,t] 论文集的**平均余弦相似度**（MiniLM mean；5 个聚合变体经预注册综合得分评估选定 mean，见 §2.2）。C1 效度证据为嵌入层级的成对语义一致性（150 对人工评分，r=0.4055；仅第一标注人、无评分者间信度），不是完整构念效度认证；C5 收敛效度为对 SBERT 主题分的代理相关，BGE-M3 跨模型一致性待未来检验（§12.3 项 1）
+5. **RTAS 聚合与选型口径**：Primary RTAS 为项目标题与学院 [2020,t] 论文集的**平均余弦相似度**（MiniLM mean；5 个聚合变体经预注册综合得分评估选定 mean，见 §2.2）。C1 效度证据为嵌入层级的成对语义一致性（150 对人工评分，r=0.4055；仅第一标注人、无评分者间信度；cand.9 已补二分判别 AUC=0.880 [0.793, 0.949]、bootstrap CI [+0.281, +0.509]、置换 p<.001、LLM 第二评分与重测/第二评分者 pre-specified 协议，见 §2.2 与 RATING_RUBRIC.md——均属 secondary 加固，不改变 single-rater reference 底线口径），不是完整构念效度认证；C5 收敛效度为对 SBERT 主题分的代理相关，BGE-M3 跨模型一致性待未来检验（§12.3 项 1）
 6. **离群子集与小单元外推**：象限与扩散分析条件于 886 个非离群主题（覆盖 61.53% 文档，离群率 38.47%，§3.3 caveat），结论推广范围为"可稳定成簇的研究主题"；阈值敏感性（15%/20%/25%）下结论稳定（§3.4）。学院排名中部分高排位学院样本很小（冠军南极测绘中心 n=8；工业科学研究院在 Figure 5 caterpillar 模型样本内仅 n=5、raw 口径 n=9 见 Figure S1；§9 Figure 5 caveat），其高 RTAS 反映学科聚焦度而非绩效
 7. **"科研前沿"为代理度量**：RTAS 度量的是选题与学院**同期已发表论文组合**的语义一致性，不直接度量论文新颖性或影响力（标题数据无引用网络与期刊层级，§2.1 操作化声明）；高对齐应解读为"落在学院真实研究组合内"，而非"处在学科最前沿"
 
