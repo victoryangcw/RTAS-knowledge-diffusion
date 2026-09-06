@@ -33,43 +33,70 @@ COS_CSV = HV / 'robustness' / '150pairs_with_cos_mini.csv'
 OUT_CSV = HV / '150pairs_llm_second_rater.csv'
 AGG_CSV = HV / 'robustness' / 'llm_agreement_stats.csv'
 
-MODEL = 'gpt-4o'
 TEMPERATURE = 0.0
-PROMPT_VERSION = 'v1'
+PROMPT_VERSION = 'v1.1'  # v1.1: added explicit score-2 examples for LLM discrimination
+
+# Provider auto-detection: prefer DeepSeek if its key is present, else OpenAI.
+# DeepSeek is OpenAI-compatible (base_url + model swap).
+DEEPSEEK_BASE_URL = 'https://api.deepseek.com/v1'
+DEEPSEEK_MODEL = 'deepseek-reasoner'  # R1: better discrimination than deepseek-chat on cross-disciplinary pairs
+OPENAI_MODEL = 'gpt-4o'
 
 SYSTEM_PROMPT = (
     'You are an expert rater in a bibliometric validation study. '
     'Rate the SEMANTIC RELEVANCE of a scientific paper (given by its title) '
     'to an undergraduate research project (given by its title), using ONLY '
     'the information contained in the two titles.\n\n'
-    'Rubric:\n'
+    'Rubric (use the FULL scale 1-4):\n'
     '4 = Directly relevant: same research problem, or directly supporting method/data.\n'
     '3 = Substantially relevant: same problem area or same methodology domain, clear overlap.\n'
-    '2 = Weakly relevant: shares a broad discipline or generic methods, but different problems.\n'
-    '1 = Not relevant: no meaningful semantic connection.\n\n'
+    '2 = Weakly relevant: shares a broad discipline OR a general methodology, even if the '
+    'specific application differs. Examples: both use remote sensing imagery; both use '
+    'deep learning/CNNs; both use statistical/econometric modeling; both study the same '
+    'organism/material class but different questions.\n'
+    '1 = Not relevant: different fields AND no shared method.\n\n'
+    'Important: If the two works share a general method (machine learning, remote sensing, '
+    'imaging, statistics, etc.) or a broad discipline, assign 2 even if the concrete '
+    'problems differ. Do NOT default to 1 when there is any shared method or field.\n\n'
     'Respond ONLY with a JSON object: {"score": <integer 1-4>, "rationale": "<one short sentence>"}'
 )
 
 
-def load_key():
-    k = os.environ.get('OPENAI_API_KEY', '').strip()
+def load_provider():
+    """Detect provider and return (api_key, base_url, model, key_src).
+
+    Priority: env DEEPSEEK_API_KEY > .deepseek_key file >
+              env OPENAI_API_KEY > .openai_key file.
+    """
+    # --- DeepSeek ---
+    k = os.environ.get('DEEPSEEK_API_KEY', '').strip().lstrip('\ufeff')
     if k:
-        return k, 'env OPENAI_API_KEY'
+        return k, DEEPSEEK_BASE_URL, DEEPSEEK_MODEL, 'env DEEPSEEK_API_KEY'
+    kf = PROJ / '06_CODE' / '.deepseek_key'
+    if kf.exists():
+        k = kf.read_text(encoding='utf-8').strip().lstrip('\ufeff')
+        if k:
+            return k, DEEPSEEK_BASE_URL, DEEPSEEK_MODEL, str(kf)
+    # --- OpenAI ---
+    k = os.environ.get('OPENAI_API_KEY', '').strip().lstrip('\ufeff')
+    if k:
+        return k, None, OPENAI_MODEL, 'env OPENAI_API_KEY'
     kf = PROJ / '06_CODE' / '.openai_key'
     if kf.exists():
-        k = kf.read_text(encoding='utf-8').strip()
+        k = kf.read_text(encoding='utf-8').strip().lstrip('\ufeff')
         if k:
-            return k, str(kf)
-    print('ERROR: no API key. Set env OPENAI_API_KEY or create 06_CODE/.openai_key')
+            return k, None, OPENAI_MODEL, str(kf)
+    print('ERROR: no API key. Create 06_CODE/.deepseek_key (preferred) or '
+          '06_CODE/.openai_key, or set env DEEPSEEK_API_KEY / OPENAI_API_KEY')
     sys.exit(2)
 
 
-def rate(client, project_title, paper_title):
+def rate(client, model, project_title, paper_title):
     user = f'project title: {project_title}\npaper title: {paper_title}'
     for attempt in range(3):
         try:
             resp = client.chat.completions.create(
-                model=MODEL,
+                model=model,
                 temperature=TEMPERATURE,
                 response_format={'type': 'json_object'},
                 messages=[{'role': 'system', 'content': SYSTEM_PROMPT},
@@ -89,9 +116,18 @@ def rate(client, project_title, paper_title):
 
 def main():
     from openai import OpenAI
-    key, key_src = load_key()
-    client = OpenAI(api_key=key)
-    print(f'[cfg] model={MODEL} temperature={TEMPERATURE} prompt={PROMPT_VERSION} key_src={key_src}')
+    # Disable system proxies (Windows env sometimes injects corporate proxies
+    # that break TLS to DeepSeek/OpenAI endpoints).
+    for v in ('http_proxy', 'https_proxy', 'HTTP_PROXY', 'HTTPS_PROXY',
+              'all_proxy', 'ALL_PROXY'):
+        os.environ.pop(v, None)
+    key, base_url, model, key_src = load_provider()
+    client_kwargs = dict(api_key=key)
+    if base_url:
+        client_kwargs['base_url'] = base_url
+    client = OpenAI(**client_kwargs)
+    print(f'[cfg] provider={model} (base_url={base_url or "default"}) '
+          f'temperature={TEMPERATURE} prompt={PROMPT_VERSION} key_src={key_src}')
 
     ann = pd.read_csv(SRC_ANN)
     done = {}
@@ -106,11 +142,11 @@ def main():
         if pid in done:
             s, why = done[pid]
         else:
-            s, why = rate(client, str(r.project_title), str(r.paper_title))
+            s, why = rate(client, model, str(r.project_title), str(r.paper_title))
             done[pid] = (s, why)
             time.sleep(0.3)
         rows.append({'pair_id': pid, 'llm_score': s, 'llm_rationale': why,
-                     'model': MODEL, 'prompt_version': PROMPT_VERSION})
+                     'model': model, 'prompt_version': PROMPT_VERSION})
         if i % 25 == 0:
             pd.DataFrame(rows).sort_values('pair_id').to_csv(OUT_CSV, index=False, encoding='utf-8-sig')
             print(f'[checkpoint] {i}/150 rated')
@@ -138,7 +174,7 @@ def main():
 
     agg = pd.DataFrame([
         ('n_pairs', len(m), 'all 150 pairs'),
-        ('human_llm_quadratic_weighted_kappa', kappa, 'annotator1 vs LLM (gpt-4o, temp=0, blind)'),
+        ('human_llm_quadratic_weighted_kappa', kappa, f'annotator1 vs LLM ({model}, temp=0, blind)'),
         ('human_llm_spearman_rho', rho_hl, 'human vs LLM rank agreement'),
         ('human_llm_spearman_p', p_hl, 'asymptotic p'),
         ('human_llm_exact_agreement', exact, 'share of identical 1-4 scores'),

@@ -1,0 +1,9 @@
+﻿stat,value,note
+n_pairs,150.0,all 150 pairs
+human_llm_quadratic_weighted_kappa,0.45920303605313095,"annotator1 vs LLM (deepseek-reasoner, temp=0, blind)"
+human_llm_spearman_rho,0.6376130776641326,human vs LLM rank agreement
+human_llm_spearman_p,1.7289845411682217e-18,asymptotic p
+human_llm_exact_agreement,0.9333333333333333,share of identical 1-4 scores
+rtas_llm_spearman_rho,0.27920514436789784,triangulation: cos vs LLM score
+rtas_llm_spearman_p,0.0005401436305119224,asymptotic p
+rtas_human_spearman_frozen,0.405,frozen C1 reference (not recomputed here)

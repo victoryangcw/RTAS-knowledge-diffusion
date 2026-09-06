@@ -1,0 +1,151 @@
+﻿pair_id,llm_score,llm_rationale,model,prompt_version
+1,1,"The project concerns spintronic memory device simulation, while the paper is a particle physics measurement; no shared field or method.",deepseek-reasoner,v1.1
+2,1,Different fields (biomedical neuromodulation vs. organic phosphorescence materials) with no shared method.,deepseek-reasoner,v1.1
+3,1,"The project focuses on pharmaceutical cream formulation and quality control, while the paper deals with remote sensing-based crop mapping, sharing no field or method.",deepseek-reasoner,v1.1
+4,1,"The project is biomedical (cardiac metabolism) while the paper is materials physics (thermal interface), with no shared topic or method.",deepseek-reasoner,v1.1
+5,1,"The project concerns food additives and neurophysiology, while the paper is about chemical catalysis for CO2 hydrogenation; there is no shared field or method.",deepseek-reasoner,v1.1
+6,1,"The project concerns neuroscience and pharmacology, while the paper concerns maritime trajectory analysis; no shared methods or fields.",deepseek-reasoner,v1.1
+7,1,Different fields (medical research vs pure mathematics) with no shared methodology.,deepseek-reasoner,v1.1
+8,1,"The project is in robotics (quadruped robot), while the paper is in ionospheric modeling/geodesy, with no shared field or method.",deepseek-reasoner,v1.1
+9,1,Different fields (offshore wind engineering vs archaeology) with no shared method apparent.,deepseek-reasoner,v1.1
+10,1,The project concerns molecular/circadian biology while the paper concerns photovoltaic materials; no shared problem or methodology.,deepseek-reasoner,v1.1
+11,1,"The project involves a measurement device for implant precision in teaching, while the paper is about topological physics (Weyl points), with no shared field or method.",deepseek-reasoner,v1.1
+12,1,"The project is in religious/cultural studies while the paper is in materials science/nanotechnology, with no overlap in field or methodology.",deepseek-reasoner,v1.1
+13,1,"The project focuses on a tutoring platform feasibility study using big data, while the paper examines industrial robots' effect on manufacturing energy intensity across countries; they share no field or method.",deepseek-reasoner,v1.1
+14,1,"The project addresses higher education policy econometrics, while the paper concerns civil engineering tunnel measurement via mobile laser scanning, sharing neither field nor method.",deepseek-reasoner,v1.1
+15,1,"The project is on EEG-based emotion analysis (biomedical signal processing), while the paper concerns acoustic metamaterials (physics/materials), sharing no methodology or field.",deepseek-reasoner,v1.1
+16,1,"The project focuses on urban pollinators and ecology, while the paper addresses social participation and loneliness among older adults, showing no overlap in field or method.",deepseek-reasoner,v1.1
+17,1,"The project is about literary reception of Aeschylus, while the paper is a city profile, with no shared field or method.",deepseek-reasoner,v1.1
+18,2,"Both works apply data-driven models to image-based analysis, but their domains differ (ancient mural restoration vs urban land-use mapping).",deepseek-reasoner,v1.1
+19,1,"The project is a location-based campus bullying reporting system, while the paper is about medical image segmentation, with no shared field or method.",deepseek-reasoner,v1.1
+20,1,"The project concerns computational optimization in perovskite solar cells, while the paper is a deep learning-based clinical study on bowel preparation; they share no field or methodology.",deepseek-reasoner,v1.1
+21,1,The project title 'Guardian' is ambiguous and shares no apparent field or method with the paper on carbon materials for supercapacitors.,deepseek-reasoner,v1.1
+22,1,"The project concerns music technology app design, whereas the paper addresses immunology and HBV infection, with no shared field or method.",deepseek-reasoner,v1.1
+23,1,"The project is in finance/economics (investor sentiment, oil price) while the paper is in biomedical/bone regeneration, with no shared discipline or method.",deepseek-reasoner,v1.1
+24,1,"The project concerns pharmacological effects of honeysuckle on oral ulcers, while the paper addresses plant siRNA phase separation and gene silencing, sharing no common problem, method, or material.",deepseek-reasoner,v1.1
+25,1,The works are in completely different fields (media linguistics vs. nanoscale materials manufacturing) with no shared method.,deepseek-reasoner,v1.1
+26,1,"The project is pharmaceutical chemistry drug synthesis, while the paper is high-energy particle physics; no shared field or method.",deepseek-reasoner,v1.1
+27,1,"The project is an IoT/smart lock system while the paper is biochemistry enzymology research, with no shared field or method.",deepseek-reasoner,v1.1
+28,1,"The project is in wine industry economics and the paper is in biomedical stem cell research, with no shared field or method.",deepseek-reasoner,v1.1
+29,1,"The project concerns acoustic engineering for interrogation sound pickup, while the paper addresses geotechnical landslide modeling; no shared field or methodology.",deepseek-reasoner,v1.1
+30,1,The project is about a tourism website while the paper discusses tissue engineering composites; no shared field or method.,deepseek-reasoner,v1.1
+31,1,Different fields (law vs. orthodontics) with no shared methods or disciplinary overlap.,deepseek-reasoner,v1.1
+32,1,"The project focuses on deep learning security for generative models, while the paper is an epidemiological study of dental caries, sharing no field or method.",deepseek-reasoner,v1.1
+33,1,"The project is in cardiovascular medicine using sonodynamic therapy, while the paper is about food packaging pH-indicator films; no shared field or method.",deepseek-reasoner,v1.1
+34,1,Different fields (cryptography/blockchain vs. low-power neuromorphic monitoring) with no shared method.,deepseek-reasoner,v1.1
+35,1,"The project concerns protein directed evolution and antibody genes, while the paper concerns radiomics and deep learning for cancer imaging, sharing no field or method.",deepseek-reasoner,v1.1
+36,1,"The project is in financial knowledge graph analysis, while the paper is in biomedical nanoparticle research, sharing no field or method.",deepseek-reasoner,v1.1
+37,1,"The project is an engineering system for temperature measurement, while the paper is a molecular neuroscience study on Alzheimer's disease, with no shared field or methodology.",deepseek-reasoner,v1.1
+38,1,The two works belong to completely different fields (linguistics/social science vs. chemistry/materials science) with no shared methodology.,deepseek-reasoner,v1.1
+39,1,"The project focuses on microbial degradation of alkanes, while the paper investigates a molecular pathway in kidney cells, sharing no field or methodological overlap.",deepseek-reasoner,v1.1
+40,1,"The project is about legal issues (consumer rights and extortion crime), while the paper is about materials science (OLED emitters), sharing no field or method.",deepseek-reasoner,v1.1
+41,1,"The project concerns medical genomics using next-generation sequencing, while the paper focuses on materials chemistry and fluorescence sensing, sharing no field or method.",deepseek-reasoner,v1.1
+42,1,"The project is in computer vision/OCR for ancient characters, while the paper is in cellular biology, sharing no field or method.",deepseek-reasoner,v1.1
+43,1,"The project concerns esports business models under the Internet+ context, while the paper is on organic chemistry synthesis, with no shared field or method.",deepseek-reasoner,v1.1
+44,1,"The project on big data for SME loans is in finance/economics, while the paper on zero-shot semantic segmentation is in computer vision with no shared method or field.",deepseek-reasoner,v1.1
+45,1,Different fields (drug discovery vs. concrete materials) with no shared methodology.,deepseek-reasoner,v1.1
+46,1,"The project is in healthcare/nursing for stroke caregivers, while the paper is in civil engineering/materials science using machine learning, with no shared field or method.",deepseek-reasoner,v1.1
+47,1,"The project focuses on digital humanities visualization of historical poets, while the paper addresses remote sensing image processing, sharing no field or method.",deepseek-reasoner,v1.1
+48,1,"The project focuses on climate/environmental modeling using deep learning, while the paper addresses cancer biology mechanisms, with no shared field or methodology.",deepseek-reasoner,v1.1
+49,1,The works are in completely different fields (location-based tourism tracking vs. semiconductor doping) with no shared methodology or discipline.,deepseek-reasoner,v1.1
+50,1,"The project concerns ESG practices in insurance companies (business/finance), while the paper is about deep learning for remote sensing building footprint update (geospatial/computer vision), with no overlap in field or method.",deepseek-reasoner,v1.1
+51,1,"The project focuses on AI algorithm market risk and regulation, while the paper discusses marine shell structure and utilization; no shared field or method.",deepseek-reasoner,v1.1
+52,1,"The project focuses on blockchain-based customer information management in finance, while the paper studies knowledge adoption in live streaming through social media concepts, with no shared field or methodology.",deepseek-reasoner,v1.1
+53,1,The two works address entirely different problems (AI-based oral hygiene assessment vs. scaffold-based bone regeneration) and share no common method.,deepseek-reasoner,v1.1
+54,1,"The project studies bird community structure in urban green spaces, while the paper focuses on snow depth estimation via deep learning; they share no clear research problem, method, or field.",deepseek-reasoner,v1.1
+55,1,"The project focuses on social AI against social exclusion, while the paper is about agricultural remote sensing for maize leaf area estimation, with no shared field or method.",deepseek-reasoner,v1.1
+56,1,"The project is biomedical research on vitamin D and sarcopenia, while the paper is about deep learning for road extraction from remote sensing, sharing no field or methodology.",deepseek-reasoner,v1.1
+57,1,"The project involves educational simulation with Unity3D, while the paper addresses materials science radiation effects; no shared field or method.",deepseek-reasoner,v1.1
+58,1,"The project concerns big-data business environment evaluation, while the paper is an experimental hydrology study; they share no field or method.",deepseek-reasoner,v1.1
+59,2,"Both works use artificial intelligence/machine learning for image analysis, but apply it to different domains (medical ultrasound vs. satellite crop mapping).",deepseek-reasoner,v1.1
+60,1,"The project involves tourism, culture, and software development, while the paper is about biomedical detection of a virus, with no shared field or methodology.",deepseek-reasoner,v1.1
+61,1,"The project concerns legal governance of short video copyright, while the paper is about cellulose materials chemistry, sharing no field or method.",deepseek-reasoner,v1.1
+62,2,"Both works use remote sensing imagery and address change detection, but differ in data type (nighttime lights vs. high-resolution optical) and objective (COVID-19 impact vs. semantic segmentation).",deepseek-reasoner,v1.1
+63,1,The project on blood pressure monitoring with flexible sensors and ML has no shared methodology or application with cancer imaging/therapy using bacteria-based materials.,deepseek-reasoner,v1.1
+64,1,"The project is about media and communication studies of live streaming content, while the paper is on chemistry and photocatalysis, with no shared field or method.",deepseek-reasoner,v1.1
+65,1,"The project focuses on educational game design, while the paper concerns electrocatalysis in materials science, sharing no field or method.",deepseek-reasoner,v1.1
+66,1,"The project concerns social science and virtual idol industry, while the paper is about electronic image sensor hardware, sharing no field or method.",deepseek-reasoner,v1.1
+67,1,"The project concerns automotive safety monitoring, while the paper is in particle physics, with no shared field or methodology.",deepseek-reasoner,v1.1
+68,1,"Different fields: silicone gel packaging/thermal modification vs. organic phosphorescence/photophysics, with no shared method or discipline.",deepseek-reasoner,v1.1
+69,1,"The project focuses on brand communication/narrative strategy, while the paper is on biomedical research about ferroptosis and aortic dissection, with no shared field or method.",deepseek-reasoner,v1.1
+70,1,"The project is biomedical cancer research while the paper is in computer vision/remote sensing, with no shared field or methodology.",deepseek-reasoner,v1.1
+71,1,"The project involves hydrogel-based sensing technology, while the paper is an epidemiological study of air pollution and obesity, sharing no field or method.",deepseek-reasoner,v1.1
+72,1,"The project title concerns digital heritage visualization using 3ds Max and Unity, while the paper title is about perovskite oxide materials chemistry, with no shared discipline or method.",deepseek-reasoner,v1.1
+73,1,"The project concerns point cloud registration algorithms, while the paper is in asymmetric catalysis/organic chemistry; no shared field or method.",deepseek-reasoner,v1.1
+74,1,"The project is in economic sociology/digital economy field research, while the paper is in molecular biology/liver injury research, with no shared field or method.",deepseek-reasoner,v1.1
+75,1,"The project uses computer vision and TCM for health assessment, while the paper studies molecular virology mechanisms, with no shared methodology or field.",deepseek-reasoner,v1.1
+76,1,"The project is in cell biology/medicine while the paper is in remote sensing image classification, with no shared methods or field.",deepseek-reasoner,v1.1
+77,1,"Different fields: drone communication engineering vs. trade economics during COVID-19, with no shared method or broad discipline.",deepseek-reasoner,v1.1
+78,1,"The project focuses on smartphone GNSS positioning while the paper addresses greenhouse gas mapping via satellite remote sensing, with no shared problem or methodology.",deepseek-reasoner,v1.1
+79,1,"The project focuses on e-commerce marketing and regional branding in China, while the paper is about glaciology and climate change, sharing no field or method.",deepseek-reasoner,v1.1
+80,1,"The project concerns agricultural enterprise product strategy under policy reform, while the paper applies remote sensing and land change modeling; no shared method or disciplinary focus.",deepseek-reasoner,v1.1
+81,1,"The project is about cultural product analysis and international communication, while the paper is about chemistry/materials science, with no shared subject area or methodology.",deepseek-reasoner,v1.1
+82,1,Different fields (computer vision/UAV vs organic chemistry) with no shared methodology.,deepseek-reasoner,v1.1
+83,1,"The project is biomedical research on gene knockout and pregnancy, while the paper is geoscience machine learning for landslide assessment, with no shared field or method.",deepseek-reasoner,v1.1
+84,1,"The project is in robotics and engineering, while the paper is in social science/health, with no shared field or methodology.",deepseek-reasoner,v1.1
+85,1,"The project concerns power grid risk and resilience under typhoons, while the paper focuses on biomedical wound healing, with no shared field or methodology.",deepseek-reasoner,v1.1
+86,1,"The project involves plant identification from mobile images and point clouds, while the paper detects landslides using satellite InSAR; no shared method or field.",deepseek-reasoner,v1.1
+87,1,"The project concerns financial fraud risk modeling in business, while the paper describes an astronomy software ecosystem, with no shared field or method.",deepseek-reasoner,v1.1
+88,1,"The project is in law/social welfare, while the paper is in materials science/physics, with no shared methods or field.",deepseek-reasoner,v1.1
+89,1,"The project is in business/management (entrepreneurship evaluation), while the paper is in environmental chemistry (persulfate oxidation), with no shared method or field.",deepseek-reasoner,v1.1
+90,1,"The project is in nursing/medical education, while the paper is in materials chemistry, with no shared field or method.",deepseek-reasoner,v1.1
+91,1,项目属于社会科学健康经济领域，论文属于计算机安全领域，无共同主题或方法。,deepseek-reasoner,v1.1
+92,1,"The project involves human endometriosis and angiogenesis signaling, while the paper is about plant salt tolerance in rice, with no shared methodology or specific field.",deepseek-reasoner,v1.1
+93,1,"The project focuses on elderly sarcopenia cognition and intervention in community health, while the paper investigates rice resistance to brown planthopper via molecular analyses; no shared field or method.",deepseek-reasoner,v1.1
+94,1,"The project is on biological cementoblast mineralization regulated by Bmal1, while the paper is on electrocatalysis and electric double layer modeling, sharing no field or method.",deepseek-reasoner,v1.1
+95,1,"The project concerns legal regulation of internet platform conduct, while the paper is on materials science for LEDs; no shared field or method.",deepseek-reasoner,v1.1
+96,1,"The project is biomedical research on muscle disease mechanisms, while the paper is materials science on thermoelectric properties, with no shared field or method.",deepseek-reasoner,v1.1
+97,1,"The project involves natural product polysaccharide extraction and characterization, while the paper concerns synthetic organic catalysis; no shared field or method.",deepseek-reasoner,v1.1
+98,1,"The project concerns network anomaly detection and packet forwarding, while the paper is about compensating return stroke in piezoelectric actuators—entirely different fields with no shared methodology.",deepseek-reasoner,v1.1
+99,2,"The two works share the general methodology of machine learning, even though their application domains (3D texture processing vs. space weather forecasting) differ.",deepseek-reasoner,v1.1
+100,1,"The project is about developing a single-cell analytical technique (microfluidics + mass spectrometry), while the paper studies a molecular biological mechanism in liver development; no shared problem or method.",deepseek-reasoner,v1.1
+101,1,"The project is in biology/medicine (single-cell omics and periodontitis), while the paper is in computer science/communications (federated learning in networks), with no shared field or method.",deepseek-reasoner,v1.1
+102,1,"The project is in architecture/urban design with data analysis, while the paper is in materials science/electrochemistry, sharing no field or methodology.",deepseek-reasoner,v1.1
+103,1,"The project concerns wildlife protection and legal regulation, while the paper concerns database query optimization, which share no field or method.",deepseek-reasoner,v1.1
+104,1,"The project focuses on historical literature studies while the paper addresses meteorology, sharing no field or method.",deepseek-reasoner,v1.1
+105,1,The works are in completely different fields (UAV security vs dam structural dynamics) with no shared method.,deepseek-reasoner,v1.1
+106,1,"The project is about organizational psychology and workplace incivility, while the paper is about clinical biomarkers for a cancer, with no shared field or methodology.",deepseek-reasoner,v1.1
+107,1,"The project concerns rice genetics and fertility regulation, while the paper deals with concrete mechanical behavior, representing completely different fields with no shared methods.",deepseek-reasoner,v1.1
+108,1,"The project is an educational resource sharing community, while the paper concerns numerical modeling of fractures in frozen rocks; no shared field or method is evident.",deepseek-reasoner,v1.1
+109,1,The titles address entirely different biological topics (liver ischemia-reperfusion injury/bile acid-microbiota versus antiviral innate immunity/ubiquitination) with no shared method or specific problem area.,deepseek-reasoner,v1.1
+110,1,"The project concerns finance and economics, while the paper concerns materials science for solar cells, with no shared methodology or field.",deepseek-reasoner,v1.1
+111,1,"The project is about tax policy effects on firm value, while the paper is about a cancer immunology database; no shared field or method.",deepseek-reasoner,v1.1
+112,1,"The project concerns advertising pricing optimization while the paper addresses industrial emissions measurement, with no shared field or method.",deepseek-reasoner,v1.1
+113,1,"The project focuses on dental scanning technology and clinical education, while the paper is about molecular cancer research, sharing no field or method.",deepseek-reasoner,v1.1
+114,2,"Both involve general machine learning methods, but the application domains are unrelated (photovoltaic materials vs. remote sensing imagery).",deepseek-reasoner,v1.1
+115,1,"The project focuses on freight big data logistics planning, while the paper addresses psychological impact of COVID-19, with no shared field or method.",deepseek-reasoner,v1.1
+116,1,"The project focuses on integrated optics and 3D lithography, while the paper is a clinical study on respiratory outcomes after COVID-19, sharing no field or methodology.",deepseek-reasoner,v1.1
+117,1,"The project involves planetary atmospheric modeling, while the paper focuses on a mechanical microgripper design, with no shared field or method.",deepseek-reasoner,v1.1
+118,1,"The project focuses on additive manufacturing of ethnic architecture, while the paper is about molecular biology of polyadenylation, sharing no field or method.",deepseek-reasoner,v1.1
+119,1,"The project examines cultural globalization and Chinese food culture, while the paper concerns synthetic organic chemistry; they share no discipline or method.",deepseek-reasoner,v1.1
+120,1,"The project concerns Bluetooth signal positioning, while the paper focuses on battery cathode materials; no shared field or method.",deepseek-reasoner,v1.1
+121,1,"The project focuses on aerospace wireless power technology while the paper is about organic electrochemical synthesis, sharing no field or method.",deepseek-reasoner,v1.1
+122,1,"The project involves drone-based computer vision target recognition, while the paper concerns cancer immunotherapy and tumor microenvironment, with no shared field or methodology.",deepseek-reasoner,v1.1
+123,1,"The project is on medical image prediction for breast cancer, while the paper is on environmental policy and green technology, with no shared field or method.",deepseek-reasoner,v1.1
+124,1,"The project is in robotic 3D semantic mapping from RGBD sensors, while the paper is on evolutionary optimization with reinforcement learning, sharing no field or method.",deepseek-reasoner,v1.1
+125,1,"The project focuses on machine learning for architectural drawing review, while the paper concerns terrestrial laser scanning for tree stem mapping and DBH estimation, with no shared field or method.",deepseek-reasoner,v1.1
+126,1,"The project is a historical puzzle book, while the paper describes a CRISPR-based cancer mutation detection system, sharing no field or methodology.",deepseek-reasoner,v1.1
+127,1,"The project uses remote sensing to assess COVID-19 impact on rice agriculture, while the paper applies econometric regression to CO2 emissions, sharing no field or method.",deepseek-reasoner,v1.1
+128,1,"The project is in ancient Chinese literature/oral narrative, while the paper is in hyperspectral image classification with deep learning; no shared discipline or method.",deepseek-reasoner,v1.1
+129,1,"The project is in cognitive linguistics studying Chinese characters, while the paper is in environmental economics, with no shared field or method.",deepseek-reasoner,v1.1
+130,1,"The project is about power distribution system optimization, while the paper concerns ship detection in SAR imagery, with no shared problem or methodology.",deepseek-reasoner,v1.1
+131,1,"The project focuses on aging behavior of dental resin materials, while the paper addresses aggregation-induced emission luminogens with photoresponsive properties; they share no specific method or research domain.",deepseek-reasoner,v1.1
+132,1,"The project concerns plant biochemistry and terpene synthases, while the paper is a systematic review on breastfeeding and body mass index; they share no field or method.",deepseek-reasoner,v1.1
+133,1,"The project focuses on nutritional literacy among undergraduates while the paper examines global burden of benign prostatic hyperplasia, with no shared methodology or topic.",deepseek-reasoner,v1.1
+134,1,"The project concerns urban street quality evaluation, while the paper addresses employee green motivation and creative performance, with no shared field or method.",deepseek-reasoner,v1.1
+135,1,"The project concerns gender and game culture in humanities, while the paper is about SF6 replacement gases in electrical engineering, with no shared field or method.",deepseek-reasoner,v1.1
+136,1,"The project focuses on oral bacteria in IgA nephropathy while the paper concerns COVID-19 virus detection in recovered staff, with no shared disease, organism, or methodology.",deepseek-reasoner,v1.1
+137,1,"The project is about vehicular network security and geographic information, while the paper is a medical/epidemiological study; no shared field or method.",deepseek-reasoner,v1.1
+138,1,"The project focuses on LiDAR-based object recognition in remote sensing, while the paper addresses microgrid scheduling with V2G, showing no shared field or methodology.",deepseek-reasoner,v1.1
+139,1,"The project concerns archaeological stone tool manufacturing, while the paper concerns cement paste pore structure and hydration modeling, sharing no relevant field or method.",deepseek-reasoner,v1.1
+140,1,"The project concerns agricultural machinery design, while the paper is about deep learning for 3D point cloud completion, with no shared field or method.",deepseek-reasoner,v1.1
+141,1,"The project concerns healthcare policy and insurance, while the paper is about DNA-based biosensing, with no shared field or method.",deepseek-reasoner,v1.1
+142,2,"Both employ machine learning/deep learning techniques, but apply them to distinct problems (traffic sign recognition vs street canyon pollutant reduction).",deepseek-reasoner,v1.1
+143,1,"The project is on robot design, while the paper is on photocatalytic materials, with no overlap in field or method.",deepseek-reasoner,v1.1
+144,1,"The project involves UAV image-based road sign recognition for mapping, while the paper is about hydrogel actuators and soft robotics, with no shared field or methodology.",deepseek-reasoner,v1.1
+145,1,"The project is biomedical research on a demethylase in liver injury, while the paper is about deep learning for remote sensing imagery; no shared field or methodology.",deepseek-reasoner,v1.1
+146,1,"The project involves bioinformatics/genetics of multiple myeloma, while the paper involves materials science/3D-printed hydrogels for wound dressing; they share neither a research problem nor a methodological approach.",deepseek-reasoner,v1.1
+147,1,"The project is in materials science/electrochemistry while the paper is in biomedical immunology, with no shared methods or field.",deepseek-reasoner,v1.1
+148,1,"The project concerns legal education reform, while the paper is about materials chemistry for gas purification, with no shared field or method.",deepseek-reasoner,v1.1
+149,2,"Both use deep learning for image analysis, but their applications (face recognition vs dental CT fracture detection) differ.",deepseek-reasoner,v1.1
+150,1,"The project is about battery technology, while the paper is about cancer therapy; different fields with no shared method.",deepseek-reasoner,v1.1

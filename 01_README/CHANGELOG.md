@@ -95,11 +95,26 @@ point estimate remains Spearman rho = +0.405.
 - `retest_40pairs_form.csv` (intra-rater test-retest, >=2-week washout, seed 42)
   and `second_rater_50pairs_form.csv` (optional independent second rater);
   both blinded (no first-round scores).
-- `06_CODE/12_llm_second_rater.py`: GPT-4o temp=0 blind re-rating of all 150
-  pairs into the pre-registered `annotator2` slot (prompt v1, JSON output,
-  checkpointed, idempotent); reports human-LLM agreement (quadratic weighted
-  kappa, Spearman, exact %) + RTAS-LLM triangulation. **PENDING API KEY**
-  (env `OPENAI_API_KEY` or `06_CODE/.openai_key`); run: `python 12_llm_second_rater.py`.
+- `06_CODE/12_llm_second_rater.py`: blind re-rating of all 150 pairs into the
+  pre-registered `annotator2` slot (JSON output, checkpointed, idempotent).
+  Auto-detects provider: DeepSeek (`.deepseek_key` / env `DEEPSEEK_API_KEY`,
+  `base_url=https://api.deepseek.com/v1`) preferred, else OpenAI. **Run
+  completed 2026-09-06 with `deepseek-reasoner` (R1), temperature=0, prompt
+  v1.1** (prompt v1.1 adds explicit score-2 examples so the model uses the full
+  scale; v1 made deepseek-chat/R1 default to score 1 on cross-disciplinary
+  pairs). Results (secondary):
+  - Human–LLM: quadratic-weighted κ = **0.459** (moderate), Spearman ρ =
+    **0.638** (p < 1e-18), exact agreement 93.3%.
+  - RTAS–LLM triangulation: Spearman ρ = **0.279** (p = 0.0005), vs frozen
+    RTAS–human ρ = 0.405 — RTAS embeddings correlate with an independent LLM
+    rater's blind judgments.
+  - Confusion matrix: LLM is stricter than the human (143 ones vs human 134);
+    of 13 human-2 pairs LLM agrees 6 as 2 (7 as 1); human-4 pair → LLM 2.
+  - Outputs: `human_validation/150pairs_llm_second_rater.csv`,
+    `human_validation/robustness/llm_agreement_stats.csv`.
+  - Note: original GPT-4o plan replaced by DeepSeek-R1 because the OpenAI
+    account had no credits; DeepSeek-R1 used as the LLM rater. Proxy env vars
+    stripped in-script to avoid Windows TLS issues; key files gitignored.
 
 ### Manuscript (`07_MANUSCRIPT/manuscript_draft_v0.9.md`)
 - §2.2 C1 item: robustness numbers (AUC/CI/permutation/LOO) + protocol pointer,
