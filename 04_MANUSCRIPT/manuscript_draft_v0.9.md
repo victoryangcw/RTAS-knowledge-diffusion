@@ -37,13 +37,15 @@
 - 省级：1,657 项（44.6%），RTAS 均值 = 0.1391
 - 国家级：682 项（18.4%），RTAS 均值 = 0.1460
 
-RTAS 均值随项目等级单调递增（国家级 ≥ 省级 > 校级；注意省级-国家级之间在严格多重比较下仅为趋势、未越过 α=0.05 门槛）。ANOVA 整体检验 F(2, 3711) = 35.72, p = 4.3×10⁻¹⁶, η² = 1.89%。最大两两差距在"国家级 vs 校级"：Welch's unequal-variance t = 7.375, p = 2.9×10⁻¹³, Cohen's d = +0.352（v1.0-cand.7 修正：旧稿 0.349 来自未加权 pooled SD 公式，冻结 CSV `project_level_top_vs_bottom_cohensd.csv` 标准 n 加权口径 d = 0.3517）。Tukey HSD 严格多重比较结果（**Δ 方向约定（v1.0-cand.8 统一）：Δ 一律 = 高等级 − 低等级**，正值表示高等级 RTAS 更高；正文、汇总表与 Figure 4 图注同口径）：
+RTAS 均值随项目等级单调递增（国家级 ≥ 省级 > 校级；注意省级-国家级之间在严格多重比较下仅为趋势、未越过 α=0.05 门槛）。ANOVA 整体检验 F(2, 3711) = 35.72, p = 4.3×10⁻¹⁶, η² = 1.89%（**95% bootstrap CI [1.14%, 2.86%]，B=10,000，seed 42；v1.0-cand.10 补**）。最大两两差距在"国家级 vs 校级"：Welch's unequal-variance t = 7.375, p = 2.9×10⁻¹³, Cohen's d = +0.352（v1.0-cand.7 修正：旧稿 0.349 来自未加权 pooled SD 公式，冻结 CSV `project_level_top_vs_bottom_cohensd.csv` 标准 n 加权口径 d = 0.3517）。Tukey HSD 严格多重比较结果（**Δ 方向约定（v1.0-cand.8 统一）：Δ 一律 = 高等级 − 低等级**，正值表示高等级 RTAS 更高；正文、汇总表与 Figure 4 图注同口径）：
 - **Provincial − University（P−U）**：Δmean = +0.0179, 95% CI [+0.0117, +0.0240], p-adj ≈ 0 → ***
 - **National − University（N−U）**：Δmean = +0.0248, 95% CI [+0.0170, +0.0327], p-adj ≈ 0 → ***
 - **National − Provincial（N−P）**：Δmean = +0.0070, 95% CI [−0.0007, +0.0146], **p-adj = 0.082 → ns（CI 跨 0，FAIL）**
 因此严格结论为 **University < Provincial ≤ National**（N−P = +0.007 的趋势虽存在，但在 Family-wise α=0.05 控制下不通过）。详见 Figure 4：箱上方 3 条 verdict bracket 只标 Tukey 结论，完整 Welch + Tukey 数值对照见 §3.4 与 Figure 4 图注（v1.0-cand.3 起图面为 chart-only，信息框移入图注）。
 
 > **口径声明（v1.0-cand.8）：本节的等级差异为描述性组间比较（descriptive），不构成对 RTAS 选型的独立确证性验证。** 选型综合分中 project-level known-groups 效应占较高权重（§2.2），在同一数据上再检验等级差异存在部分循环风险；5 个聚合变体的 known-groups 检验全部同号且显著（§2.2 选型表），等级方向结论不依赖聚合方式。Cohen's d / Welch 检验均为事后描述性对比，非预注册的确证性检验。
+
+> **单一机构的分析价值（v1.0-cand.10）：** 本研究限定于单一综合性大学，这并不削弱其分析价值——同一机构提供了**统一的项目等级制度、统一的治理体系与共同的时间窗口**，同时内部覆盖 40 个学科组织（学院/研究院），构成一个减少跨机构制度异质性的 **natural laboratory**：学院间差异可在制度背景大致恒定的条件下被观测。代价是外部效度有限——结论能否推广至其他类型高校（不同学科布局、不同治理结构）需多校复现，这一点在 §12.2 局限中说明。
 
 ### 1.1.5 数据纠正说明（v0.2 → v0.9.1）
 
@@ -130,7 +132,11 @@ RTAS 均值随项目等级单调递增（国家级 ≥ 省级 > 校级；注意�
 
 RTAS（Research-Training Alignment Score，科研-培养对齐分数）是本研究的核心度量指标，用于量化某一学院的培养项目方向与该学院科研产出方向之间的语义一致性程度。RTAS 值越高，表示培养项目选题与学院**同期科研产出组合（recent research portfolio）**的语义距离越近。
 
+**与相近度量的区分（v1.0-cand.10 补入文献定位）：** 名称相近的 Scafetta (2025, *Scientometrics*) 提出的 **RT-score** 是**学者层面**的科研-教学绩效综合指数（faculty-level research+teaching performance composite），用于评价个体学者绩效；Maisano et al. (2023, *Scientometrics*) 实证检验了科研与教学指标之间的相关关系。本研究的 RTAS 与之不同：它是**项目层面**的跨语言语义对齐度量（project-level cross-lingual semantic alignment），度量本科生项目选题与学院同期论文组合的语义一致性，**不用于绩效排名**。这一区分使 RTAS 的贡献落在"科研产出组合如何渗透到本科培养选题"这一组织层面问题，而非学者个人绩效评估。
+
 > **操作化口径声明（"科研前沿"如何被测量）：** 标题与全文中的"科研前沿"是解释性措辞；RTAS 直接观测的是项目标题与学院累积窗口内**已发表论文标题集合**之间的语义一致性，即以"学院同期科研产出组合"作为科研前沿的**可观测代理（observable proxy）**。RTAS 高表示学生选题落在学院教师真实发表的研究组合之内；它**不**直接度量论文的新颖性、学科引领性或影响力——标题数据不含引用网络与期刊层级信息，且除导师协变量的立项前窗口（§4.2）外不使用被引数据。
+
+> **为什么只用标题（titles-only 设计）：** 选择标题而非摘要/全文，不是因为摘要不可得，而是因为**项目侧仅有项目标题**——标题是项目与论文两侧都完整存在、且跨语言可比的最对称文本单元（symmetric cross-lingual text unit）。若论文端用摘要而项目端仍只有标题，两侧信息密度不对等会引入系统性偏差；而项目研究内容的非结构化文本在原始立项名单中并不存在。代价是语义信息较稀疏（标题为主题的强压缩表示），这一折衷在 §12.2 局限中进一步讨论。
 
 **数学定义：**
 
@@ -140,7 +146,7 @@ $$\text{RTAS}(p, c, t) = \frac{1}{|P_{c,t}|} \sum_{j \in P_{c,t}} \cos(\mathbf{e
 
 其中：
 - $\mathbf{e}_p$ 是项目标题的 MiniLM 语义嵌入向量（384 维，L2 归一化）
-- $P_{c,t}$ 是学院 $c$ 在累积窗口 $[2020, t]$ 内的所有论文标题集合
+- $P_{c,t}$ 是学院 $c$ 在累积窗口 $[2020, t]$ 内、经导师-作者关联（§1.4）**分配到该学院的唯一论文记录集合**；$|P_{c,t}|$ 即该集合的去重论文数（同一论文若挂多名同院导师只计一次；跨院论文按作者分属各自学院、各计一次）
 - $\cos(\cdot, \cdot)$ 是余弦相似度（因为向量已 L2 归一化，等价于点积）
 - 聚合方式为 **均值**（mean cosine）
 
@@ -154,6 +160,8 @@ $$\text{RTAS}(p, c, t) = \frac{1}{|P_{c,t}|} \sum_{j \in P_{c,t}} \cos(\mathbf{e
 3. **成对语义效度（C1，pairwise semantic validity）**：在 150 对"项目标题–论文标题"人工评分配对上，直接计算两句嵌入的余弦相似度并与人工相关度评分求 Spearman 相关：**r = 0.405（p = 2.6×10⁻⁷，n = 150 对）**。该验证在**嵌入层级**进行——检验嵌入空间是否保序地反映人的语义相关判断，与下游聚合方式无关，因此 5 个聚合变体共享同一 C1 值。需明确：它是**成对语义判别效度**证据，**不是**构念效度（construct validity）的完整认证。标注来源为人工评分（原始标注任务文件标注为"人工+LLM 混合"，落盘 `human_validation/150pairs_human_annotations.csv` 保留第一标注人评分，1–4 分）；第二标注人列未覆盖（全 NaN），故本稿不报告评分者间信度（inter-rater reliability），相关系数 0.405 仅反映机器-人工的成对一致性。
    **v1.0-cand.9 稳健化加固（secondary，未改动冻结点估计）**：134/150 对评 1 分是随机配对的预期结果，针对该偏态补充——① **二分判别**：余弦相似度区分人工判定"相关（≥2）vs 不相关（=1）"的 **AUC = 0.880（95% bootstrap CI [0.793, 0.949]，B=10,000，seed 42）**，点二列 r = +0.459；② ρ 的 **bootstrap 95% CI = [+0.281, +0.509]**（不含 0），置换检验 p < .001，Kendall τ-b = +0.327 [+0.229, +0.410]；③ 逐对剔除无单点驱动（max |Δρ| = 0.018）；④ 仅相关子集（n=16）ρ = −0.253 **仅透明报告、n 过小不作推断**——本验证的效力主张建立在"相关 vs 不相关"判别（AUC）与全样本秩相关上，不主张相关对内部的精细排序。评分 rubric（1–4 英文锚点）、LLM 第二评分协议（gpt-4o, temp=0, 盲评, prompt v1）、重测信度协议（40 对, ≥2 周洗脱）与第二人类评分者协议（50 对）见 `02_RTAS_MODEL_SELECTION/human_validation/RATING_RUBRIC.md`——**协议与表单先于重测执行冻结入库（pre-specified）**。
 
+   **v1.0-cand.10 简单基线对比（incremental validity，secondary）**：在同一 150 对参考集上，三个词汇重叠基线（char 3-5 gram TF-IDF 余弦、char 3-gram Jaccard、BM25 Okapi）的 Spearman ρ 均为 **+0.30**（p≈2×10⁻⁴）、二分判别 AUC 均为 **0.64**，明显低于 MiniLM 的 **+0.405 / AUC 0.880**。这说明语义嵌入带来的效度增益远超纯词汇重叠，支持 MiniLM 作为 RTAS 嵌入底座的选型（详见 `human_validation/robustness/baseline_validity.csv`）。BGE-M3 跨模型基准因 torch DLL 初始化不稳定（已知环境问题）本轮未跑成，留作未来稳健性；MiniLM 仍为 Primary。
+
 **聚合方式选择（5 个候选变体，预注册规则；数值冻结于 `02_RTAS_MODEL_SELECTION/rtas_model_selection.csv` 与 `rtas_selection_composite_v1.csv`）：**
 
 | 变体 | 聚合方式 | C1 成对语义 r（嵌入层级，共享） | C2 已知组 η²（项目等级 ANOVA） | C3 K-稳定性 | C4 年度均值 SD（越低越稳） | C5 收敛效度 r（对 SBERT 主题分） | 综合得分 |
@@ -164,7 +172,7 @@ $$\text{RTAS}(p, c, t) = \frac{1}{|P_{c,t}|} \sum_{j \in P_{c,t}} \cos(\mathbf{e
 | top20 | Top-20 均值 | 0.405 | 0.0170（p=1.5×10⁻¹⁴） | 0.991 | 0.153 | 0.362（p=1.2×10⁻¹¹⁵） | 0.398 |
 | centroid | 质心相似度 | 0.405 | 0.0133（p=1.8×10⁻¹¹） | 0.991 | 0.099 | 0.378（p=1.7×10⁻¹²⁶） | 0.300 |
 
-选择规则为查看结果前预注册（`05_select.py`）：C2 显著（p<0.05）者进入候选；综合得分 = 0.45 × C2 η² 归一化 + 0.30 × 稳定性归一化（年度均值 SD + 学院 ICC）+ 0.25 × C3 K-稳定性归一化；Top-K 变体仅在综合得分达到最优值 95% 以内时优先于 mean。实测 mean 综合得分 **0.742** 居首（C2 已知组区分度最高），最优 Top-K 变体 top5 仅 0.480（低于 0.742×0.95 = 0.705 门槛），故冻结 **`rtas_mini_mean`（均值聚合）为 Primary RTAS**。口径说明：C2–C5 为 v0.2 选型阶段在 12K 池上的冻结值（57K 升级后 C2 方向不变、均值聚合仍为最高 η²，见 §1.1）；C4 的学院 ICC 列在选型冻结时混合模型奇异拟合未产出数值（表中不列），稳定性由年度均值 SD 承载；C1 为嵌入层级指标、与论文池规模无关，本稿用冻结嵌入复核 150 对配对 r = 0.4055 与冻结值一致。C5 收敛效度为 MiniLM 变体与早期 SBERT 主题分的相关（代理指标），BGE-M3 跨模型一致性检验留作未来稳健性工作（§12.3）。
+选择规则为查看结果前预注册（`05_select.py`）：C2 显著（p<0.05）者进入候选；**综合得分（composite）= 0.45 × C2 η²（min-max 归一）+ 0.30 × C4 稳定性归一（年度均值 SD + 学院 ICC）+ 0.25 × C3 K-稳定性归一**（权重与归一化口径冻结于 `rtas_selection_composite_v1.csv`，不可后调）；Top-K 变体仅在综合得分达到最优值 95% 以内时优先于 mean。实测 mean 综合得分 **0.742** 居首（C2 已知组区分度最高），最优 Top-K 变体 top5 仅 0.480（低于 0.742×0.95 = 0.705 门槛），故冻结 **`rtas_mini_mean`（均值聚合）为 Primary RTAS**。口径说明：C2–C5 为 v0.2 选型阶段在 12K 池上的冻结值（57K 升级后 C2 方向不变、均值聚合仍为最高 η²，见 §1.1）；C4 的学院 ICC 列在选型冻结时混合模型奇异拟合未产出数值（表中不列），稳定性由年度均值 SD 承载；C1 为嵌入层级指标、与论文池规模无关，本稿用冻结嵌入复核 150 对配对 r = 0.4055 与冻结值一致。C5 收敛效度为 MiniLM 变体与早期 SBERT 主题分的相关（代理指标），BGE-M3 跨模型一致性检验留作未来稳健性工作（§12.3）。
 
 ### 2.3 时间窗口设计（2017–2019 / 2020–2024 双语料结构）
 
@@ -249,6 +257,8 @@ BERTopic 流程包含三个阶段：UMAP 降维 → HDBSCAN 聚类 → c-TF-IDF 
 - 每个非离群主题平均含约 40.1 篇论文和 2.0 个项目
 
 > **离群子集口径说明（clustered-subset caveat）：** 38.47% 的离群率反映标题语义高度多样的跨学科语料特性——离群文档是语义上无法稳定归入任何 ≥10 文档簇的长尾标题，并非噪声或错误。§3.4–§6 的四象限与扩散滞后分析**条件于 886 个非离群主题**（即被聚类覆盖的 61.53% 文档），结论推广范围为"可稳定成簇的研究主题"；主题模型敏感性由 K-稳定性（K=800/850/900 时 ARI=0.93–0.98，§12.2 项 1）与下文阈值敏感性（§3.4 末）共同支撑。
+>
+> **v1.0-cand.10 聚类参数敏感性（clustering-parameter sensitivity，secondary）**：在冻结联合嵌入上以 3 组替代 HDBSCAN 参数重跑 UMAP+HDBSCAN（min_cluster_size/min_samples = 15/7、20/10、8/3），结果——① **离群率稳定在 0.364–0.396**，38.47% 非单一参数产物；② 四象限方向一致：LRLT（低研低培养）始终是最大象限（占非离群主题 62%–68%），HRHT（高研高培养）始终最小（占 4%–9%），**象限定性结构不随聚类参数改变**；③ 主题数随 min_cluster_size 变化（454–1287）属正常粒度变化，不影响上述方向结论（详见 `03_FINAL_ANALYSIS/topic_model/bertopic_clustering_sensitivity.csv`）。
 
 ### 3.4 四象限分类方法
 
@@ -299,6 +309,7 @@ v0.9 起统一采用**自适应 Top-20% 分位回退**：先尝试硬阈值，�
 | `quadrant_overall_summary.csv` | 4 | 四象限汇总表（上表） |
 | `topic_yearly_prevalence_for_diffusion_lag.csv` | 4,430 行左右 | 886 主题 × 5 年年度流行度 |
 | `threshold_sensitivity_15_20_25.csv` | 3 | 15%/20%/25% 阈值敏感性（四象限计数 + lag 主题归属） |
+| `bertopic_clustering_sensitivity.csv` | 4 | v1.0-cand.10 secondary：4 组 HDBSCAN 参数（default/15-7/20-10/8-3）离群率、主题数、四象限方向稳定性 |
 | `fit_audit.json` / `threshold_sensitivity_audit.json` | — | 审计日志（阈值规则、离群率、敏感性说明） |
 
 ---
@@ -343,6 +354,7 @@ $$u_j \sim N(0,\ \sigma^2_{college}),\qquad \varepsilon_{ij} \sim N(0,\ \sigma^2
 - Primary：N = 3,231 个项目完整案例，G = 39 个学院（SIE n=1 因协变量 NA 未进入完整案例）
 - **ICC = 0.7376**（约 74% 的 RTAS 方差由学院层面承载 → 两层模型合理）；Sensitivity 规格 ICC = 0.7301
 - 两规格均正常收敛
+- **v1.0-cand.10 补充诊断（secondary，从冻结 v2b 规格重算）**：① **空模型 ICC = 0.7523**（截距-only 随机截距模型，未加任何协变量），与调整后 ICC=0.7376 接近，说明学院层方差主要由组织/学科结构承载、协变量解释力有限；② **Nakagawa-Schielzeth R²**：边际 R²（仅固定效应）= **0.0075**，条件 R²（固定 + 学院随机效应）= **0.7395**——固定效应（等级/年份/导师历史）几乎不解释方差，绝大部分解释力来自学院随机截距，强化"学院语境是最大结构性事实"的结论（详见 `03_FINAL_ANALYSIS/hlm/hlm_diagnostics_v2b.csv`）。
 
 > **η² 与 ICC 不可互推（v1.0-cand.8）：** 前文方差分解的 college ANOVA η² = 66.90% 与本节 ICC = 0.7376 是两个不同估计量（estimand）——η² 是全样本（3,713 项、39 组）固定效应方差分解中学院组间占总方差的份额；ICC 是 complete-case（n=3,231、G=39）REML 随机截距模型在调整导师/等级/年份协变量后的学院层方差占比。样本、估计方法与调整变量集均不同，66.90% vs 73.76% 并存不矛盾，各自只作口径内解读。
 
@@ -429,7 +441,7 @@ Pareto 分布显示：20% 的导师占据了 76.83% 的国家级项目，80/20 �
 
 $$\text{logit}\,P(\text{nat}_{a,t}=1) = \beta_0 + \beta_1\,\text{nat}_{a,t-1} + \beta_2\,\log(1+\text{load}_{a,t-1}) + \text{year FE}_t$$
 
-其中 $\text{nat}_{a,t}$ 表示导师 $a$ 在 $t$ 年是否指导了 ≥1 个国家级项目（导师-年份面板，1,940 位导师 × 2020–2024）；标准误按导师聚类。两个估计样本：
+其中 $\text{nat}_{a,t}$ 表示导师 $a$ 在 $t$ 年是否指导了 ≥1 个国家级项目（导师-年份面板，1,940 位导师 × 2020–2024）；标准误按导师聚类。**year FE 编码（v1.0-cand.10 明确）**：年份以分类虚拟变量（categorical dummies）纳入，以 2020 年为参考年（reference year）；标准误按导师层面聚类（clustered SE by advisor）。导师固定效应 Logit 作为可选敏感性规格会剔除大量无 within-advisor 变异的单元，故不作主规格。两个估计样本：
 
 | 样本 | 单元数（导师数） | P(nat_t \| nat_{t−1}=1) | P(nat_t \| nat_{t−1}=0) | 调整后 **OR(nat_{t−1})** | 95% CI | p（聚类） |
 |------|------|------|------|------|------|------|
@@ -453,11 +465,12 @@ Top 5% 导师与其余导师在 RTAS 上无显著差异（d=−0.033）：马太
 
 ### 6.1 分析框架
 
-扩散滞后分析旨在回答 RQ2：一个主题从在论文端形成规模到被培养体系的项目选题采纳需要多长时间？对于每个 BERTopic 非离群主题，定义两个时间点：
+扩散滞后分析旨在回答 RQ2（**v1.0-cand.10 降调，避免对"diffusion"过度承诺**）：在科研与培养两个语料中，主题层面呈现出怎样的**不对称性（asymmetries）**；以及在年度首次非平凡出现（annual onset）可被识别的主题上，观测到怎样的时间滞后（temporal lag）。对于每个 BERTopic 非离群主题，定义两个时间点：
 
 - **t_paper**：该主题在论文端首次达到"单年非平凡出现"的年份
 - **t_project**：该主题在项目端首次达到"单年非平凡出现"的年份
 - **lag = t_project − t_paper**（以年为单位；lag > 0 = 论文端先形成规模、培养端随后跟进）
+- **lag 定义规则（Equation 2，与判定标准共同构成完整定义）：** 仅当论文端与项目端在 2020–2024 内**各自至少有一年**满足下述单年非平凡出现阈值时，lag 才被定义；**任一侧从未达标 → lag 未定义（undefined，非缺失值、不参与聚合）**。
 
 **判定标准（单年非平凡出现规则，阈值冻结于 `03_FINAL_ANALYSIS/diffusion_lag/diffusion_lag_audit.json`）：**
 - 论文端：年份 y 内该主题论文数 n_paper(y) ≥ 3 篇 **且** 占该年全校论文总数的比例 pct_paper(y) = n_paper(y) / D_paper(y) ≥ 0.2%。D_paper(y) 为 y 年全校 OpenAlex 论文总数（2020–2024 年为 9,970–12,858 篇/年），0.2% 对应单年约 20–26 篇，即实际门槛约为"**单年 ≥20 篇且不少于 3 篇**"
@@ -588,6 +601,8 @@ R 脚本（`06_CODE/09_ri_clpm.R`）使用 lavaan 包的 FIML（全信息最大�
 - `human_validation/robustness/validation_robustness_stats.csv` — v1.0-cand.9：ρ bootstrap CI [+0.281, +0.509]、置换 p<.001、Kendall τ-b +0.327、二分判别 **AUC=0.880 [0.793, 0.949]**、LOO max |Δρ|=0.018（secondary，seed 42）
 - `human_validation/150pairs_with_cos_mini.csv` — v1.0-cand.9：150 对逐对余弦值（与人工分数，供一致性/三角验证复用）
 - `human_validation/retest_40pairs_form.csv`、`second_rater_50pairs_form.csv` — v1.0-cand.9：重测（≥2 周洗脱后自评）与第二评分者盲评表单（seed 42，不含首轮分数）
+- `human_validation/robustness/baseline_validity.csv` — v1.0-cand.10：150 对参考集上 MiniLM vs TF-IDF/Jaccard/BM25 基线对比（MiniLM ρ=+0.405/AUC=0.880 vs 词汇基线 ρ≈+0.30/AUC≈0.64，incremental validity）
+- `human_validation/robustness/bge_m3_benchmark.csv` — v1.0-cand.10（计划未跑）：BGE-M3 跨模型基准，因 torch DLL 初始化不稳定本轮未执行，MiniLM 仍为 Primary
 
 **①异质性分析** (`03_FINAL_ANALYSIS/heterogeneity/`):
 - `anova_project_level.csv` — F(2,3711)=35.72, p=4.3e-16, η²=1.89%
@@ -620,6 +635,7 @@ R 脚本（`06_CODE/09_ri_clpm.R`）使用 lavaan 包的 FIML（全信息最大�
 - `hlm_mixedlm_v2b_sensitivity_matched_only_coefficients.csv` / `..._summary.txt` — 高置信匹配 sensitivity 规格（n=2,750，ICC=0.7301）
 - `hlm_v2_vs_v2b_supervision_comparison.csv` — v1.0-cand.3 新增：全期指导数（v2，含未来信息）vs clean 前置指导数（v2b）系数对照，五个系数符号与显著性全部一致
 - `hlm_mixedlm_v2_primary_coefficients.csv` / `..._summary.txt` — v1.0 全期指导数版本，含未来信息，**降级为稳健性对照**（结论一致），不再作为 Table 6 来源
+- `hlm_diagnostics_v2b.csv` — v1.0-cand.10 secondary：null ICC=0.7523、Nakagawa R² marginal=0.0075 / conditional=0.7395、η² bootstrap 95% CI [0.0114, 0.0286]（从冻结 v2b 规格重算，seed 42）
 - `hlm_coefficients.csv` / `hlm_fit_summary.txt` — v0.9.1 旧版（linearmodels.RandomEffects + 脏协变量），保留备查、不再引用
 
 **⑤马太效应** (`03_FINAL_ANALYSIS/matthew_effect/`):
@@ -863,7 +879,9 @@ R 脚本（`06_CODE/09_ri_clpm.R`）使用 lavaan 包的 FIML（全信息最大�
 | **v1.0-cand.5** | **第十三轮主图减法与口径修正（Figure Freeze 确认）：主文收缩 7 文件 / 7 图号（删 Fig4a、删 FigS2、Fig4b 更名 Figure 4、Fig13 降级 Supplementary）；Fig13 分母口径修正 clustered→all projects（y 轴/colorbar/图题 + §9 同步）；Fig2 Heterogeneity 箭头改从 RTAS Frozen 分叉 + ρ_s = .405；Fig8 副标题中性化；Fig10c zero-filled→expanded risk set；FigS1 p≈0→p<.001；Fig6 显著性定义入图注；全部冻结数值零改动** | 已完成（被 v1.0-cand.6 补充取代） |
 | **v1.0-cand.6** | **第十四轮（用户视觉评审）：Figure 8 拆分为 8a/8b 两个独立文件（8a 图例移出绘图区右侧；8b 删 HRHT 红边白框数值标注、画幅拉高）；Figure 10 Pareto top50 恒 100% 灰柱删除 + 面板间距修正消除遮挡；gallery/CHANGELOG 同步** | 已完成（被 v1.0-cand.7 补充取代） |
 | **v1.0-cand.7** | **第十五轮：Figure 13 拆分为 13a（趋势，图例右上角）/ 13b（热力图）两个独立 Supplementary 文件；Cohen's d 口径统一为标准 n 加权 pooled SD（冻结 CSV d=0.3517 → 稿面 0.352，修正旧稿未加权值 0.349；_fig4_pairwise 公式同步修正）** | 已完成（被 v1.0-cand.8 补充取代） |
-| **v1.0-cand.8** | **第十六轮（手稿精修，冻结数值零改动）：① lag 术语冻结口径化——Figure8a 横轴/图例去 "adoption/emergence/synchronized"，改 first non-trivial presence / same-year first presence（图重生成）；② Tukey Δ 方向全文统一为高等级 − 低等级（§3.4、汇总表、Figure 4 图注、§12）；③ §1.3 三层语料口径声明（56,901 / 33,312 / 60,615）；④ §3.4 等级对比 descriptive（非独立确证性验证）声明；⑤ η²=66.90% 与 ICC=0.7376 estimand 区分；⑥ 学院效应防绩效化（组织情境 + 学科专门化/组合宽度/标题语言习惯/异质性）；⑦ HLM 措辞 non-causal（capacity-dilution interpretation 相容、未因果识别）** | **当前正式版本 ✅（2026-09-05）** |
+| **v1.0-cand.8** | **第十六轮（手稿精修，冻结数值零改动）：① lag 术语冻结口径化——Figure8a 横轴/图例去 "adoption/emergence/synchronized"，改 first non-trivial presence / same-year first presence（图重生成）；② Tukey Δ 方向全文统一为高等级 − 低等级（§3.4、汇总表、Figure 4 图注、§12）；③ §1.3 三层语料口径声明（56,901 / 33,312 / 60,615）；④ §3.4 等级对比 descriptive（非独立确证性验证）声明；⑤ η²=66.90% 与 ICC=0.7376 estimand 区分；⑥ 学院效应防绩效化（组织情境 + 学科专门化/组合宽度/标题语言习惯/异质性）；⑦ HLM 措辞 non-causal（capacity-dilution interpretation 相容、未因果识别）** | 已完成（被 v1.0-cand.9 补充取代） |
+| **v1.0-cand.9** | **第十七轮（单人标注验证加固，全部 secondary，冻结值零改动）：稳健化统计 AUC=0.880 [0.793,0.949]、ρ bootstrap CI [+0.281,+0.509]、置换 p<.001、LOO max|Δρ|=0.018；RATING_RUBRIC.md（1–4 锚点）+ 重测/第二评分者盲评表单 pre-specified 入库；LLM 第二评分脚本就绪（待 API key）** | 已完成（被 v1.0-cand.10 补充取代） |
+| **v1.0-cand.10** | **第十八轮（吸收老师评审约 2/3，拒绝 1/3）：正文——① 补 Scafetta(2025)+Maisano(2023) 区分 RTAS（项目层跨语言语义对齐，非绩效排名）与 RT-score；② RQ2 降调（asymmetries + where onset identifiable）；③ titles-only 设计理由（对称跨语言文本单元）；④ P_{c,t}=学院分配唯一论文数、lag undefined 规则、composite 权重内联；⑤ 单机构分析价值（natural laboratory）；⑥ year FE 编码明确（分类虚拟变量、2020 参考年、导师聚类 SE）。新增 secondary 分析——T1 基线效度（MiniLM ρ=+0.405/AUC=0.880 vs 词汇基线 ρ≈+0.30/AUC≈0.64，incremental validity）；T3 BERTopic 聚类参数敏感性（outlier 0.364–0.396 稳定、四象限方向一致）；T4 HLM 诊断（null ICC=0.7523、R² marginal=0.0075/conditional=0.7395）+ η² 95% CI [1.14%,2.86%]。BGE-M3 因 torch DLL 不稳定未跑（留未来）。拒绝：RI-CLPM/IV/3k-LLM/Dynamic BERTopic** | **当前正式版本 ✅（2026-09-06）** |
 | v1.0 | 投稿版（GitHub 仓库转公开） | 待定 |
 
 ### 11.4 软件环境
@@ -905,4 +923,4 @@ R 脚本（`06_CODE/09_ri_clpm.R`）使用 lavaan 包的 FIML（全信息最大�
 
 ---
 
-*本手稿为 **v1.0-cand.8**（v0.9.1 57K 全量正式版 + 第九轮导师协变量血缘审计与 HLM 重跑 + 第十轮外审 P0-b–i 处置 + 第十二轮图表审计 Figure Freeze + 第十三轮主图减法 + 第十四/十五轮 Figure 8 与 Figure 13 拆分 + Cohen's d 口径修正 + **第十六轮手稿精修：lag 术语冻结口径化（Figure8a 重生成）、Tukey Δ 方向统一（高等级−低等级）、三层语料口径声明、等级对比 descriptive 声明、η² vs ICC estimand 区分、学院效应防绩效化、HLM 非因果措辞**；**主文 7 图号 / 8 图文件 + Supplementary 4 图号 / 5 图文件（Fig 7, 11, 13a, 13b, S1）**，冻结统计数值零改动）。所有数值来源于 `03_FINAL_ANALYSIS/` 与 `02_RTAS_MODEL_SELECTION/` 冻结 CSV 结果文件，任何数值修订都必须从原始数据重新运行分析管线生成，不允许手工编辑结果。Figure 5（学院 caterpillar）承担主文学院间差异，Figure S1（40 学院 raw-mean 全排名）作附录参考。详细 35,721 / 12,000 / 56,901 三组数字差异澄清见 §1.1.5，三层语料口径见 §1.3，国际教育学院的处理理由也在 §1.1.5。HLM v1.0 的协变量口径与撤回声明见 §4.2、§10 第九轮；第十轮口径变更见 §10 第十轮；第十一轮 supervision 口径见 §10 第十一轮；第十二至十六轮图表审计与手稿精修见 §10。*
+*本手稿为 **v1.0-cand.10**（... + **第十六轮手稿精修** + **第十七轮单人标注验证加固** + **第十八轮吸收老师评审（补 Scafetta+Maisano、RQ2 降调、titles-only 理由、公式/composite/单机构说明、year FE 编码、T1 基线效度、T3 聚类敏感性、T4 HLM 诊断+η² CI；拒绝 RI-CLPM/IV/3k-LLM/Dynamic BERTopic）**；**主文 7 图号 / 8 图文件 + Supplementary 4 图号 / 5 图文件（Fig 7, 11, 13a, 13b, S1）**，冻结统计数值零改动）。所有数值来源于 `03_FINAL_ANALYSIS/` 与 `02_RTAS_MODEL_SELECTION/` 冻结 CSV 结果文件，任何数值修订都必须从原始数据重新运行分析管线生成，不允许手工编辑结果。Figure 5（学院 caterpillar）承担主文学院间差异，Figure S1（40 学院 raw-mean 全排名）作附录参考。详细 35,721 / 12,000 / 56,901 三组数字差异澄清见 §1.1.5，三层语料口径见 §1.3，国际教育学院的处理理由也在 §1.1.5。HLM v1.0 的协变量口径与撤回声明见 §4.2、§10 第九轮；第十轮口径变更见 §10 第十轮；第十一轮 supervision 口径见 §10 第十一轮；第十二至十八轮图表审计与手稿精修见 §10。*

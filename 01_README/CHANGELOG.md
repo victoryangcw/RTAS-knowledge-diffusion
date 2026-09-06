@@ -5,6 +5,67 @@ config, data, or code that could affect downstream numbers.
 
 ---
 
+## [v1.0-cand.10] — 2026-09-06 — EIGHTEENTH ROUND: TEACHER REVIEW ABSORPTION (~2/3 accepted, 1/3 rejected)
+
+Milestone status: ✅ Text revisions + 3 new secondary robustness analyses.
+All frozen statistics unchanged (rho=0.405, ICC=0.7376, d=0.352, eta2=1.89%, ...).
+
+### Manuscript text edits (`07_MANUSCRIPT/manuscript_draft_v0.9.md`)
+- Related-work positioning: added Scafetta (2025, *Scientometrics*) RT-score
+  (faculty-level performance composite) + Maisano et al. (2023, *Scientometrics*);
+  RTAS explicitly distinguished as project-level cross-lingual semantic alignment,
+  NOT used for performance ranking.
+- RQ2 downgraded: from "how long does it take a topic to diffuse from research to
+  training" to "what topic-level asymmetries characterize the two corpora, and
+  where annual onset is identifiable, what temporal lag is observed" (avoids
+  over-committing to "diffusion").
+- Titles-only design rationale: titles chosen as the symmetric cross-lingual text
+  unit available on both sides (not "abstracts unavailable"); tradeoff = sparse
+  semantics.
+- Formula clarifications: P_{c,t} = college-assigned unique paper records (dedup
+  within college); lag undefined rule stated as part of Equation 2; composite
+  weights (0.45·C2 + 0.30·C4 + 0.25·C3, min-max normalized) inlined by the
+  selection table (frozen in rtas_selection_composite_v1.csv).
+- Single-institution analytical leverage: added to Introduction — unified
+  governance + common time window + 40 disciplinary units = natural lab;
+  external validity needs multi-site replication.
+- Lagged-logistic year FE coding clarified: categorical dummies, 2020 reference
+  year, clustered SE by advisor; advisor-FE logit noted as optional sensitivity
+  (drops units without within-advisor variation, not primary).
+
+### New secondary analyses (scripts in `06_CODE/`, outputs new files only)
+- **T1 baseline validity** (`13_baseline_validity.py`): on the 150-pair reference
+  set, MiniLM (rho=+0.405, AUC=0.880) clearly outperforms three lexical baselines
+  (TF-IDF cosine, char-3-gram Jaccard, BM25 Okapi; all rho≈+0.30, AUC≈0.64) →
+  clean incremental-validity evidence for the semantic embedding choice.
+- **T3 BERTopic clustering-parameter sensitivity** (`14_bertopic_sensitivity.py`):
+  3 alt HDBSCAN param sets on cached joint embeddings. Outlier rate stable
+  0.364–0.396 (frozen 0.3847 not a one-param artifact); quadrant direction stable
+  (LRLT always dominant 62–68%, HRHT always rarest 4–9%); topic count 454–1287
+  is normal granularity variation.
+- **T4 HLM diagnostics** (`15_hlm_diagnostics.py`): refit frozen v2b (ICC sanity
+  = 0.7376 ✓). Null-model ICC = 0.7523; Nakagawa-Schielzeth R² marginal = 0.0075
+  (fixed effects explain almost nothing), conditional = 0.7395 (college context
+  dominates). Project-level ANOVA eta-squared 95% bootstrap CI = [1.14%, 2.86%]
+  (B=10,000, seed 42).
+- **T2 BGE-M3 benchmark** (`16_bge_m3_benchmark.py`): NOT run — torch DLL
+  initialization fails (known env instability). Documented as planned future
+  robustness; MiniLM remains primary.
+
+### Rejected (explicitly, per user decision)
+- 3,000–5,000 LLM validation (stratified-sampling then raw Spearman = wrong);
+- Dynamic BERTopic (RQ2 downgrade already solves coverage);
+- RI-CLPM / Granger / IV causal analysis (short 5-yr panel, matching error,
+  reopens causal language; teacher's code has 5 known data-lineage bugs).
+
+### Repo sync
+- New scripts `03_CODE/13–16_*.py`, new outputs under `05_VALIDATION/`,
+  `03_FINAL_ANALYSIS/hlm/hlm_diagnostics_v2b.csv`,
+  `03_FINAL_ANALYSIS/topic_model/bertopic_clustering_sensitivity.csv`.
+- Tag v1.0-cand.10 pushed.
+
+---
+
 ## [v1.0-cand.9] — 2026-09-05 — SEVENTEENTH ROUND: SINGLE-RATER VALIDATION HARDENING (SECONDARY; FROZEN NUMBERS UNTOUCHED)
 
 Milestone status: ✅ Robustness add-on package for the 150-pair single-rater

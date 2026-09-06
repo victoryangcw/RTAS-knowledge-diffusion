@@ -1,0 +1,11 @@
+﻿stat,value,note
+v2b_refit_ICC,0.7375882956848796,must equal frozen 0.7376
+null_model_ICC,0.7522786086997069,intercept-only random intercept; total variance partition
+R2_marginal_Nakagawa,0.007467132292681123,fixed-effects variance / total
+R2_conditional_Nakagawa,0.7395477585961485,(fixed + random) / total
+var_fixed,5.043146105523765e-05,variance of fixed linear predictor
+var_college_v2b,0.004944320543363638,college random-intercept variance
+var_residual_v2b,0.0017590403590387559,residual scale
+anova_eta_squared_obs,0.018885262185404584,project-level one-way ANOVA (frozen 0.0189)
+anova_eta_squared_ci_low,0.01142309481482281,bootstrap B=10000 seed 42
+anova_eta_squared_ci_high,0.028579589803343918,bootstrap B=10000 seed 42
