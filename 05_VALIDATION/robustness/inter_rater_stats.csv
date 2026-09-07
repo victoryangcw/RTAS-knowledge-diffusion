@@ -1,0 +1,7 @@
+﻿stat,value,note
+n_pairs,50.0,50-pair subsample independently rated by second rater (Huang Qi)
+inter_rater_quadratic_weighted_kappa,0.4648318042813455,"annotator1 vs second human rater (blind, 50 pairs)"
+inter_rater_spearman_rho,0.3326825799099966,annotator1 vs second rater rank agreement
+inter_rater_spearman_p,0.018245517092254433,asymptotic p-value
+inter_rater_exact_agreement,0.72,share of identical 1-4 scores
+rtas_human_spearman_frozen,0.405,frozen C1 reference (not recomputed)

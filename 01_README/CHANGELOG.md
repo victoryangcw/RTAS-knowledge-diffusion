@@ -115,6 +115,15 @@ point estimate remains Spearman rho = +0.405.
   - Note: original GPT-4o plan replaced by DeepSeek-R1 because the OpenAI
     account had no credits; DeepSeek-R1 used as the LLM rater. Proxy env vars
     stripped in-script to avoid Windows TLS issues; key files gitignored.
+- **Second human rater completed 2026-09-07** (50 pairs, blind, independent):
+  quadratic-weighted κ = **0.465**, Spearman ρ = **0.333** (p = .018), exact
+  agreement 72% (36/50). Friend (Huang Qi) used same rubric, no access to
+  first-round scores or RTAS values. Friend gave more 2s (14 vs human 3) —
+  slightly more generous but directionally consistent. Manuscript §2.2 updated:
+  "single-rater" framing retained for the frozen ρ=0.405, but inter-rater κ
+  now reported alongside LLM agreement as triangulation evidence.
+  Outputs: `human_validation/second_rater_50pairs_filled.csv`,
+  `human_validation/robustness/inter_rater_stats.csv`.
 
 ### Manuscript (`07_MANUSCRIPT/manuscript_draft_v0.9.md`)
 - §2.2 C1 item: robustness numbers (AUC/CI/permutation/LOO) + protocol pointer,
