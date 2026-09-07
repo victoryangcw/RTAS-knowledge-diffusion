@@ -133,6 +133,16 @@ point estimate remains Spearman rho = +0.405.
   test-retest κ=0.643, LLM rater κ=0.459. Outputs: `human_validation/retest_40pairs_filled.csv`
   (blank pre-specified form is `retest_40pairs_form.csv`, GBK-encoded),
   `human_validation/robustness/test_retest_stats.csv`.
+- **Third rater completed 2026-09-07** (Rater B, same 50 pairs, blind):
+  vs reference rater κ = **0.606**, exact 78% (Spearman unstable due to
+  reference rater's 46/50 tied 1s — interpret via kappa). The two independent
+  second raters agree with each other at κ = **0.826** / ρ = 0.821 / exact 90%
+  (45/50) — rubric is stably reproducible by third parties. RTAS–Rater B
+  triangulation: ρ = **0.621** (p < .001), binary AUC = **0.932** — both
+  HIGHER than the frozen reference values (0.405 / 0.880), indicating the
+  frozen C1 is conservative, not inflated. Outputs:
+  `human_validation/second_rater_50pairs_raterB.csv`,
+  `human_validation/robustness/inter_rater_stats_rater2_raterB.csv`.
 
 ### Manuscript (`07_MANUSCRIPT/manuscript_draft_v0.9.md`)
 - §2.2 C1 item: robustness numbers (AUC/CI/permutation/LOO) + protocol pointer,
