@@ -124,6 +124,15 @@ point estimate remains Spearman rho = +0.405.
   now reported alongside LLM agreement as triangulation evidence.
   Outputs: `human_validation/second_rater_50pairs_filled.csv`,
   `human_validation/robustness/inter_rater_stats.csv`.
+- **Test-retest completed 2026-09-07** (40 pairs, same rater, ~12-day washout,
+  reshuffled order, blinded): quadratic-weighted κ = **0.643**, Spearman
+  ρ = **0.688** (p < .001), exact agreement 95% (38/40). All 36 retest-1 pairs
+  were originally 1; of 4 originally-2 pairs, 2 stayed 2 and 2 drifted to 1
+  (boundary pairs). The validation evidence chain is now complete:
+  RTAS embedding vs human ρ=0.405/AUC=0.88, second human rater κ=0.465,
+  test-retest κ=0.643, LLM rater κ=0.459. Outputs: `human_validation/retest_40pairs_filled.csv`
+  (blank pre-specified form is `retest_40pairs_form.csv`, GBK-encoded),
+  `human_validation/robustness/test_retest_stats.csv`.
 
 ### Manuscript (`07_MANUSCRIPT/manuscript_draft_v0.9.md`)
 - §2.2 C1 item: robustness numbers (AUC/CI/permutation/LOO) + protocol pointer,
