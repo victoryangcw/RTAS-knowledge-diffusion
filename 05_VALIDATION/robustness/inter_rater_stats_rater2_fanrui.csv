@@ -1,0 +1,14 @@
+﻿stat,value,note
+n_pairs,50.0,"same 50-pair subsample, three independent raters"
+user_vs_fanrui_qwk,0.6054519368723099,quadratic-weighted kappa
+user_vs_fanrui_spearman_rho,0.23990750151742377,
+user_vs_fanrui_spearman_p,0.09332728950941134,
+user_vs_fanrui_exact,0.78,
+huangqi_vs_fanrui_qwk,0.8256624825662482,between the two second raters
+huangqi_vs_fanrui_spearman_rho,0.8206099398622182,
+huangqi_vs_fanrui_spearman_p,3.0003261689795456e-13,
+huangqi_vs_fanrui_exact,0.9,
+user_vs_huangqi_qwk_recheck,0.4648318042813455,sanity: matches 0.465
+rtas_vs_fanrui_spearman_rho,0.6209659921755659,"cos_mini vs fanrui rating, triangulation"
+rtas_vs_fanrui_spearman_p,1.4994241997125514e-06,
+rtas_vs_fanrui_auc_binary,0.9324009324009324,cos distinguishing fanrui >=2 vs =1
