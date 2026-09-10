@@ -5,6 +5,94 @@ config, data, or code that could affect downstream numbers.
 
 ---
 
+## [v1.0-cand.12] — 2026-09-10 — TWENTIETH ROUND: SUBMISSION MODEL-SPEC FIXES + FIGURE LAYOUT
+
+Milestone status: ✅ Submission-manuscript technical consistency + Fig.6 layout.
+All frozen statistics unchanged. No analysis re-run.
+
+### Submission manuscript (`04_MANUSCRIPT/SUBMISSION_manuscript_v1.0.md`, new in repo)
+- P0 model-specification correction: RQ3 MixedLM year term is a CONTINUOUS
+  variable centered at 2022 (β=+0.00313/yr), not categorical year dummies;
+  advisor-clustered SEs belong ONLY to the RQ4 lagged logistic model
+  (categorical year FE, SEs clustered by supervisor). Methods and Results now
+  state this unambiguously.
+- R² sentence rewritten: marginal R²=0.0075 vs conditional R²=0.7395 — fixed
+  effects explain little variance relative to the large between-college
+  component (old sentence was ambiguous).
+- Abstract/wording: "peer-reviewed articles" → "OpenAlex-indexed articles";
+  lag finding scoped to "24 lag-definable HRLT topics"; "synchronized" →
+  "same-year first non-trivial presence"; "pre-registered" → "pre-specified";
+  Discussion causal-leaning verbs removed ("transmit", "levers",
+  "however decorated"; "predicts" → "is associated with").
+- Final submission figure numbering: main text Fig 1–7, supplementary
+  Fig S1–S4 (development-history numbering removed from the submission list).
+
+### Figure layout (`06_CODE/10_generate_figures.py`; regenerated all figures)
+- NEW `Figure8_DiffusionLag_Stacked`: panels (a) lag distribution and
+  (b) lag-by-quadrant stacked VERTICALLY at full column width (side-by-side
+  placement made small annotations unreadable after Springer reduction).
+  Panel (a) legend moved inside axes (upper-left empty band).
+- LRHT/LRLT undefined-lag note moved to panel upper-RIGHT (upper-left crossed
+  HRLT scatter points at y=4 and the whisker); fixed in both the stacked and
+  standalone Figure8b files.
+- Standalone Figure8a/8b files retained as alternates.
+
+---
+
+## [v1.0-cand.11] — 2026-09-07 — NINETEENTH ROUND: SUBMISSION CLEANUP (submission-track preparation)
+
+Milestone status: ✅ Consistency wording + figure label cleanup + Data Availability tiering.
+All frozen statistics unchanged. No analysis re-run.
+
+### Manuscript consistency edits (`07_MANUSCRIPT/manuscript_draft_v0.9.md`)
+- Validity claims unified: §2.2/§12.2 item 5 now state "converging evidence for
+  pairwise semantic validity and rating reliability"; no residual "construct
+  validity" claim in results/limitations (changelog history in §10 retains old
+  wording as audit record only).
+- Quadrant de-temporalization completed: §3.4 core-conclusion sentence rewritten
+  (static prevalence framing; temporal reading restricted to §6's 29 defined-lag
+  topics); §12.3 item 6 LRHT gloss changed to "low research-side / high
+  project-side prevalence" (was "research gone cold").
+- HLM non-causal wording: §12.3 item 5 rewritten as positive/negative
+  association + "consistent with a capacity-dilution interpretation"; internal
+  metaphors removed from forward-looking text.
+- RTAS≠quality (§5.5): "resource concentration did not translate into higher
+  research–training alignment" (already in cand.10; verified intact).
+- Naive lexical baselines: §3.7 file-listing entry re-labeled as "naive lexical
+  baselines (no translation alignment); supports embedding choice, not an
+  incremental-validity claim"; BGE-M3 file entry re-worded to "not benchmarked
+  in the present study".
+- §11.2 rewritten as THREE-TIER Data Availability: (1) OpenAlex records publicly
+  retrievable via documented institutional query; (2) institutional project
+  records contain PII, not redistributable; (3) non-identifying derived outputs
+  + code via GitHub repository.
+
+### Figure label cleanup (`06_CODE/10_generate_figures.py`; all 13 figures regenerated)
+- Figure 8a suptitle: "Research → Training Adoption Delay" → "Distribution of
+  Defined Topic Lags" (adoption/emergence vocabulary already frozen out in
+  cand.8; title now aligned).
+- Figure 11 suptitle: internal versioning note "(v1.0-cand.4: demoted to
+  Supplementary)" removed from canvas.
+- Figure 10: Lorenz legend "National grants" → "National-level projects"
+  (funding-tier ≠ grant-funding misread).
+- Figure 2: Main-corpus box now spells out "undergraduate innovation projects"
+  and adds "RTAS reference portfolios: 33,312 college-assigned papers (58.5%)"
+  so the roadmap carries the three-tier corpus numbers.
+- Figure 4: level labels → University-level / Provincial-level / National-level.
+- Figure 13a/13b: suptitles deduplicated ("(a)"/"(b)" now appear only as panel
+  titles) and "ITTP" expanded to "undergraduate innovation projects" for
+  standalone readability.
+
+### New submission-track file
+- `07_MANUSCRIPT/SUBMISSION_manuscript_v1.0.md`: English IMRaD submission clean
+  version (Abstract, Introduction, Data and Methods, Results, Discussion,
+  Limitations, Conclusion, Declarations incl. three-tier Data Availability,
+  figure/table lists). Master `manuscript_draft_v0.9.md` remains the frozen
+  audit source-of-truth; development history (§10) stays out of the submission
+  version by design.
+
+---
+
 ## [v1.0-cand.10] — 2026-09-06 — EIGHTEENTH ROUND: TEACHER REVIEW ABSORPTION (~2/3 accepted, 1/3 rejected)
 
 Milestone status: ✅ Text revisions + 3 new secondary robustness analyses.
