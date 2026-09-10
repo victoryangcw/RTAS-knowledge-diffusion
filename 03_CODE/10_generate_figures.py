@@ -193,7 +193,7 @@ def fig2_roadmap():
     BW2, BH2 = 2.4, 1.15        # standard box size
     boxes = [
         # Row 1 (y=5.4): the two corpora
-        (0.60, 5.40, 5.20, 1.15, 'Main RTAS corpus\n3,714 ITTP projects (CN)  +  56,901 OpenAlex papers (EN)\nOpenAlex 2020-2024', COLORS['blue']),
+        (0.60, 5.40, 5.20, 1.15, 'Main RTAS corpus\n3,714 undergraduate innovation projects (CN)  +  56,901 OpenAlex papers (EN), 2020-2024\nRTAS reference portfolios: 33,312 college-assigned papers (58.5%)', COLORS['blue']),
         (6.30, 5.40, 4.60, 1.15, 'Auxiliary advisor-history corpus\n22,438 OpenAlex papers, 2017-2019\n-> pre-project covariate windows [t-3, t-1]', None),
         # Row 2 (y=3.45): method pipeline
         (0.60, 3.45, BW2, BH2, 'Embedding\nMultilingual MiniLM\nL12-v2 (384-dim)\nPairwise semantic validity\n$\\rho_s$ = .405 (n=150, p=2.6e-7)', COLORS['teal']),
@@ -367,7 +367,7 @@ def fig3_quadrant_scatter():
 def _fig4_load():
     """Shared loader for Fig 4a/4b: tier summary + raw per-project RTAS + Tukey CSV."""
     d = pd.read_csv(DATA / 'heterogeneity' / 'project_level_summary.csv')
-    level_en = {'校级': 'University', '省级': 'Provincial', '国家级': 'National'}
+    level_en = {'校级': 'University-level', '省级': 'Provincial-level', '国家级': 'National-level'}
     d['_level_en'] = d['_level_label'].map(level_en).fillna(d['_level_label'])
     d = d.sort_values('mean')
     raw = pd.read_csv(ROOT / '01_DATA' / 'final_analysis' / 'table5_project_dataset_n3714_full.csv')
@@ -647,7 +647,7 @@ def fig8_diffusion_lag_patterns():
     axA.legend(handles=legend_elements, loc='upper left', bbox_to_anchor=(1.01, 1.0),
                fontsize=8, frameon=False)
     axA.grid(axis='y', alpha=0.25, linewidth=0.5)
-    fig.suptitle('Diffusion-Lag Patterns: Research → Training Adoption Delay\n' + lag_note,
+    fig.suptitle('Diffusion-Lag Patterns: Distribution of Defined Topic Lags\n' + lag_note,
                  fontweight='bold', fontsize=11, y=1.00)
     fig.tight_layout(rect=[0, 0, 1, 0.93])
     savefig(fig, 'Figure8a_LagDistribution')
@@ -698,17 +698,89 @@ def fig8_diffusion_lag_patterns():
     axB.set_ylabel('Lag (years), same definition as panel (a)', fontweight='bold', fontsize=9.5)
     axB.set_ylim(-5.1, 5.1)
     axB.set_title('(b) Defined lag by quadrant', fontweight='bold', fontsize=10.5)
-    # Top-LEFT gray note kept (v1.0-cand.4): states why LRHT/LRLT have no boxes.
-    axB.text(0.02, 0.965,
+    # Gray note UPPER-RIGHT (v1.0-cand.12): upper-left sat over HRLT's high-lag
+    # scatter points (y up to 4) and the whisker; HRHT has no points above y=0.
+    axB.text(0.98, 0.965,
              'Lag was undefined for ALL LRHT (0/10) and LRLT (0/698) topics\n'
              'under the frozen single-year non-trivial-presence rule.',
-             transform=axB.transAxes, ha='left', va='top', fontsize=7.8, color='#555',
+             transform=axB.transAxes, ha='right', va='top', fontsize=7.8, color='#555',
              style='italic', linespacing=1.4)
 
     fig.suptitle('Diffusion-Lag Patterns: Defined Lag by Quadrant\n' + lag_note,
                  fontweight='bold', fontsize=11, y=1.00)
     fig.tight_layout(rect=[0, 0, 1, 0.93])
     savefig(fig, 'Figure8b_LagByQuadrant')
+
+    # ---- 8-STACKED (v1.0-cand.12): vertical 2-row composite for main text ----
+    # Rationale: when 8a/8b are placed side-by-side at Springer typesetting width,
+    # each panel is only half a column wide and the small annotations
+    # ("29/886 topics defined", "n_defined = 24", "173 in quadrant") become hard
+    # to read after reduction. The stacked composite gives both panels full
+    # column width; panel (a)'s legend moves inside the axes (upper-left, over
+    # the empty negative-lag region) instead of the outside-right slot.
+    rng_s = np.random.default_rng(7)
+    fig = plt.figure(figsize=(7.6, 10.8))
+    gs = gridspec.GridSpec(2, 1, height_ratios=[1.0, 1.05], hspace=0.45,
+                           left=0.105, right=0.97, top=0.90, bottom=0.065)
+    axS1 = fig.add_subplot(gs[0])
+    axS2 = fig.add_subplot(gs[1])
+
+    # panel (a): discrete lag histogram
+    bars_s = axS1.bar(d['lag_year_bin_center'], d['n_topics'], color=colors, alpha=0.75,
+                      edgecolor='white', linewidth=0.5, width=0.72)
+    axS1.axvline(x=0, color='#333', linestyle='--', linewidth=1, alpha=0.5)
+    axS1.set_xlim(-4.6, 4.6)
+    axS1.set_xticks(range(-4, 5))
+    axS1.set_xlabel('Lag (years): year(project first non-trivial presence) −\n'
+                    'year(paper first non-trivial presence)', fontweight='bold', fontsize=10)
+    axS1.set_ylabel('Number of topics', fontweight='bold', fontsize=10.5)
+    axS1.set_title(f'(a) Overall lag distribution ({n_lag}/886 topics defined; '
+                   f'median={lag_med:.1f}, mean={lag_mean:+.2f} yr)',
+                   fontweight='bold', fontsize=11)
+    for bar, n, pct in zip(bars_s, d['n_topics'], d['pct_topics']):
+        axS1.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 0.25,
+                  f'{n}\n({pct:.0f}%)', ha='center', fontsize=8.5, fontweight='bold', color='#333')
+    axS1.set_ylim(0, d['n_topics'].max() * 1.24)
+    axS1.legend(handles=legend_elements, loc='upper left', fontsize=8.5,
+                frameon=True, framealpha=0.92, edgecolor='#cccccc')
+    axS1.grid(axis='y', alpha=0.25, linewidth=0.5)
+
+    # panel (b): defined-lag boxplots by quadrant
+    bp_s = axS2.boxplot(box_vals, positions=[0, 1], widths=0.30, patch_artist=True,
+                        showmeans=True,
+                        meanprops=dict(marker='D', markerfacecolor='white', markeredgecolor='#111', markersize=9),
+                        medianprops=dict(color='#111', linewidth=1.8),
+                        whiskerprops=dict(linewidth=1.2),
+                        capprops=dict(linewidth=1.2),
+                        flierprops=dict(marker='o', markersize=5, markeredgecolor='none',
+                                        markerfacecolor='#888', alpha=0.6))
+    for patch, color in zip(bp_s['boxes'], box_colors):
+        patch.set_facecolor(color); patch.set_alpha(0.25)
+        patch.set_edgecolor(color); patch.set_linewidth(1.4)
+    for xi, (vals, color) in enumerate(zip(box_vals, box_colors)):
+        jx = rng_s.normal(xi, 0.05, len(vals))
+        axS2.scatter(jx, vals, c=color, alpha=0.9, s=55, zorder=3,
+                     edgecolors='white', linewidth=0.7)
+    axS2.axhline(y=0, color='#333', linestyle='--', linewidth=1.1, alpha=0.6, zorder=1)
+    axS2.axhspan(-5.5, -0.02, color=COLORS['green'], alpha=0.07, zorder=0)
+    axS2.axhspan(0.02, 5.5, color=COLORS['red'], alpha=0.07, zorder=0)
+    axS2.set_xticks([0, 1])
+    axS2.set_xticklabels(xtick_labs, fontsize=10)
+    axS2.set_ylabel('Lag (years), same definition as panel (a)', fontweight='bold', fontsize=10)
+    axS2.set_ylim(-5.1, 5.1)
+    axS2.set_title('(b) Defined lag by quadrant', fontweight='bold', fontsize=11)
+    # v1.0-cand.12: note moved to UPPER-RIGHT — the upper-left sits over HRLT's
+    # high-lag scatter points (y up to 4) and the whisker; HRHT has no points
+    # above y=0, so the upper-right band is empty.
+    axS2.text(0.98, 0.965,
+              'Lag was undefined for ALL LRHT (0/10) and LRLT (0/698) topics\n'
+              'under the frozen single-year non-trivial-presence rule.',
+              transform=axS2.transAxes, ha='right', va='top', fontsize=8.5, color='#555',
+              style='italic', linespacing=1.4)
+
+    fig.suptitle('Diffusion-Lag Patterns: Distribution of Defined Topic Lags\n' + lag_note,
+                 fontweight='bold', fontsize=12, y=0.965)
+    savefig(fig, 'Figure8_DiffusionLag_Stacked')
 
 # ================================================================
 # Figure 10: Matthew Effect — Lorenz Curve + Pareto Bar
@@ -740,7 +812,7 @@ def fig10_matthew_effect():
     fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(14.2, 5.0),
                                         gridspec_kw=dict(width_ratios=[1.0, 0.85, 1.0], wspace=0.44))
     # (a) Lorenz curve
-    ax1.plot(lorenz_x, lorenz_y, color=COLORS['red'], linewidth=2, label=f'National grants (Gini={audit["gini"]["value_national_projects"]:.3f})')
+    ax1.plot(lorenz_x, lorenz_y, color=COLORS['red'], linewidth=2, label=f'National-level projects (Gini={audit["gini"]["value_national_projects"]:.3f})')
     ax1.plot([0, 1], [0, 1], '--', color=COLORS['gray'], linewidth=1, label='Perfect equality')
     ax1.fill_between(lorenz_x, lorenz_x, lorenz_y, alpha=0.1, color=COLORS['red'])
     ax1.set_xlabel('Cumulative share of supervisors (sorted)', fontweight='bold')
@@ -833,7 +905,7 @@ def fig11_quadrant_summary():
     axes[2].set_ylabel('Number of projects', fontweight='bold')
     axes[2].set_title('Clustered project documents', fontweight='bold')
 
-    fig.suptitle('Four-Quadrant Topic Summary (v1.0-cand.4: demoted to Supplementary)\n'
+    fig.suptitle('Four-Quadrant Topic Summary\n'
                  'Denominators = clustered documents only; BERTopic outliers (38.47% of docs) are outside the four quadrants',
                  fontweight='bold', fontsize=10.5, y=1.04)
     fig.tight_layout()
@@ -958,7 +1030,7 @@ def fig13_topic_dynamics():
     axA.set_ylim(0, max(longtail_share.max(), top15_share.max()) * 1.22)
     axA.margins(x=0.06)
     axA.grid(axis='y', alpha=0.25, linewidth=0.5)
-    fig.suptitle('Temporal Topic Dynamics in ITTP Projects, 2020-2024 (a)\n' + suptitle_note,
+    fig.suptitle('Topic Dynamics in Undergraduate Innovation Projects, 2020-2024\n' + suptitle_note,
                  fontweight='bold', fontsize=11.5, y=1.00)
     fig.tight_layout(rect=[0, 0, 1, 0.93])
     savefig(fig, 'Figure13a_TopicTrend', subdir='supp')
@@ -983,7 +1055,7 @@ def fig13_topic_dynamics():
     cbar.set_label('Project-side prevalence (% of all projects / yr)', fontsize=8)
     cbar.ax.tick_params(labelsize=7)
     axB.set_title('(b) Top-15 topic prevalence heatmap', fontweight='bold', fontsize=11)
-    fig.suptitle('Temporal Topic Dynamics in ITTP Projects, 2020-2024 (b)\n' + suptitle_note,
+    fig.suptitle('Topic Dynamics in Undergraduate Innovation Projects, 2020-2024\n' + suptitle_note,
                  fontweight='bold', fontsize=11.5, y=1.00)
     fig.tight_layout(rect=[0, 0, 1, 0.94])
     savefig(fig, 'Figure13b_TopicHeatmap', subdir='supp')
