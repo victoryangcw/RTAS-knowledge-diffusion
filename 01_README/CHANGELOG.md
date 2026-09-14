@@ -5,6 +5,66 @@ config, data, or code that could affect downstream numbers.
 
 ---
 
+## [v1.0-cand.13] — 2026-09-14 — TWENTY-FIRST ROUND: VERIFY AUDIT + RQ4 UNIT FIX
+
+Milestone status: ✅ All 6 VERIFY items resolved; RQ4 individual-advisor replacement.
+All non-RQ4 frozen statistics unchanged. No primary pipeline re-run.
+
+### VERIFY items resolved
+1. **BGE-M3 benchmark** (NEW experiment): 150-pair reference set re-encoded with
+   BGE-M3 (1024-dim multilingual). ρ=0.334, AUC=0.811 vs MiniLM ρ=0.405, AUC=0.880.
+   Paired bootstrap (N=2000): Δρ=−0.071 [−0.187, +0.036], ΔAUC=−0.069 [−0.179,
+   +0.032]. No evidence that BGE-M3 improved validity; MiniLM retained as primary.
+2. **Leave-advisor-out sensitivity** (NEW experiment): RTAS recomputed after
+   removing advisor-authored papers from each project's college reference portfolio.
+   β(advisor publications) attenuated ~10.5% (0.00427→0.00382) but remained
+   significant (p=5.3e-07). ICC (0.738) and conditional R² (0.739) unchanged.
+3. **Lagged logistic year reference**: source code confirmed `drop_first=True` on
+   outcome years {2021–2024} → reference=2021 (not 2020). Methods clarified.
+4. **BERTopic ARI 0.93–0.98**: no provenance in codebase (no adjusted_rand_score,
+   no reduce_topics/nr_topics, no K=800/850/900). Sentence deleted; HDBSCAN
+   parameter sensitivity (min_cluster_size/min_samples, 4 specs, 454–1287 topics,
+   outlier 0.364–0.396) retained as sole clustering robustness.
+5. **Lexical baselines exact values**: TF-IDF ρ=0.300/AUC=0.638; Jaccard
+   ρ=0.296/AUC=0.637; BM25 ρ=0.298/AUC=0.637 (all from frozen CSV, verified
+   against script rerun).
+6. **RQ4 supervisor identity / unit fix** (SUBSTANTIVE): raw `advisor` string
+   contained 106 co-supervised combinations (e.g., "张三、李四") counted as
+   unique supervisors. Split into individual advisors: 1,940→1,834 unique
+   advisors, 3,714→4,244 advisor–project edges, 528 co-supervised projects.
+   All RQ4 statistics replaced with individual-advisor versions:
+
+   | Metric | Old (raw field) | New (individual) |
+   |--------|---------------|------------------|
+   | Unique advisors | 1,940 | 1,834 |
+   | National Gini | 0.767 | 0.746 |
+   | Total Gini | 0.344 | 0.368 |
+   | Top-5% count | 97 | 92 |
+   | Top-5% national share | 34.0% | 31.0% |
+   | Top-20% share | 76.8% | 71.9% |
+   | Sample A (OR) | 736/491, OR=2.25 | 979/627, OR=2.06 [1.53, 2.76] |
+   | Sample B (OR) | 2302/1621, OR=2.28 | 2469/1560, OR=2.45 [1.91, 3.16] |
+   | Top-5% vs rest RTAS | d=−0.033 ns | d=+0.083, p=0.065 (unique project level) |
+
+   **All qualitative conclusions survived**: concentration (Gini still high),
+   path dependence (OR still significant, CI excludes 1), no alignment advantage
+   for top-5% (d still ns). HLM not affected (already used individual advisors).
+   Top-5% vs rest RTAS unit fixed from edge-level to unique-project-level.
+
+### Figures regenerated
+- Figure 2 Roadmap: RQ4 box updated (Gini=0.746, Top5%=31.0%, OR=2.06).
+- Figure 10 Matthew Effect: all three panels use individual-advisor data;
+  Lorenz curve, Pareto bars, and OR forest all updated.
+
+### Manuscript updates
+- Abstract, §2.1 Data, §2.5 (ARI deleted), §2.7 Methods (RQ4 unit + year ref),
+  §3.4 (leave-advisor-out), §3.5 (all RQ4 numbers), §4 Discussion, §5 Limitations
+  (BGE-M3 + LOO + pipeline-v2 future work), §2.4 (lexical baselines exact values)
+  — all updated across cleaned.md, repo SUBMISSION_manuscript_v1.0.md, and v0.9.md.
+- §10 changelog retains old numbers as audit record only.
+
+---
+
 ## [v1.0-cand.12] — 2026-09-10 — TWENTIETH ROUND: SUBMISSION MODEL-SPEC FIXES + FIGURE LAYOUT
 
 Milestone status: ✅ Submission-manuscript technical consistency + Fig.6 layout.
