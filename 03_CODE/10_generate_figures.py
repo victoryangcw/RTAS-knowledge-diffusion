@@ -949,7 +949,7 @@ def fig12_college_rtas_ranking():
     rank_labels = [f"{int(r)}.  {name}" for r, name in zip(d['rank'], d['college_en'])]
     ax.set_yticklabels(rank_labels, fontsize=8)
     ax.set_xlabel('RTAS (mean)', fontweight='bold')
-    ax.set_title(f'All {n_all} Colleges by RTAS — Full Ranking (Appendix)\n'
+    ax.set_title(f'All {n_all} Colleges by RTAS — Descriptive Ordering (Appendix)\n'
                  'College ANOVA: F(38,3674)=195.45, p < .001, η²=66.90%',
                  fontweight='bold', fontsize=10)
     for i, (val, n) in enumerate(zip(d['rtas_mean'], d['n_projects'])):
@@ -1040,7 +1040,7 @@ def fig13_topic_dynamics():
     axA.set_xticks(years)
     axA.set_xlabel('Year', fontweight='bold', fontsize=11)
     axA.set_ylabel('Share of all project documents (%)', fontweight='bold', fontsize=10)
-    axA.set_title('(a) Mainstream topics decline, long tail diversifies', fontweight='bold', fontsize=11)
+    axA.set_title('(a) Top-15 topic share declines while other clustered topics gain share', fontweight='bold', fontsize=11)
     axA.legend(fontsize=8.5, loc='upper right', framealpha=0.9)  # v1.0-cand.7: moved to upper-right corner
     axA.set_ylim(0, max(longtail_share.max(), top15_share.max()) * 1.22)
     axA.margins(x=0.06)
