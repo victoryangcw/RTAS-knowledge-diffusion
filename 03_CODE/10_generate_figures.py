@@ -569,12 +569,16 @@ def fig6_hlm_forest():
 # Figure 7: Transition Matrix Heatmap (Matthew Effect stability)
 # ================================================================
 def fig7_transition_matrix():
-    inp = 'matthew_effect/transition_probabilities_year_tercile.csv'
+    inp = 'matthew_effect/individual_advisor/transition_probabilities_year_tercile.csv'
     provenance(7, 'Supervisor Transition Matrix', inp)
-    d = pd.read_csv(DATA / 'matthew_effect' / 'transition_probabilities_year_tercile.csv',
+    d = pd.read_csv(DATA / 'matthew_effect' / 'individual_advisor' / 'transition_probabilities_year_tercile.csv',
                     index_col=0)
+    # n_consecutive pairs from counts matrix (individual-advisor)
+    counts = pd.read_csv(DATA / 'matthew_effect' / 'individual_advisor' / 'transition_counts_year_tercile.csv',
+                         index_col=0)
+    n_pairs = int(counts.values.sum())
     fig, ax = plt.subplots(figsize=(5.5, 5))
-    data = d.values * 100
+    data = d.values  # already in %
     im = ax.imshow(data, cmap='YlOrRd', aspect='auto', vmin=0, vmax=70)
     for i in range(3):
         for j in range(3):
@@ -587,8 +591,8 @@ def fig7_transition_matrix():
     ax.set_yticklabels(['Tercile 1\n(Low)', 'Tercile 2\n(Mid)', 'Tercile 3\n(High)'], fontsize=8)
     ax.set_xlabel('To (next year)', fontweight='bold')
     ax.set_ylabel('From (current year)', fontweight='bold')
-    ax.set_title('Supervisor Activity Tercile Transition Matrix\n'
-                 '(n=736 consecutive pairs, diagonal = position stability)',
+    ax.set_title(f'Supervisor Activity Tercile Transition Matrix\n'
+                 f'(n={n_pairs} consecutive pairs, diagonal = position stability)',
                  fontweight='bold', fontsize=9)
     cbar = fig.colorbar(im, ax=ax, shrink=0.8)
     cbar.set_label('Transition probability (%)', fontsize=8)
