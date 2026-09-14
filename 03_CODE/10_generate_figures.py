@@ -16,7 +16,7 @@ Figures generated (v1.0-cand.5 final freeze — 7 main + 4 supplementary):
   Figure 3  4-Quadrant Scatter     <-- topic_info.csv (zoom inset + bubble legend) --(10_generate_figures.py)--> Figure3_QuadrantScatter.pdf
   Figure 4  Project-Level Dist.    <-- project_level_summary.csv + table5_project_dataset_n3714_full.csv (box+jitter; ex-Fig4b; old 4a DELETED as redundant) --(10_generate_figures.py)--> Figure4_Distribution.pdf
   Figure 5  College Caterpillar    <-- hlm_v2b_college_random_effects.csv (BLUPs, ICC=0.738) --(10_generate_figures.py)--> Figure5_CollegeCaterpillar.pdf
-  Figure 6  HLM Forest Plot        <-- hlm_mixedlm_v2b_primary_coefficients.csv (SAME source as Table 6; sig defs moved to caption) --(10_generate_figures.py)--> Figure6_HLM_Forest.pdf
+  Figure 6  HLM Forest Plot        <-- hlm_mixedlm_v2b_primary_coefficients.csv (SAME source as HLM results table; sig defs moved to caption) --(10_generate_figures.py)--> Figure6_HLM_Forest.pdf
   Figure 8  Diffusion-Lag split    <-- diffusion_lag_histogram_bins.csv + topic_first_year_adoption.csv (v1.0-cand.6 split into TWO files: 8a legend outside-right; 8b red-border value box DELETED, taller canvas) --(10_generate_figures.py)--> Figure8a_LagDistribution.pdf + Figure8b_LagByQuadrant.pdf
   Figure 10 Matthew 3-panel        <-- supervisor_gini_pareto.csv + lagged_logit_national_path_dependence*.csv (panel c "Expanded risk set"; v1.0-cand.6 top50 100% gray bar removed, wspace widened) --(10_generate_figures.py)--> Figure10_MatthewEffect.pdf
   SUPPLEMENTARY (4):
@@ -560,7 +560,7 @@ def fig6_hlm_forest():
     ax.set_xlabel('Coefficient (β) with 95% CI', fontweight='bold', fontsize=9.5)
     fig.suptitle('Two-level mixed model (projects nested in colleges, random intercept)\n'
                  f'ICC = {icc_val}   |   n = {nobs_val} projects   |   {ngrp_val} college groups   |   '
-                 'exact β, 95% CI and p-values in Table 6',
+                 'exact β, 95% CIs, and p-values reported in the HLM results table',
                  fontweight='bold', fontsize=11, y=0.99)
 
     savefig(fig, 'Figure6_HLM_Forest')
@@ -1092,7 +1092,11 @@ if __name__ == '__main__':
     fig4_project_level()
     fig5_college_caterpillar()   # MAIN-TEXT Figure 5 (model-adjusted, ICC-consistent)
     fig6_hlm_forest()
-    fig7_transition_matrix()     # demoted -> supplementary (supervisor tercile, not the main path-dependence test)
+    # fig7_transition_matrix()   # v1.0-cand.13: removed from supplementary; Figure 10 covers persistence.
+    #                            # Old n=736 (raw field) -> n=1352 (individual advisor), but 1352 != Sample A 979
+    #                            # because transition matrix uses a different risk set (all consecutive
+    #                            # advisor-year pairs, not requiring national-project activity). To avoid
+    #                            # reviewer confusion between 1352 and 979, figure is not regenerated.
     fig8_diffusion_lag_patterns()  # v1.0-cand.6: split into Figure8a + Figure8b (two standalone files)
     fig10_matthew_effect()
     fig11_quadrant_summary()     # demoted -> supplementary
