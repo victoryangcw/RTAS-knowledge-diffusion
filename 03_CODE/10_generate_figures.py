@@ -205,7 +205,7 @@ def fig2_roadmap():
         #   Frozen. Left column = text-mining branch, right columns = RTAS analyses.)
         (3.40, 1.50, BW2, BH2, 'Heterogeneity (RQ1)\nF(2,3711)=35.7\neta2=1.89%\nd=0.352', COLORS['blue']),
         (0.60, 1.50, BW2, BH2, 'BERTopic (RQ2)\nUMAP+HDBSCAN\nK=886 topics\n4-quadrant', COLORS['orange']),
-        (6.30, 1.50, BW2, BH2, 'Matthew (RQ4)\nGini=0.767\nTop5%=34.0%\nlag-OR=2.25***', COLORS['red']),
+        (6.30, 1.50, BW2, BH2, 'Matthew (RQ4)\nGini=0.746\nTop5%=31.0%\nlag-OR=2.06***', COLORS['red']),
         (9.10, 1.50, BW2, BH2, 'HLM (RQ3)\nMixedLM RE\nICC=0.738, 39 colleges\nclean prior supervision', COLORS['purple']),
         # Row 4 (y=0.05): downstream
         (3.40, 0.05, BW2, 1.00, 'Diffusion Lag (RQ2)\n29/886 defined\nHRLT median +0.5 yr', COLORS['gray']),
@@ -786,14 +786,25 @@ def fig8_diffusion_lag_patterns():
 # Figure 10: Matthew Effect — Lorenz Curve + Pareto Bar
 # ================================================================
 def fig10_matthew_effect():
-    inp = 'matthew_effect/supervisor_gini_pareto.csv + lagged_logit_national_path_dependence*.csv'
+    inp = 'matthew_effect/individual_advisor_audit.json + lagged_logit_*_individual.csv'
     provenance(10, 'Matthew Effect three-panel: Lorenz + Pareto + lagged path-dependence OR', inp)
-    # Read audit JSON for Lorenz curve computation
-    audit = json.loads((DATA / 'matthew_effect' / 'matthew_effect_audit.json').read_text(encoding='utf-8'))
-    # Reconstruct Lorenz curve from raw project data for national-project allocation
+    # Read individual-advisor audit JSON (v1.0-cand.13: replaces raw-field audit)
+    audit = json.loads((DATA / 'matthew_effect' / 'individual_advisor_audit.json').read_text(encoding='utf-8'))
+    ind = audit['individual_advisor']
+    # Reconstruct Lorenz curve from individual-advisor edges (split co-supervised)
+    import re as _re
+    def _split_advisors(s):
+        if not isinstance(s, str): return []
+        parts = _re.split(r'[、，,;；]', s)
+        return [p.strip() for p in parts if p.strip()]
     proj = pd.read_csv(ROOT / '01_DATA' / 'final_analysis' / 'table5_project_dataset_n3714_full.csv')
     proj['is_national'] = proj['项目等级'].astype(str).str.contains('国家级').astype(int)
-    by_sup = proj.groupby('advisor').agg(n_national=('is_national', 'sum')).sort_values('n_national', ascending=False)
+    edge_rows = []
+    for idx, row in proj.iterrows():
+        for a in _split_advisors(row['advisor']):
+            edge_rows.append({'individual_advisor': a, 'is_national': row['is_national']})
+    edges = pd.DataFrame(edge_rows)
+    by_sup = edges.groupby('individual_advisor').agg(n_national=('is_national', 'sum')).sort_values('n_national', ascending=False)
     vals = by_sup['n_national'].values.astype(float)
     vals_sorted = np.sort(vals)
     n = len(vals_sorted)
@@ -801,50 +812,50 @@ def fig10_matthew_effect():
     total = cum[-1] if cum[-1] > 0 else 1
     lorenz_y = np.concatenate([[0], cum / total])
     lorenz_x = np.arange(n + 1) / n
+    gini_nat = ind['gini_national']
+    top5_share = ind['top5_national_share_pct']
+    top20_share = ind['pareto_shares']['top20_share_pct']
 
-    # Panel (c): lagged t-1 -> t path-dependence logistic (v1.0-cand.2, replaces the
-    # withdrawn circular cross-sectional OR=6.085)
-    lgA = pd.read_csv(DATA / 'matthew_effect' / 'lagged_logit_national_path_dependence.csv')
-    lgB = pd.read_csv(DATA / 'matthew_effect' / 'lagged_logit_national_path_dependence_sampleB.csv')
+    # Panel (c): lagged t-1 -> t path-dependence logistic (individual advisor)
+    lgA = pd.read_csv(DATA / 'matthew_effect' / 'lagged_logit_national_path_dependence_individual.csv')
+    lgB = pd.read_csv(DATA / 'matthew_effect' / 'lagged_logit_national_path_dependence_sampleB_individual.csv')
     natA = lgA[lgA['term'] == 'nat_lag'].iloc[0]
     natB = lgB[lgB['term'] == 'nat_lag'].iloc[0]
+    nA_cells = audit['lagged_logit']['sample_A']['n_cells']
+    nA_adv = audit['lagged_logit']['sample_A']['n_advisors']
+    nB_cells = audit['lagged_logit']['sample_B']['n_cells']
+    nB_adv = audit['lagged_logit']['sample_B']['n_advisors']
 
     fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(14.2, 5.0),
                                         gridspec_kw=dict(width_ratios=[1.0, 0.85, 1.0], wspace=0.44))
     # (a) Lorenz curve
-    ax1.plot(lorenz_x, lorenz_y, color=COLORS['red'], linewidth=2, label=f'National-level projects (Gini={audit["gini"]["value_national_projects"]:.3f})')
+    ax1.plot(lorenz_x, lorenz_y, color=COLORS['red'], linewidth=2, label=f'National-level projects (Gini={gini_nat:.3f})')
     ax1.plot([0, 1], [0, 1], '--', color=COLORS['gray'], linewidth=1, label='Perfect equality')
     ax1.fill_between(lorenz_x, lorenz_x, lorenz_y, alpha=0.1, color=COLORS['red'])
-    ax1.set_xlabel('Cumulative share of supervisors (sorted)', fontweight='bold')
+    ax1.set_xlabel('Cumulative share of advisors (sorted)', fontweight='bold')
     ax1.set_ylabel('Cumulative share of national projects', fontweight='bold')
-    ax1.set_title('(a) Lorenz Curve: National Project Allocation\n(Gini = 0.767, Top 5% hold 34.0%)', fontweight='bold', fontsize=9)
+    ax1.set_title(f'(a) Lorenz Curve: National Project Allocation\n(Gini = {gini_nat:.3f}, Top 5% hold {top5_share:.1f}%)', fontweight='bold', fontsize=9)
     ax1.legend(fontsize=7.5)
 
     # (b) Pareto bar
-    pareto_data = audit['gini']['pareto_national_shares_pct']
-    # v1.0-cand.6: top50 bar removed (user visual review) - a constant 100% gray
-    # slab carried no information, dwarfed the informative bars, and squeezed
-    # panel (c)'s y-tick labels in the inter-panel gutter.
+    pareto_data = ind['pareto_shares']
     pcts = ['top1', 'top5', 'top10', 'top20']
-    vals_p = [pareto_data.get(f'{p}_national_share_pct', 0) for p in pcts]
+    vals_p = [pareto_data.get(f'{p}_share_pct', 0) for p in pcts]
     bars = ax2.bar(pcts, vals_p, color=[COLORS['red'], COLORS['orange'], COLORS['orange'],
                                          COLORS['blue']], alpha=0.8, width=0.6)
     ax2.axhline(y=5, color='#999', linestyle='--', linewidth=0.8, label='Equal share line')
     for bar, v in zip(bars, vals_p):
         ax2.text(bar.get_x() + bar.get_width()/2, v + 1, f'{v:.1f}%', ha='center', fontsize=8, fontweight='bold')
-    ax2.set_xlabel('Top N% supervisors', fontweight='bold')
+    ax2.set_xlabel('Top N% advisors', fontweight='bold')
     ax2.set_ylabel('Share of national projects (%)', fontweight='bold')
-    ax2.set_title('(b) Pareto Concentration\n(Top 20% supervisors hold 76.8%)', fontweight='bold', fontsize=9)
+    ax2.set_title(f'(b) Pareto Concentration\n(Top 20% advisors hold {top20_share:.1f}%)', fontweight='bold', fontsize=9)
     ax2.legend(fontsize=7.5)
 
     # (c) Lagged path-dependence OR forest (two samples).
-    # y-tick labels kept SHORT so they stay inside the inter-panel margin
-    # (long labels intruded into panel (b)); n / p moved into the in-plot
-    # annotation under each OR (v1.0-cand.4 visual fix).
-    rows = [(f"Sample A: active t-1 & t\n(n=736 cells / 491 advisors)",
+    rows = [(f"Sample A: active t-1 & t\n(n={nA_cells} cells / {nA_adv} advisors)",
              float(natA['OR']), float(natA['OR_ci95_lo']), float(natA['OR_ci95_hi']), natA['mark'],
              f"p = {natA['p_value']:.1e}"),
-            (f"Sample B: expanded risk set\n(n=2,302 / 1,621 advisors)",
+            (f"Sample B: expanded risk set\n(n={nB_cells:,} / {nB_adv:,} advisors)",
              float(natB['OR']), float(natB['OR_ci95_lo']), float(natB['OR_ci95_hi']), natB['mark'],
              f"p = {natB['p_value']:.1e}")]
     for yi, (lab, OR, lo, hi, mark, ptxt) in enumerate(rows):

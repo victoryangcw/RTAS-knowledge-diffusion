@@ -22,7 +22,7 @@
 | `level_code` | 数值编码：1=校级, 2=省级, 3=国家级 | 3 |
 | `year` | 立项年份 | 2023 |
 | `college` | 所属学院（40 个，HLM substrate 已升级为 40 个，见 §1.1.5） | 测绘遥感信息工程国家重点实验室 |
-| `advisor` | 指导教师姓名（1,940 位唯一导师） | 张三 |
+| `advisor` | 指导教师姓名（1,834 位唯一导师，多导师字段已拆分） | 张三 |
 | `advisor_name_cn` | 导师中文姓名（1,926 位，因同名合并略有差异） | 张三 |
 | `advisor_count` | （旧列，已停用）导师匹配计数，HLM v1.0 起不再使用 | 8 |
 | `advisor_recent_3y_works_mean` | （旧列，已撤回）v0.9.1 脏列：3,712/3,714 为零，HLM v1.0 起停用 | 4.5 |
@@ -87,7 +87,7 @@ RTAS 均值随项目等级单调递增（国家级 ≥ 省级 > 校级；注意�
 ### 1.3 论文-学院匹配（v0.9.1，57K 全量）
 
 56,901 篇论文通过以下两步流程匹配到该校 40 个学院：
-1. **导师姓名拼音索引**：从 3,714 个项目中提取 1,940 位中文导师姓名 → 生成正向（surname+given）和反向（given+surname）两种拼音键，去重后得 4,349 个键；
+1. **导师姓名拼音索引**：从 3,714 个项目中提取 1,834 位中文导师姓名（多导师字段已拆分） → 生成正向（surname+given）和反向（given+surname）两种拼音键，去重后得 4,349 个键；
 2. **OpenAlex 作者名归一化匹配**：所有论文作者 `Firstname Lastname` 格式转纯小写字母串后与拼音键匹配；若同一作者拼音键对应多个学院则标记为歧义直接跳过。
 
 匹配结果：
@@ -107,10 +107,10 @@ RTAS 均值随项目等级单调递增（国家级 ≥ 省级 > 校级；注意�
 
 ### 1.4 导师-作者关联
 
-项目指导教师（`advisor` 列，1,940 位唯一导师）与 OpenAlex 论文作者通过"**中文姓名拼音 + 项目-学院先验**"双约束匹配：在 §1.3 的论文-学院匹配流程中，若一作者拼音键只归属 1 个学院，视为 unambiguous。匹配后：
+项目指导教师（`advisor` 列，1,834 位唯一导师，多导师字段已拆分）与 OpenAlex 论文作者通过"**中文姓名拼音 + 项目-学院先验**"双约束匹配：在 §1.3 的论文-学院匹配流程中，若一作者拼音键只归属 1 个学院，视为 unambiguous。匹配后：
 - 项目指导教师拆分后共 1,834 个导师原子（§4.2 v1.0 审计）；在 2017–2024 论文池（79,339 篇）上匹配到 1,537 位导师、共 71,958 对导师-论文匹配；逐项目标注 `advisor_match_status`：**matched 2,750 项 / ambiguous 748 项 / unmatched 216 项**，未匹配项的导师发文协变量记 NA（不是 0）；HLM Primary 完整案例 n=3,231，高置信匹配 sensitivity n=2,750
-- 导师人均累计指导项目数 1–214（中位数 2），右偏严重（马太效应的前置证据）
-- Top 5% 导师（= 97 位，ceil(5% × 1940)）承担了 34.0% 的国家级项目（Gini = 0.767）
+- 导师人均累计指导项目数 1–10（中位数 2），右偏严重（马太效应的前置证据）
+- Top 5% 导师（= 92 位，ceil(5% × 1834)）承担了 31.0% 的国家级项目（Gini = 0.746）
 
 ### 1.5 数据质量审计
 
@@ -120,7 +120,7 @@ RTAS 均值随项目等级单调递增（国家级 ≥ 省级 > 校级；注意�
 2. **语言比例检测**：项目标题 92% 中文，论文标题 100% 英文 → 选用 **多语** `paraphrase-multilingual-MiniLM-L12-v2`（绝对不能用单语 `all-MiniLM-L6-v2`，详见 §10 改进历程 v0.2）
 3. **年份分布检查**：项目 2020–2024（经原始项目库核对，无更早年份；手稿早期版本误写"2018–2024"已更正），论文池 2017–2024（2017–2019 为导师立项前窗口补抓），无异常年份
 4. **学院覆盖检查**：项目覆盖 40 学院；论文匹配侧覆盖 40 学院（`国际教育学院`仅 1 篇项目观测有 RTAS，ANOVA 组内 n≥2 规则自动取 39 组；v0.9.1 旧版 RandomEffects 保留为第 40 组，v1.0 MixedLM 完整案例下该院因导师协变量 NA 自然退出，Primary/Sensitivity 均为 39 组。两种统计处理各自合理，详见 §1.1.5 与 §4.4）
-5. **导师唯一性检查**：1,940 位唯一导师，与权威数字一致
+5. **导师唯一性检查**：1,834 位唯一导师（多导师字段已拆分），与 v1.0-cand.13 审计一致
 
 **底料审计结论：零警告；57K 全量覆盖更完整；可进入全部算法实验。**
 
@@ -162,7 +162,7 @@ $$\text{RTAS}(p, c, t) = \frac{1}{|P_{c,t}|} \sum_{j \in P_{c,t}} \cos(\mathbf{e
 
    **评分者间信度、重测信度与 LLM 一致性（secondary）**：① 50 对独立子集由两名互不知情的人类评分者盲评（均仅读 rubric，不可见首轮分数与 RTAS 值）：评分者 A（Rater A）与参考评分者 quadratic-weighted κ = **0.465**、Spearman ρ = **0.333**（p = .018）、完全一致率 72%（36/50）；评分者 B（Rater B）与参考评分者 κ = **0.606**、完全一致率 78%（39/50；其 Spearman ρ = 0.240 因参考评分者 46/50 并列 1 分的极端并列结构而失稳、p = .093，故以 κ 与一致率解读）；两名独立评分者互相之间 κ = **0.826**、ρ = **0.821**、完全一致率 90%（45/50）——独立评分者间的高度一致说明 1–4 rubric 可被第三方稳定复现；② 同一参考评分者在约 12 天洗脱期后对 40 对重排盲评（test–retest），κ = **0.643**、ρ = **0.688**（p < .001）、完全一致率 95%（38/40），36 个 1 分全部稳定，仅 4 个边界 2 分中 2 个轻微漂移为 1；③ LLM 第二评分者（deepseek-reasoner, temp=0, prompt v1.1, 150 对全量盲评）与参考评分者的 κ = **0.459**、ρ = **0.638**（p < 10⁻¹⁸）、一致率 93.3%；④ RTAS 嵌入余弦与评分者 B 的三角验证 Spearman ρ = **0.621**（p < .001）、二分判别 AUC = **0.932**——均高于冻结参考值（0.405 / 0.880），提示冻结 C1 值偏保守而非高估。全部独立检验（两名他人、本人重测、LLM）均显著一致，为成对语义效度与评分信度提供汇聚证据（converging evidence for pairwise semantic validity and rating reliability），不构成完整构念效度认证。
 
-   **v1.0-cand.10 朴素词汇基线对比（secondary）**：在同一 150 对参考集上，三个朴素词汇基线（naive lexical baselines：char 3-5 gram TF-IDF 余弦、char 3-gram Jaccard、BM25 Okapi）的 Spearman ρ 均为 **+0.30**（p≈2×10⁻⁴）、二分判别 AUC 均为 **0.64**，低于 MiniLM 的 **+0.405 / AUC 0.880**。**口径限定**：这些基线直接作用于中文项目标题 vs 英文论文标题的字符 n-gram，未经任何翻译对齐，在跨语言场景天然处于劣势，因此该对比的解读限于"多语语义嵌入显著优于朴素词汇重叠"，不主张与翻译后词汇方法或更强跨语言模型的比较；它支持 MiniLM 作为 RTAS 嵌入底座的选型（详见 `human_validation/robustness/baseline_validity.csv`）。BGE-M3 等更新的多语编码器未在本研究中基准测试（not benchmarked in the present study），是重要的未来稳健性扩展；MiniLM 仍为 Primary。
+   **v1.0-cand.10 朴素词汇基线对比（secondary）**：在同一 150 对参考集上，三个朴素词汇基线（naive lexical baselines：char 3-5 gram TF-IDF 余弦、char 3-gram Jaccard、BM25 Okapi）的 Spearman ρ 在 **0.296–0.300**（TF-IDF 0.300、Jaccard 0.296、BM25 0.298；p≈2×10⁻⁴）、二分判别 AUC 在 **0.637–0.638**（TF-IDF 0.638、Jaccard 0.637、BM25 0.637），均低于 MiniLM 的 **+0.405 / AUC 0.880**。**口径限定**：这些基线直接作用于中文项目标题 vs 英文论文标题的字符 n-gram，未经任何翻译对齐，在跨语言场景天然处于劣势，因此该对比的解读限于"多语语义嵌入显著优于朴素词汇重叠"，不主张与翻译后词汇方法或更强跨语言模型的比较；它支持 MiniLM 作为 RTAS 嵌入底座的选型（详见 `human_validation/robustness/baseline_validity.csv`）。**Post-freeze BGE-M3 robustness**（§2.4）：150 对参考评分集上 BGE-M3 的 ρ=0.334、AUC=0.811，paired bootstrap Δρ/ΔAUC CI 均跨 0，MiniLM 继续作为 primary encoder。
 
 **聚合方式选择（5 个候选变体，预注册规则；数值冻结于 `02_RTAS_MODEL_SELECTION/rtas_model_selection.csv` 与 `rtas_selection_composite_v1.csv`）：**
 
@@ -174,7 +174,7 @@ $$\text{RTAS}(p, c, t) = \frac{1}{|P_{c,t}|} \sum_{j \in P_{c,t}} \cos(\mathbf{e
 | top20 | Top-20 均值 | 0.405 | 0.0170（p=1.5×10⁻¹⁴） | 0.991 | 0.153 | 0.362（p=1.2×10⁻¹¹⁵） | 0.398 |
 | centroid | 质心相似度 | 0.405 | 0.0133（p=1.8×10⁻¹¹） | 0.991 | 0.099 | 0.378（p=1.7×10⁻¹²⁶） | 0.300 |
 
-选择规则为查看结果前预注册（`05_select.py`）：C2 显著（p<0.05）者进入候选；**综合得分（composite）= 0.45 × C2 η²（min-max 归一）+ 0.30 × C4 稳定性归一（年度均值 SD + 学院 ICC）+ 0.25 × C3 K-稳定性归一**（权重与归一化口径冻结于 `rtas_selection_composite_v1.csv`，不可后调）；Top-K 变体仅在综合得分达到最优值 95% 以内时优先于 mean。实测 mean 综合得分 **0.742** 居首（C2 已知组区分度最高），最优 Top-K 变体 top5 仅 0.480（低于 0.742×0.95 = 0.705 门槛），故冻结 **`rtas_mini_mean`（均值聚合）为 Primary RTAS**。口径说明：C2–C5 为 v0.2 选型阶段在 12K 池上的冻结值（57K 升级后 C2 方向不变、均值聚合仍为最高 η²，见 §1.1）；C4 的学院 ICC 列在选型冻结时混合模型奇异拟合未产出数值（表中不列），稳定性由年度均值 SD 承载；C1 为嵌入层级指标、与论文池规模无关，本稿用冻结嵌入复核 150 对配对 r = 0.4055 与冻结值一致。C5 收敛效度为 MiniLM 变体与早期 SBERT 主题分的相关（代理指标），BGE-M3 跨模型一致性检验留作未来稳健性工作（§12.3）。
+选择规则为查看结果前预注册（`05_select.py`）：C2 显著（p<0.05）者进入候选；**综合得分（composite）= 0.45 × C2 η²（min-max 归一）+ 0.30 × C4 稳定性归一（年度均值 SD + 学院 ICC）+ 0.25 × C3 K-稳定性归一**（权重与归一化口径冻结于 `rtas_selection_composite_v1.csv`，不可后调）；Top-K 变体仅在综合得分达到最优值 95% 以内时优先于 mean。实测 mean 综合得分 **0.742** 居首（C2 已知组区分度最高），最优 Top-K 变体 top5 仅 0.480（低于 0.742×0.95 = 0.705 门槛），故冻结 **`rtas_mini_mean`（均值聚合）为 Primary RTAS**。口径说明：C2–C5 为 v0.2 选型阶段在 12K 池上的冻结值（57K 升级后 C2 方向不变、均值聚合仍为最高 η²，见 §1.1）；C4 的学院 ICC 列在选型冻结时混合模型奇异拟合未产出数值（表中不列），稳定性由年度均值 SD 承载；C1 为嵌入层级指标、与论文池规模无关，本稿用冻结嵌入复核 150 对配对 r = 0.4055 与冻结值一致。C5 收敛效度为 MiniLM 变体与早期 SBERT 主题分的相关（代理指标）。**Post-freeze BGE-M3 robustness**（§2.4）：150 对参考评分集上 BGE-M3 的 C1 成对语义效度为 ρ=0.334、AUC=0.811，paired bootstrap Δρ/ΔAUC CI 均跨 0，MiniLM 继续作为 primary encoder；但 C5 级别的 BGE-M3 跨模型一致性检验（需用 BGE-M3 重跑 topic model 后比较 RTAS 与 topic scores 的相关）留作未来稳健性工作（§12.3）。
 
 ### 2.3 时间窗口设计（2017–2019 / 2020–2024 双语料结构）
 
@@ -258,7 +258,7 @@ BERTopic 流程包含三个阶段：UMAP 降维 → HDBSCAN 聚类 → c-TF-IDF 
 - 886 个非离群主题覆盖了 37,297 篇文档（61.53%）
 - 每个非离群主题平均含约 40.1 篇论文和 2.0 个项目
 
-> **离群子集口径说明（clustered-subset caveat）：** 38.47% 的离群率反映标题语义高度多样的跨学科语料特性——离群文档是语义上无法稳定归入任何 ≥10 文档簇的长尾标题，并非噪声或错误。§3.4–§6 的四象限与扩散滞后分析**条件于 886 个非离群主题**（即被聚类覆盖的 61.53% 文档），结论推广范围为"可稳定成簇的研究主题"；主题模型敏感性由 K-稳定性（K=800/850/900 时 ARI=0.93–0.98，§12.2 项 1）与下文阈值敏感性（§3.4 末）共同支撑。
+> **离群子集口径说明（clustered-subset caveat）：** 38.47% 的离群率反映标题语义高度多样的跨学科语料特性——离群文档是语义上无法稳定归入任何 ≥10 文档簇的长尾标题，并非噪声或错误。§3.4–§6 的四象限与扩散滞后分析**条件于 886 个非离群主题**（即被聚类覆盖的 61.53% 文档），结论推广范围为"可稳定成簇的研究主题"；主题模型敏感性由下文聚类参数敏感性（§3.4 末）与阈值敏感性（§3.4 末）共同支撑。
 >
 > **v1.0-cand.10 聚类参数敏感性（clustering-parameter sensitivity，secondary）**：在冻结联合嵌入上以 3 组替代 HDBSCAN 参数重跑 UMAP+HDBSCAN（min_cluster_size/min_samples = 15/7、20/10、8/3），结果——① **离群率稳定在 0.364–0.396**，38.47% 非单一参数产物；② 四象限方向一致：LRLT（低研低培养）始终是最大象限（占非离群主题 64.0%–68.3%），HRHT（高研高培养）始终最小（占 6.1%–8.6%），**象限定性结构不随聚类参数改变**；③ 主题数随 min_cluster_size 变化（454–1287）属正常粒度变化，不影响上述方向结论。**口径说明**：敏感性脚本对两个维度均采用对称 top-20% 分位规则，与冻结主口径（paper 端 top-20% 主题数 × project 端固定 ≥0.5%）不同，故其象限绝对计数与 §3.4 冻结表不可直接比较；此处检验的主张是**方向稳定性**而非计数复现（详见 `03_FINAL_ANALYSIS/topic_model/bertopic_clustering_sensitivity.csv`）。
 
@@ -399,33 +399,33 @@ $$u_j \sim N(0,\ \sigma^2_{college}),\qquad \varepsilon_{ij} \sim N(0,\ \sigma^2
 
 ### 5.2 基尼系数
 
-**计算方法：** 对 1,940 位导师按累计国家级项目数降序排列，使用均值绝对差公式计算 Gini 系数：
+**计算方法：** 对 1,834 位导师（多导师字段已拆分）按累计国家级项目数降序排列，使用均值绝对差公式计算 Gini 系数：
 
 $$G = \frac{2 \sum_{i=1}^{n} i \cdot x_i - (n+1) \sum_{i=1}^{n} x_i}{n \sum_{i=1}^{n} x_i}$$
 
 其中 $x_i$ 为按升序排列的各导师国家级项目数。
 
 **结果：**
-- 国家级项目 Gini = **0.7667**（权威值 0.767，误差 < 0.001）✅
-- 总项目数 Gini = 0.3443（参照值，马太效应不明显）
+- 国家级项目 Gini = **0.746**（individual-advisor 版，v1.0-cand.13）
+- 总项目数 Gini = 0.368（参照值，马太效应不明显）
 
 ### 5.3 Pareto 分布
 
 | Top N% 导师 | 国家级项目占比 |
 |------------|--------------|
-| Top 1% | 9.38% |
-| **Top 5%** | **34.02%**（权威值 34.0%）✅ |
-| Top 10% | 48.39% |
-| Top 20% | 76.83% |
+| Top 1% | 8.2% |
+| **Top 5%** | **31.0%** |
+| Top 10% | 44.8% |
+| Top 20% | 71.9% |
 | Top 50% | 100% |
 
-**Top 5% 导师数 = ceil(5% × 1,940) = 97 位**（与权威一致）✅
+**Top 5% 导师数 = ceil(5% × 1,834) = 92 位**
 
-Pareto 分布显示：20% 的导师占据了 76.83% 的国家级项目，80/20 法则在此得到强烈验证。
+Pareto 分布显示：20% 的导师占据了 71.9% 的国家级项目，80/20 法则在此得到强烈验证。
 
 ### 5.4 转移矩阵
 
-按导师-年份活动量（总项目数）三分位构建 3×3 转移矩阵，共 n=736 对连续年份观测，统计转移概率：
+按导师-年份活动量（总项目数）三分位构建 3×3 转移矩阵，共 n=979 对连续年份观测（individual-advisor 版），统计转移概率：
 
 | 从 \ 到 | 低（Tercile 1） | 中（Tercile 2） | 高（Tercile 3） |
 |---------|---------------|---------------|---------------|
@@ -443,23 +443,23 @@ Pareto 分布显示：20% 的导师占据了 76.83% 的国家级项目，80/20 �
 
 $$\text{logit}\,P(\text{nat}_{a,t}=1) = \beta_0 + \beta_1\,\text{nat}_{a,t-1} + \beta_2\,\log(1+\text{load}_{a,t-1}) + \text{year FE}_t$$
 
-其中 $\text{nat}_{a,t}$ 表示导师 $a$ 在 $t$ 年是否指导了 ≥1 个国家级项目（导师-年份面板，1,940 位导师 × 2020–2024）；标准误按导师聚类。**year FE 编码（v1.0-cand.10 明确）**：年份以分类虚拟变量（categorical dummies）纳入，以 2020 年为参考年（reference year）；标准误按导师层面聚类（clustered SE by advisor）。导师固定效应 Logit 作为可选敏感性规格会剔除大量无 within-advisor 变异的单元，故不作主规格。两个估计样本：
+其中 $\text{nat}_{a,t}$ 表示导师 $a$ 在 $t$ 年是否指导了 ≥1 个国家级项目（导师-年份面板，1,834 位导师 × 2020–2024）；标准误按导师聚类。**year FE 编码（v1.0-cand.10 明确）**：年份以分类虚拟变量（categorical dummies）纳入，以 **2021 年为参考年**（reference year，因为最早 outcome 年是 t=2021，需 t−1=2020 的观测）；标准误按导师层面聚类（clustered SE by advisor）。导师固定效应 Logit 作为可选敏感性规格会剔除大量无 within-advisor 变异的单元，故不作主规格。两个估计样本：
 
 | 样本 | 单元数（导师数） | P(nat_t \| nat_{t−1}=1) | P(nat_t \| nat_{t−1}=0) | 调整后 **OR(nat_{t−1})** | 95% CI | p（聚类） |
 |------|------|------|------|------|------|------|
-| A：t−1 与 t 均活跃（主样本） | 736（491） | 35.2%（n=199） | 20.7%（n=537） | **2.25** | [1.57, 3.22] | **1.0×10⁻⁵ **** |
-| B：t−1 活跃即可（t 不活跃记 0，稳健性） | 2,302（1,621） | 13.5%（n=517） | 6.2%（n=1,785） | **2.28** | [1.68, 3.09] | **1.4×10⁻⁷ **** |
+| A：t−1 与 t 均活跃（主样本） | 979（627） | 33.3% | 16.7% | **2.06** | [1.53, 2.76] | **1.5×10⁻⁶ **** |
+| B：t−1 活跃即可（t 不活跃记 0，稳健性） | 2,469（1,560） | — | — | **2.45** | [1.91, 3.16] | **3.2×10⁻¹² **** |
 
-**解读：** 在控制上一年指导负荷与年份固定效应后，t−1 年拿到国家级项目的导师，t 年再拿到的几率约为其他导师的 **2.3 倍**（两个样本 OR 2.25/2.28、CI 均不含 1），国家级项目获取存在**真实的年度路径依赖**（"富者"优势在相邻年份间持续）。该效应量级（~2.3 倍）远小于循环回归的 6.085 倍，且来自时间先后结构而非定义自洽。路径依赖与 §5.2 Gini=0.767、§5.3 Top5% 占有 34.0% 的截面集中互为印证：集中不是一年快照，而是逐年再生产的。
+**解读：** 在控制上一年指导负荷与年份固定效应后，t−1 年拿到国家级项目的导师，t 年再拿到的几率约为其他导师的 **2.1–2.5 倍**（两个样本 OR 2.06/2.45、CI 均不含 1），国家级项目获取存在**真实的年度路径依赖**（"富者"优势在相邻年份间持续）。该效应量级远小于循环回归的 6.085 倍，且来自时间先后结构而非定义自洽。路径依赖与 §5.2 Gini=0.746、§5.3 Top5% 占有 31.0% 的截面集中互为印证：集中不是一年快照，而是逐年再生产的。
 
 **Top 5% vs 其余的描述性比较（保留，仅作描述用途）：**
 
 | 指标 | Top 5% 均值 | 其余均值 | Welch t (p) | MWU (p) | Cohen's d |
 |------|-----------|---------|------------|---------|-----------|
-| RTAS | 0.1308 | 0.1334 | 0.443 | 0.280 | -0.033 (ns) |
-| 国家级项目率（描述性，与分组定义机械相关，不作推断） | 20.0% | 18.7% | 0.521 | 5.9×10⁻⁹ | 0.039 |
+| RTAS | 0.1388 | 0.1334 | 0.065 | — | +0.083 (ns) |
+| 国家级项目率（描述性，与分组定义机械相关，不作推断） | — | — | — | — | — |
 
-Top 5% 导师与其余导师在 RTAS 上无显著差异（d=−0.033）：马太效应体现在**资源获取的逐年路径依赖与截面集中**上——资源集中并未转化为更高的 research–training alignment（resource concentration did not translate into higher research–training alignment），高产出导师指导项目的科研–培养语义对齐度并不更高。RTAS 度量的是对齐而非培养质量，作质量解读超出其操作化定义（§2.1）。
+Top 5% 导师与其余导师在 RTAS 上无显著差异（d=+0.083, p=0.065; unique project level）：马太效应体现在**资源获取的逐年路径依赖与截面集中**上——资源集中并未转化为统计上可区分的对齐优势（resource concentration did not translate into a statistically distinguishable alignment advantage），高产出导师指导项目的科研–培养语义对齐度并不显著更高。RTAS 度量的是对齐而非培养质量，作质量解读超出其操作化定义（§2.1）。
 
 ---
 
@@ -528,7 +528,7 @@ Top 5% 导师与其余导师在 RTAS 上无显著差异（d=−0.033）：马太
 
 RI-CLPM（Random Intercept Cross-Lagged Panel Model，随机截距交叉滞后面板模型）**拟用于**检验 RTAS、国家级项目率和论文产出之间的方向性关系（**未估计**）。原设计使用 3 波面板数据（2021/2023/2025，累积窗口），以学院为分析单元；该设计因上述累积嵌套与 2025 无数据问题作废，未来版本改用非重叠年度波。
 
-**选择学院而非导师作为分析单元的理由：** 1,940 位导师中大多数在 3 波内仅有 1–2 个项目，稀疏性导致随机截距无法识别。学院层面每波有稳定的项目聚集（**总 40 学院 × 3 波 × 3 变量 = 360 单元格**），满足 RI-CLPM 识别条件。
+**选择学院而非导师作为分析单元的理由：** 1,834 位导师中大多数在 3 波内仅有 1–2 个项目，稀疏性导致随机截距无法识别。学院层面每波有稳定的项目聚集（**总 40 学院 × 3 波 × 3 变量 = 360 单元格**），满足 RI-CLPM 识别条件。
 
 ### 7.2 面板构建
 
@@ -569,13 +569,13 @@ R 脚本（`06_CODE/09_ri_clpm.R`）使用 lavaan 包的 FIML（全信息最大�
 | 项目总数 | 3,714 | 3,714 | ✅ |
 | **论文总数（正式语料）** | **56,901** (article full, 2020-2024, WHU OpenAlex I37461747) | **56,901** | ✅ |
 | **35,721 纠正** | **不是论文数 = 12K 文件主题标签频次之和（废弃）** | 与 12K topics 列求和逐字精确匹配 35,721 | ✅ (见 §1.1.5) |
-| 导师数 | 1,940 | 1,940 | ✅ |
+| 导师数 | 1,834 | 1,834（individual-advisor, v1.0-cand.13） | ✅ |
 | HLM substrate 学院数 | **40**（v0.9.1 升级，§1.1.5） | 40（International Education 学院 1 条项目终于有 RTAS） | ✅ |
 | College ANOVA 学院组数 | 39（组内 n≥2 自动规则） | 39 | ✅ |
 | 学院总数 | 40 | 40 | ✅ |
-| Top 5% 导师数 | ceil(5%×1940)=97 | 97 | ✅ |
-| 国家级项目 Gini | 0.767 | 0.766658 | ✅ |
-| Top 5% 国家级项目占比 | 34.0% | 34.0176% | ✅ |
+| Top 5% 导师数 | ceil(5%×1834)=92 | 92 | ✅ |
+| 国家级项目 Gini | 0.746 | 0.746（individual-advisor） | ✅ |
+| Top 5% 国家级项目占比 | 31.0% | 31.0%（individual-advisor） | ✅ |
 | College ANOVA df_within | 3,674 (3,713 - 39 组) | 3,674 | ✅ (巧合与 12K 池完全相等) |
 | BERTopic K (非离群) | 886 (57K 池) | 886 + 1 OUTLIER row (topic_id=−1) = 887 CSV 行 | ✅（§3.3 已解释） |
 | HLM 模型规格 | — | v1.0 = statsmodels MixedLM 随机截距 `(1|college)`，REML；Primary n=3,231 × 39 学院；Sensitivity（仅高置信匹配）n=2,750 | v0.9.1 的 linearmodels.RandomEffects + 脏列结果被 v1.0 取代（§4.2 审计） |
@@ -587,7 +587,7 @@ R 脚本（`06_CODE/09_ri_clpm.R`）使用 lavaan 包的 FIML（全信息最大�
 | HLM 年份 β | — | **+0.00313 (p=1.1×10⁻⁶ ***)** | 口径修正后从边界 ns (p=0.053) 转为显著；clean 前置指导数释放被吸收的年份趋势，由 +0.0018** 进一步强化 |
 | HLM 导师被引 β | — | 已从主模型移除 | 2026 快照引用含立项后未来信息，仅可作事后 robustness；旧 ns 结论不再引用 |
 | 项目等级 Tukey HSD (严格多组校正) | — | P−U ***, N−U ***, N−P ns (p-adj=0.082；Δ=+0.0070, 95% CI [−0.0007, +0.0146] 跨 0；Δ 方向 = 高等级 − 低等级，v1.0-cand.8 统一) | 严格结论 = **U < P ≤ N**（仅 P−U、N−U 显著） |
-| 马太效应路径依赖 OR(nat_{t−1}) | — | **2.25**（95%CI [1.57, 3.22]，p=1.0×10⁻⁵，聚类 SE，n=736 导师-年）；稳健性样本 B OR=2.28 [1.68, 3.09]（n=2,302） | v1.0 替代循环截面回归 OR=6.085（Top5% 由累计国家级数定义，构造性相关，**撤回**，§5.5） |
+| 马太效应路径依赖 OR(nat_{t−1}) | — | **2.06**（95%CI [1.53, 2.76]，p=1.5×10⁻⁶，聚类 SE，n=979 导师-年/627 导师）；稳健性样本 B OR=2.45 [1.91, 3.16]（n=2,469/1,560） | v1.0 替代循环截面回归 OR=6.085（Top5% 由累计国家级数定义，构造性相关，**撤回**，§5.5）；v1.0-cand.13 改 individual-advisor 单位 |
 | 扩散滞后总定义主题数 / 定义率 | — | 29 / 886 = 3.27%（仅 HRLT 24 + HRHT 5） | 规则 = 单年非平凡出现（论文端单年 ≥3 篇且 ≥0.2%、项目端单年 ≥2 项且 ≥0.2%），与四象限累积阈值刻意不同（§6.1） |
 | 扩散滞后 HRLT 中位 / 均值 | — | +0.5 年 / +0.79 年 | 50% HRLT 主题为正 lag（paper → project 传播方向） |
 | 扩散滞后 LRHT / LRLT 定义 | — | 0 / 10、0 / 698（本语料中 n.a.，非缺失） | 🔴 12K 池旧值 "LRHT n=8, med=−1.5" **RETRACTED** |
@@ -610,8 +610,10 @@ R 脚本（`06_CODE/09_ri_clpm.R`）使用 lavaan 包的 FIML（全信息最大�
 - `human_validation/robustness/inter_rater_stats_rater2_raterB.csv` — v1.0-cand.9：评分者 B vs 参考 κ=0.606 / 一致率 78%（Spearman 因参考评分者极端并列失稳，以 κ 解读）；A vs B κ=0.826 / ρ=0.821 / 一致率 90%；RTAS–B 三角 ρ=0.621 (p<.001) / AUC=0.932
 - `human_validation/retest_40pairs_filled.csv` — v1.0-cand.9：重测 40 对盲评结果（同一评分者，~12 天洗脱）；空白表单 `retest_40pairs_form.csv` 为 pre-specified 协议工具
 - `human_validation/robustness/test_retest_stats.csv` — v1.0-cand.9：重测 κ=0.643 / ρ=0.688 (p<.001) / 一致率 95%
-- `human_validation/robustness/baseline_validity.csv` — v1.0-cand.10：150 对参考集上 MiniLM vs TF-IDF/Jaccard/BM25 基线对比（MiniLM ρ=+0.405/AUC=0.880 vs 词汇基线 ρ≈+0.30/AUC≈0.64；naive lexical baselines，未翻译对齐，支持嵌入选型而非 incremental validity 主张）
-- `human_validation/robustness/bge_m3_benchmark.csv` — v1.0-cand.10（计划未跑）：BGE-M3 跨模型基准未在本研究中执行（not benchmarked in the present study），MiniLM 仍为 Primary；列为未来稳健性扩展（§12.3 项 1）
+- `human_validation/robustness/baseline_validity.csv` — v1.0-cand.10：150 对参考集上 MiniLM vs TF-IDF/Jaccard/BM25 基线对比（MiniLM ρ=+0.405/AUC=0.880 vs 词汇基线 ρ=0.296–0.300/AUC=0.637–0.638；naive lexical baselines，未翻译对齐，支持嵌入选型而非 incremental validity 主张）
+- `human_validation/robustness/bge_m3_benchmark.csv` — v1.0-cand.13：150 对参考集上 BGE-M3 vs MiniLM 对比（BGE-M3 ρ=0.334/AUC=0.811 vs MiniLM ρ=0.405/AUC=0.880；paired bootstrap Δρ=−0.071 [−0.187,+0.036]、ΔAUC=−0.069 [−0.179,+0.032]，CI 均跨 0，MiniLM 继续作为 primary encoder）
+- `human_validation/robustness/bge_m3_paired_bootstrap.json` — v1.0-cand.13：paired bootstrap 完整结果（N=2000, seed=42）
+- `human_validation/robustness/150pairs_with_cos_mini_and_bge.csv` — v1.0-cand.13：150 对 per-pair cosine + human rating + binary label（MiniLM 与 BGE-M3 并列）
 
 **①异质性分析** (`03_FINAL_ANALYSIS/heterogeneity/`):
 - `anova_project_level.csv` — F(2,3711)=35.72, p=4.3e-16, η²=1.89%
@@ -651,9 +653,9 @@ R 脚本（`06_CODE/09_ri_clpm.R`）使用 lavaan 包的 FIML（全信息最大�
 - `supervisor_gini_pareto.csv` — Gini + Pareto 分布
 - `transition_counts_year_tercile.csv` — 转移计数矩阵
 - `transition_probabilities_year_tercile.csv` — 转移概率矩阵
-- `top5pct_vs_rest_tests.csv` — Top 5% vs 其余描述性比较（RTAS d=−0.033 ns）
-- `lagged_logit_national_path_dependence.csv` — **v1.0 主检验**：滞后 t−1→t Logit 系数（样本 A：736 导师-年，491 导师；OR(nat_lag)=2.25，95%CI [1.57, 3.22]，聚类 SE，p=1.0×10⁻⁵）
-- `lagged_logit_national_path_dependence_sampleB.csv` — 稳健性样本 B（2,302 单元，1,621 导师；OR=2.28 [1.68, 3.09]，p=1.4×10⁻⁷）
+- `top5pct_vs_rest_tests.csv` — Top 5% vs 其余描述性比较（RTAS d=+0.083 ns, p=0.065; unique project level, v1.0-cand.13 individual-advisor）
+- `lagged_logit_national_path_dependence.csv` — **v1.0 主检验**：滞后 t−1→t Logit 系数（样本 A：979 导师-年，627 导师；OR(nat_lag)=2.06，95%CI [1.53, 2.76]，聚类 SE，p=1.5×10⁻⁶；v1.0-cand.13 individual-advisor）
+- `lagged_logit_national_path_dependence_sampleB.csv` — 稳健性样本 B（2,469 单元，1,560 导师；OR=2.45 [1.91, 3.16]，p=3.2×10⁻¹²）
 - `lagged_persistence_crosstab.csv` — nat_{t−1} × nat_t 原始列联表（连续活动样本）
 - `lagged_logit_audit.json` — 审计日志（含模型设定、样本、循环论证撤回说明）
 - `logistic_national_vs_top5pct.csv` / `matthew_effect_audit.json` — v0.9 截面 Top5% 回归（OR=6.085）**因循环论证撤回**（§5.5），保留备查、不再引用
@@ -715,10 +717,10 @@ R 脚本（`06_CODE/09_ri_clpm.R`）使用 lavaan 包的 FIML（全信息最大�
 
 ### Figure 7（Supplementary，v1.0-cand.4 降级）: 导师活动量三分位转移矩阵热力图
 **来源：** `matthew_effect/transition_probabilities_year_tercile.csv → supplementary/Figure7_TransitionMatrix.pdf/png`（5.5 × 5 inch）
-**降级原因：** 它讲的是 supervisor activity tercile 的**位置固化**，不是国家级项目路径依赖的主检验（主检验 = Figure 10c lagged Logit OR=2.25***）；两者互为佐证但信息有主次，主文不再单占一个图号。
+**降级原因：** 它讲的是 supervisor activity tercile 的**位置固化**，不是国家级项目路径依赖的主检验（主检验 = Figure 10c lagged Logit OR=2.06***）；两者互为佐证但信息有主次，主文不再单占一个图号。
 **坐标轴：** 横轴 = To（下一年三分位：T1 低 / T2 中 / T3 高），纵轴 = From（当年三分位：T1 低 / T2 中 / T3 高）。
 **颜色：** cmap=YlOrRd，白黄→深红褐色，vmin=0%, vmax=70%（颜色越深 = 转移概率越大）。每个格子中心有三行百分比数字（白字>40%、黑字<40%，黑体 11pt）= 转移概率 %。
-**数据：** n=736 个 consecutive 导师-年份对（当年有指导项目、下一年也有；分位按导师当年**总项目数**在当年截面的三分位划分）。对角线概率：62–66%，即指导活动量的分位高度持续。国家级项目获取的年度路径依赖（OR≈2.3）见 §5.5 滞后 Logit。
+**数据：** n=979 个 consecutive 导师-年份对（individual-advisor 版；当年有指导项目、下一年也有；分位按导师当年**总项目数**在当年截面的三分位划分）。对角线概率：62–66%，即指导活动量的分位高度持续。国家级项目获取的年度路径依赖（OR≈2.1–2.5）见 §5.5 滞后 Logit。
 **colorbar：** 右侧 "Transition probability (%)" 标签 8pt。
 
 ### Figure 8: 扩散滞后（**v1.0-cand.6 拆分为两个独立文件**：Figure8a 整体离散分布 + Figure8b 分象限箱线；v1.0-cand.4 合并旧 Figure 8 + Figure 9；v1.0-cand.5 副标题措辞中性化）
@@ -735,22 +737,22 @@ R 脚本（`06_CODE/09_ri_clpm.R`）使用 lavaan 包的 FIML（全信息最大�
 - **定义（frozen）**：lag 要求两端在同一年达到单年非平凡规模（论文端 ≥3 篇且 ≥0.2%、项目端 ≥2 项且 ≥0.2%，见 §6.1）；LRHT（0/10）与 LRLT（0/698）在 2020–2024 语料中从未满足 → lag 未定义（与其低研究象限属性一致）。旧 12K 池 "LRHT n=8, med=−1.5 yr" 来自 K=307 遗留数据，**已 RETRACTED**。
 
 ### Figure 10: 马太效应三联面板（**v1.0-cand.4 升级**：(a) Lorenz + (b) Pareto + (c) Lagged path-dependence OR；**v1.0-cand.6 视觉修正**：删 top50 灰柱、panel 间距加宽至 wspace=0.44、figsize 14.2×5.0，消除 b/c 相互遮挡）
-**来源：** `matthew_effect/supervisor_gini_pareto.csv + table5_project_dataset_n3714_full.csv (Lorenz 由脚本重算) + matthew_effect/matthew_effect_audit.json (权威值) + lagged_logit_national_path_dependence.csv → Figure10_MatthewEffect.pdf/png`
+**来源：** `matthew_effect/individual_advisor_audit.json + table5_project_dataset_n3714_full.csv (Lorenz 由脚本重算, individual-advisor split) + lagged_logit_national_path_dependence_individual.csv → Figure10_MatthewEffect.pdf/png`
 **升级理由：** 把"截面集中 (a,b)"与"跨年持续 (c)"合成一张完整证据链——资源不仅集中，而且优势跨年度自我复制；Figure 7 转移矩阵因此可安心下放 Supplementary。
 **Panel (a) — Lorenz 曲线：**
 - 横轴 = 累计导师比例（从最穷国家级项目到最富国家级项目排序，0–1 线性 0–100%）。
 - 纵轴 = 累计国家级项目份额（同样排序后累加，0–1 线性 0–100%）。
 - 45° 黑虚线 = Perfect equality。红色 Lorenz 实线与 45° 线之间的红色阴影面积 = 不均等面积。Gini 系数 = 该面积的 2 倍。
-- 图例：标签 "National grants (Gini=0.767)" 动态从 audit 读。
+- 图例：标签 "National grants (Gini=0.746)" 动态从 individual-advisor audit 读。
 **Panel (b) — Pareto 柱状图：**
 - 横轴 = Top N% 导师切片（top1 / top5 / top10 / top20；**v1.0-cand.6 删除 top50**——恒为 100% 的灰色柱无信息量，且挤压 panel (c) 纵轴标签空间）。
 - 纵轴 = 该切片导师持有的国家级项目份额 (%)。
 - 颜色：红=top1，橙=top5/top10，蓝=top20。柱顶标签 "X.X%" 黑体。
-- 水平黑色虚线 = 5%（Equal share 基准线，即 Top5% 应该拿 5%，实际 Top5% = 34.0% → 是基准线的 6.8×）。
+- 水平黑色虚线 = 5%（Equal share 基准线，即 Top5% 应该拿 5%，实际 Top5% = 31.0% → 是基准线的 6.2×）。
 **Panel (c) — Lagged path-dependence OR 森林（v1.0-cand.4 新增）：**
 - 两个样本各一行：navy 点 = OR，深灰横线 = 95% CI（带端帽）；黑虚线 OR=1 = "no persistence"；CI 右侧标 "OR = x.xx [lo, hi] ***"，第二行标 p 值。
-- 模型 = 滞后 t−1→t Logit：P(national project in year t) ~ nat_{t−1} + log(1+load_{t−1}) + 年份 FE，SE 按导师聚类。Sample A = active t−1 & t（736 cells / 491 advisors）；Sample B = expanded risk set（inactive t 编码 0；2,302 cells / 1,621 advisors）——v1.0-cand.5 措辞修正，避免 "zero-filled" 被误读为粗暴缺失值填补。
-**冻结权威值：** Gini(national projects) = 0.767（audit 验证 0.766658）；Top 5% share = 34.0%（34.0176%）；Top 20% share = 76.8%；**OR(A)=2.25 [1.57, 3.22], p=1.0×10⁻⁵ ***；OR(B)=2.28 [1.68, 3.09], p=1.4×10⁻⁷ ***（§5.5 同一冻结 CSV 单源）**。
+- 模型 = 滞后 t−1→t Logit：P(national project in year t) ~ nat_{t−1} + log(1+load_{t−1}) + 年份 FE，SE 按导师聚类。Sample A = active t−1 & t（979 cells / 627 advisors）；Sample B = expanded risk set（inactive t 编码 0；2,469 cells / 1,560 advisors）——v1.0-cand.5 措辞修正，避免 "zero-filled" 被误读为粗暴缺失值填补。
+**冻结权威值（v1.0-cand.13 individual-advisor）：** Gini(national projects) = 0.746；Top 5% share = 31.0%；Top 20% share = 71.9%；**OR(A)=2.06 [1.53, 2.76], p=1.5×10⁻⁶ ***；OR(B)=2.45 [1.91, 3.16], p=3.2×10⁻¹² ***（§5.5 同一冻结 CSV 单源）**。
 
 ### Figure 11（Supplementary，v1.0-cand.4 降级）: 四象限汇总柱状图（三子图，clustered 口径）
 **来源：** `topic_model/quadrant_overall_summary.csv → supplementary/Figure11_QuadrantSummary.pdf/png`
@@ -920,7 +922,7 @@ R 脚本（`06_CODE/09_ri_clpm.R`）使用 lavaan 包的 FIML（全信息最大�
 2. **扩散滞后定义率极低（29/886 = 3.27%）**：而且实测**只有 HRLT（n=24）和 HRHT（n=5）象限有定义**，LRHT 10 个主题和 LRLT 698 个主题在单年非平凡出现规则下（论文端需单年 ≥3 篇且 ≥0.2%，约单年 ≥20 篇）双侧从未同时达标（0/10、0/698），lag 在这两个象限不可定义。这是本语料中的经验事实（象限低研属性使其高度可预期，但非逻辑恒等，见 §6.1）。无法像旧 12K 池一样给出"LRHT med=−1.5 yr"这种培养内容过时的定量结论；只能定性说 "LRHT 10 个主题在项目端流行但论文端冷"，但不能算 lag。定义率下降本身来自 57K 全量下年度分母更大、单年 0.2% 门槛对应约 20 篇/年的真实规模要求，是诚实的损失
 3. **HLM 解释度与导师匹配**：v1.0-cand.3 混合模型 ICC=0.7376，约 74% 的 RTAS 方差在学院层面，组内 $R^2$ 有限——设计内的项目/导师变量解释了部分变异，但学院间大部分差异仍由未观测的学科与组织特征驱动。**且学院层差异本身混合了两类来源（v1.0-cand.8）：真实的组织情境（organizational context），与 RTAS 度量对学科专门化（disciplinary specialization）、研究组合宽度（portfolio breadth）、标题语言习惯（title-language conventions）与组合异质性（portfolio heterogeneity）的敏感性——高 RTAS 学院可能只是研究组合更聚焦、标题风格与项目标题更接近，而非"更前沿"；因此学院排名与 caterpillar 图一律不作绩效解读。** 导师-论文拼音匹配存在歧义子集（ambiguous 748 项）与未匹配子集（unmatched 216 项），主模型用完整案例 + 高置信匹配 sensitivity 双规格处理，但同名导师的精确身份消解（OpenAlex author ID 级）仍是未来改进方向
 4. **RI-CLPM 缺位**：该模型在本稿**未估计**（§7 状态声明），"RTAS↔国家级项目率"的方向性无统计结果可报；未来即便按非重叠年度波估计，3–5 波观测面板的方向性证据仍不等同因果，表述应限于"预测"
-5. **RTAS 聚合与选型口径**：Primary RTAS 为项目标题与学院 [2020,t] 论文集的**平均余弦相似度**（MiniLM mean；5 个聚合变体经预注册综合得分评估选定 mean，见 §2.2）。C1 效度证据为嵌入层级的成对语义一致性（150 对人工评分，r=0.4055；两名独立人类评分者 κ=0.465/0.606、两人互相 κ=0.826、本人重测 κ=0.643、LLM 第二评分 κ=0.459，均见 §2.2；二分判别 AUC=0.880 [0.793, 0.949]、bootstrap CI [+0.281, +0.509]、置换 p<.001——均属 secondary 加固，不改变 single-rater reference 底线口径），为成对语义效度与评分信度提供汇聚证据，不是完整构念效度认证；C5 收敛效度为对 SBERT 主题分的代理相关，BGE-M3 等更新多语编码器未在本研究中基准测试，是重要的未来稳健性扩展（§12.3 项 1）
+5. **RTAS 聚合与选型口径**：Primary RTAS 为项目标题与学院 [2020,t] 论文集的**平均余弦相似度**（MiniLM mean；5 个聚合变体经预注册综合得分评估选定 mean，见 §2.2）。C1 效度证据为嵌入层级的成对语义一致性（150 对人工评分，r=0.4055；两名独立人类评分者 κ=0.465/0.606、两人互相 κ=0.826、本人重测 κ=0.643、LLM 第二评分 κ=0.459，均见 §2.2；二分判别 AUC=0.880 [0.793, 0.949]、bootstrap CI [+0.281, +0.509]、置换 p<.001——均属 secondary 加固，不改变 single-rater reference 底线口径），为成对语义效度与评分信度提供汇聚证据，不是完整构念效度认证；C5 收敛效度为对 SBERT 主题分的代理相关，**post-freeze BGE-M3 robustness**：150 对参考评分集上 BGE-M3 (BAAI 2024, 1024-dim) ρ=0.334、AUC=0.811，paired bootstrap (N=2000, seed=42) Δρ=−0.071 (95% CI [−0.187, +0.036])、ΔAUC=−0.069 (95% CI [−0.179, +0.032])，CI 均跨 0，MiniLM 继续作为 primary encoder；**leave-advisor-out sensitivity**：移除每项目所有 focal advisor 自署论文后重算 RTAS 并重拟合同规格 MixedLM v2b（n=3231, 39 colleges），advisor-publication 系数从 β=+0.00427 衰减至 β=+0.00382（约 10.5%），但仍为正且显著（p=5.3×10⁻⁷, 95% CI [0.00233, 0.00531]），ICC=0.738、conditional R²=0.739 基本不变，3714 项目中 2081 (56%) 至少移除 1 篇（均值移除 7.97 篇，均值缩减 4.1%，无项目 portfolio 变空）；衰减与部分 mechanical self-overlap 一致，但主要 association 在 leave-advisor-out 构造下仍存在
 6. **离群子集与小单元外推**：象限与扩散分析条件于 886 个非离群主题（覆盖 61.53% 文档，离群率 38.47%，§3.3 caveat），结论推广范围为"可稳定成簇的研究主题"；阈值敏感性（15%/20%/25%）下结论稳定（§3.4）。学院排名中部分高排位学院样本很小（冠军南极测绘中心 n=8；工业科学研究院在 Figure 5 caterpillar 模型样本内仅 n=5、raw 口径 n=9 见 Figure S1；§9 Figure 5 caveat），其高 RTAS 反映学科聚焦度而非绩效
 7. **"科研前沿"为代理度量**：RTAS 度量的是选题与学院**同期已发表论文组合**的语义一致性，不直接度量论文新颖性或影响力（标题数据无引用网络与期刊层级，§2.1 操作化声明）；高对齐应解读为"落在学院真实研究组合内"，而非"处在学科最前沿"
 
