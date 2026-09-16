@@ -90,7 +90,7 @@ Each analysis uses the window its question requires, stated explicitly: RTAS use
 ### 2.7 Statistical models
 
 - **RQ1.** One-way ANOVA with Tukey HSD for familywise pairwise comparisons (Δ = higher − lower level); Welch pairwise tests are reported as supplementary checks. These comparisons are descriptive, not confirmatory, because the aggregation-selection composite already weighs level separation.
-- **RQ2.** Quadrant classification by cumulative prevalence thresholds (article side: top-20% percentile = 0.0879% ≈ ≥50 articles; project side: fixed ≥0.500% ≈ ≥18.6 projects), with 15%/20%/25% sensitivity; diffusion lags only for topics meeting the Sect. 2.6 annual rule on both sides.
+- **RQ2.** Quadrant classification used pre-specified cumulative prevalence cutoffs (article side: ≥ 1.5%; project side: ≥ 0.500%) with a pre-specified fallback: if a fixed cutoff identified fewer than two high-prevalence topics, the top 20% of topics by that side's prevalence were classified as high. Under the frozen 886-topic solution, no topic reached the article-side 1.5% cutoff (≈ 854 of 56,901 articles), so the fallback applied (effective cutoff 0.0879%, ≈ 50 articles; top 20%, 178 topics including ties at the boundary); the project-side 0.500% cutoff was feasible (15 topics) and remained fixed. Article-side sensitivity used top-15%/20%/25%. Diffusion lags were computed only for topics meeting the Sect. 2.6 annual rule on both sides.
 - **RQ3.** A two-level random-intercept mixed model was estimated using REML (`statsmodels MixedLM`), with projects nested within colleges (primary complete cases n = 3,231, 39 colleges; high-confidence-match sensitivity n = 2,750). Year was entered as a continuous variable centered at 2022. Fixed effects included provincial- and national-level indicators, log-transformed advisor pre-project three-year publication output, and log-transformed prior supervisory load (strictly year < focal year, mean across co-advisors). An unconditional means model gives the null ICC.
 - **RQ4.** Gini and Pareto concentration of national projects across supervisors; a supervisor-year lagged logistic model P(nat_t) ~ nat_{t−1} + log(1+load_{t−1}) + year FE (categorical year fixed effects with 2021 as reference, because the earliest outcome year is t = 2021 given the t−1 lag; standard errors clustered by supervisor). Multi-advisor fields were split so that each distinct advisor–project pair was treated as one supervisory link (co-supervised projects contributed one link to each listed individual advisor); the analysis unit is the individual advisor (1,834). Main sample 979 supervisor-years, 627 advisors; robustness sample 2,469/1,560. This replaces a cross-sectional top-5% regression whose OR is constructively inflated by definition (top-5% membership is itself ranked on cumulative national projects).
 
@@ -106,7 +106,7 @@ Mean RTAS rises monotonically with level: university 0.1212, provincial 0.1391, 
 
 ### 3.2 Static prevalence quadrants (RQ2, classification)
 
-Classifying the 886 clustered topics by cumulative prevalence (Table 1):
+Classifying the 886 clustered topics by cumulative prevalence under the Sect. 2.7 threshold rule (article side: effective cutoff 0.0879%, ≈ 50 articles via the top-20% fallback from the pre-specified 1.5% fixed cutoff; project side: fixed 0.500%, ≈ 19 projects; Table 1):
 
 | Quadrant | Meaning (pooled 2020–2024 static prevalence; no temporal content) | Topics | Articles | Projects |
 |---|---|---|---|---|
