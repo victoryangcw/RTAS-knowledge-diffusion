@@ -30,6 +30,26 @@ All frozen primary statistics unchanged.
   (log_prior3y SE 0.000983 -> 0.000972), same conclusions.
 - Manuscript: new §3.4 "Advisor-dependence sensitivity" paragraph; Methods RQ3
   pointer; new Limitation 9 (multiple membership of co-supervised projects).
+
+### Final consistency pass (same day; no new analysis, no frozen numbers changed)
+- 178-topic wording audited: top-20% target is 177 but a tie at the cutoff
+  fraction (0.0879%) yields 178 high-research topics (HRHT 5 + HRLT 173);
+  Methods/Results both say 178 "including ties at the boundary".
+- RTAS definition: replaced ambiguous "a co-supervised article counts once"
+  with explicit within-college-once / once-per-college dedup rule; added
+  abstract-asymmetry justification for titles-only scoring.
+- Methods RQ3: defined marginal vs conditional R2 (Nakagawa & Schielzeth 2013).
+- Figure 5 title: removed "33 of 39 colleges have CIs excluding 0" (BLUP
+  intervals are not simultaneous tests); regenerated from frozen CSV.
+- Supplementary S1 changed from exploratory tercile transition matrix to the
+  descriptive supervisory-load distribution (1,834 advisors; 44.6% one project,
+  18.8% four or more; numbers match §3.5). New file
+  `02_FIGURES/supplementary/FigureS2_SupervisorLoad.{pdf,png}`; stale
+  Figure7_TransitionMatrix files deleted (deprecated n=736 raw-field version).
+- Wording fixes in manuscript source: "case university" removed;
+  "observable proxy for the research frontier" removed; RQ1 "strict ordering"
+  replaced with descriptive ordering + N-vs-P not significant; primary-model
+  log_prior3y p printed as 3.3e-9 (exact 3.26e-9; previously mis-rounded).
 - Also backfilled frozen outputs for cand.13 robustness analyses
   (BGE-M3, leave-advisor-out) into `05_VALIDATION/robustness/`, `06_RESULTS/hlm/`.
 

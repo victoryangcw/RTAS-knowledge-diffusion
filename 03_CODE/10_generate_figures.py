@@ -492,8 +492,8 @@ def fig5_college_caterpillar():
     ax.set_xlabel('College random intercept (BLUP) with 95% CI — contribution to college-mean RTAS\n'
                   'MixedLM v2b: ICC = 0.738; 39 colleges; CI = BLUP ± 1.96·conditional SE (wider = fewer projects)',
                   fontweight='bold', fontsize=8.8)
-    ax.set_title('College Random Effects on Research-Training Alignment (Caterpillar Plot)\n'
-                 f'model-adjusted college deviations; {n_sig} of {n_all} colleges have CIs excluding 0',
+    ax.set_title('College Random Effects on Research–Training Alignment (Caterpillar Plot)\n'
+                 'model-adjusted college deviations',
                  fontweight='bold', fontsize=10.5)
     ax.grid(axis='x', alpha=0.25, linewidth=0.5)
     ax.margins(y=0.012)
@@ -963,6 +963,39 @@ def fig12_college_rtas_ranking():
     savefig(fig, 'FigureS1_CollegeRTAS_Full40', subdir='supp')
 
 # ================================================================
+# Supplementary S1: Supervisor supervisory-load distribution
+#   (v1.0-cand.14: replaces the exploratory tercile transition matrix.
+#    Pure descriptive distribution; no new narrative beyond RQ4 setup.)
+# ================================================================
+def figS1_supervisor_load():
+    inp = 'matthew_effect/individual_advisor/advisor_project_edges.csv'
+    provenance('S1', 'Supervisor load distribution (individual advisors)', inp)
+    edges = pd.read_csv(DATA / 'matthew_effect' / 'individual_advisor' / 'advisor_project_edges.csv')
+    # one row per advisor-project link -> number of projects per individual advisor
+    load = edges.groupby('individual_advisor')['project_id'].nunique()
+    n_adv = len(load)
+    # bin: 1,2,3,4,...,10+
+    counts = [int(((load >= k) & (load < k + 1)).sum()) for k in range(1, 10)]
+    counts.append(int((load >= 10).sum()))
+    labels = [str(k) for k in range(1, 10)] + ['10+']
+    pct = [100 * c / n_adv for c in counts]
+
+    fig, ax = plt.subplots(figsize=(8, 4.6))
+    bars = ax.bar(labels, counts, color=COLORS['navy'], edgecolor='white', linewidth=0.6, width=0.72)
+    ax.set_xlabel('Projects supervised, 2020–2024 (per individual advisor)', fontweight='bold')
+    ax.set_ylabel('Number of advisors', fontweight='bold')
+    ax.set_title(f'Supervisory-Load Distribution across {n_adv:,} Individual Advisors\n'
+                 f'{pct[0]:.1f}% supervised one project; {100 * (load >= 4).mean():.1f}% supervised four or more',
+                 fontweight='bold', fontsize=10.5)
+    for b, c, p in zip(bars, counts, pct):
+        ax.text(b.get_x() + b.get_width() / 2, b.get_height() + max(counts) * 0.012,
+                f'{c}\n({p:.1f}%)', ha='center', va='bottom', fontsize=7.6)
+    ax.set_ylim(0, max(counts) * 1.16)
+    ax.grid(axis='y', alpha=0.25, linewidth=0.5)
+    fig.tight_layout()
+    savefig(fig, 'FigureS2_SupervisorLoad', subdir='supp')
+
+# ================================================================
 # Figure 13: Temporal Topic Dynamics — TWO-PANEL (v1.0-cand.4; demoted to
 #   SUPPLEMENTARY in v1.0-cand.5 per reviewer verdict: second-layer finding)
 #   Panel A: Top-15 share vs clustered long-tail share (two lines, the
@@ -1101,6 +1134,7 @@ if __name__ == '__main__':
     fig10_matthew_effect()
     fig11_quadrant_summary()     # demoted -> supplementary
     fig12_college_rtas_ranking() # -> FigureS1 (supplementary)
+    figS1_supervisor_load()      # v1.0-cand.14: supplementary S1 (replaces transition matrix)
     fig13_topic_dynamics()       # redesigned two-panel (replaces 15-band stacked area)
 
     print()
