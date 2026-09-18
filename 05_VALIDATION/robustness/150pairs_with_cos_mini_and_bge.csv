@@ -1,0 +1,151 @@
+﻿pair_id,project_title,paper_title,human_score,binary_label_ge2,cos_mini,cos_bge_m3,delta_cos_bge_minus_mini
+1,垂直、平面结构STT/SOT-MRAM的微磁学仿真和性能比较,"Measurement of the Ratios of Branching Fractions <mml:math xmlns:mml=""http://www.w3.org/1998/Math/MathML"" display=""inline""><mml:mi mathvariant=""script"">R</mml:mi><mml:mo stretchy=""false"">(</mml:mo><mml:msup><mml:mi>D</mml:mi><mml:mo>*</mml:mo></mml:msup><mml:mo stretchy=""false"">)</mml:mo></mml:math> and <mml:math xmlns:mml=""http://www.w3.org/1998/Math/MathML"" display=""inline""><mml:mrow><mml:mi mathvariant=""script"">R</mml:mi><mml:mo stretchy=""false"">(</mml:mo><mml:msup><mml:mrow><mml:mi>D</mml:mi></mml:mrow><mml:mrow><mml:mn>0</mml:mn></mml:mrow></mml:msup><mml:mo stretchy=""false"">)</mml:mo></mml:mrow></mml:math>",2,1,0.2537743747234344,0.44474965,0.1909752786159516
+2,基于自供电的闭环自主神经调控系统防治高血压的研究,The Impact of Molecular Packing on Organic Room Temperature Phosphorescence and Corresponding Stimulus Response Effect,1,0,0.2091158032417297,0.39287093,0.1837551295757294
+3,维生素E乳膏制备处方工艺改进及质量控制研究,Cross-phenological-region crop mapping framework using Sentinel-2 time series Imagery: A new perspective for winter crops in China,1,0,-0.0424181446433067,0.31857556,0.360993705689907
+4,TCTP对肥胖诱导的心脏糖脂代谢损伤的作用及机制,AlN/diamond interface nanoengineering for reducing thermal boundary resistance by molecular dynamics simulations,1,0,-0.0200013648718595,0.3814107,0.40141205303370947
+5,食品添加剂介导的糖脂代谢变化对脑神经生理病理影响研究,Development of Mg-Modified Fe-Based Catalysts for Low-Concentration CO<sub>2</sub> Hydrogenation to Olefins,1,0,0.0068135373294353,0.39737925,0.39056571200490003
+6,基于NMR技术的EGB761对慢性脑低灌注大鼠海马神经元能量压力感受调节变化在认知功能障碍中的作用和机制研究,Mobility pattern analysis of ship trajectories based on semantic transformation and topic model,1,0,0.0040123388171195,0.3965052,0.3924928680062295
+7,经颅LED光照大脑下丘脑室旁核防治急性心肌梗死后恶性心律失常发生的作用及机制,Well‐Posedness in Gevrey Function Space for 3D Prandtl Equations without Structural Assumption,1,0,0.0171437133103609,0.36880425,0.3516605328768492
+8,仿猎豹四足机器人,Quasi-4-dimension ionospheric modeling and its application in PPP,1,0,0.0364922247827053,0.43978715,0.403294924646616
+9,新型自稳式海上风电基础型式研发,Archaeological site segmentation of ancient city walls based on deep learning and LiDAR remote sensing,1,0,0.0595192797482013,0.34893715,0.28941787406802183
+10,研究7SK snRNP 解离动态与 mTOR-PKC 和 PP2B/PP1 昼夜激活的关系,PEDOT:PSS‐Free Polymer Non‐Fullerene Polymer Solar Cells with Efficiency up to 18.60% Employing a Binary‐Solvent‐Chlorinated ITO Anode,1,0,0.1987545043230056,0.36523995,0.1664854437112809
+11,一种种植体精度测量装置在教学种植应用,Observation of quadratic Weyl points and double-helicoid arcs,1,0,0.1837665736675262,0.4355652,0.25179862976074224
+12,道教在民间信仰中的影响力——以十堰市为例,Spatially selective p-type doping for constructing lateral WS2 p-n homojunction via low-energy nitrogen ion implantation,1,0,-0.1792412400245666,0.24838689,0.4276281297206878
+13,基于互联网大数据的大学生家教平台建设可行性研究,Assessing the impact of industrial robots on manufacturing energy intensity in 38 countries,1,0,0.1619251519441604,0.38179165,0.21986649930477148
+14,高校扩招与高等教育机会获得的性别差异——基于DID模型的实证分析,Shield Tunnel Convergence Diameter Detection Based on Self-Driven Mobile Laser Scanning,1,0,0.0126413889229297,0.3679971,0.3553557209670544
+15,基于脑电信号的情感分析系统,Acoustic Topological Metamaterials of Large Winding Number,1,0,0.0983380377292633,0.45831108,0.3599730432033539
+16,城市中的传粉“精灵”——以武大校园为例,The Association between Social Participation and Loneliness of the Chinese Older Adults over Time—The Mediating Effect of Social Support,1,0,0.1394974589347839,0.33713743,0.19763997197151187
+17,埃斯库罗斯悲剧的传播与接受——以《普罗米修斯》和《俄瑞斯忒斯》三部曲为例,City profile: Wuhan 2004–2020,1,0,-0.035035416483879,0.265305,0.3003404289484023
+18,基于多尺度深度网络模型的古壁画修复研究,Open-source data-driven urban land-use mapping integrating point-line-polygon semantic objects: A case study of Chinese cities,2,1,0.2473792731761932,0.4035812,0.15620192885398868
+19,基于位置信息服务的校园霸凌举报系统,Learning Generalized Medical Image Segmentation from Decoupled Feature Queries,1,0,0.2092812955379486,0.40958548,0.20030418038368225
+20,钙钛矿太阳能电池的膜厚光学管理的计算优化平台,"Multi-step validation of a deep learning-based system for the quantification of bowel preparation: a prospective, observational study",1,0,0.0512436889111995,0.41452074,0.3632770515978337
+21,Guardian,Hard-soft carbon with tailored graphitization for high performance supercapacitors,1,0,-0.1521516740322113,0.2500134,0.40216508507728577
+22,关于钢琴自动翻谱app“Dancing Fingers”设计的创新性研究,"Innate Immunity, Inflammation, and Intervention in HBV Infection",1,0,-0.1972422897815704,0.29969645,0.4969387352466583
+23,投资者情绪与石油价格波动,Parathyroid Hormone Derivative with Reduced Osteoclastic Activity Promoted Bone Regeneration via Synergistic Bone Remodeling and Angiogenesis,1,0,-0.0065617598593235,0.31414872,0.3207104839384556
+24,金银花有效组分对口腔溃疡的作用机制研究,Phase separation of SGS3 drives siRNA body formation and promotes endogenous gene silencing,1,0,0.3190912306308746,0.35401013,0.03491890430450445
+25,语言视角下国际主流媒体基于同一事件的报道研究 ——以英国脱欧事件为例,Free-space direct nanoscale 3D printing of metals and alloys enabled by two-photon decomposition and ultrafast optical trapping,1,0,-0.1448415368795395,0.29634744,0.4411889761686325
+26,多动症药物Strattera和抑郁症药物Cymbalta的高效合成研究,"Test of Lepton Universality in <mml:math xmlns:mml=""http://www.w3.org/1998/Math/MathML"" display=""inline""><mml:mrow><mml:mi>b</mml:mi><mml:mo stretchy=""false"">→</mml:mo><mml:mi>s</mml:mi><mml:msup><mml:mrow><mml:mo>ℓ</mml:mo></mml:mrow><mml:mrow><mml:mo>+</mml:mo></mml:mrow></mml:msup><mml:msup><mml:mrow><mml:mo>ℓ</mml:mo></mml:mrow><mml:mrow><mml:mo>−</mml:mo></mml:mrow></mml:msup></mml:mrow></mml:math> Decays",2,1,0.0100428443402051,0.3226028,0.3125599641352893
+27,“BriLock”——学生寝室智能门锁系统,"Unexpected Reactions of α,β‐Unsaturated Fatty Acids Provide Insight into the Mechanisms of CYP152 Peroxygenases",1,0,-0.0664530023932457,0.29236737,0.3588203713297844
+28,跨文化视角下葡萄酒产业国际竞争力研究——以法国波尔多产区和中国宁夏贺兰山产区为例,Application of dental pulp stem cells for bone regeneration,1,0,0.0836747512221336,0.3558315,0.27215675264596945
+29,审讯场景下单通道定向拾音,Three-dimensional large deformation modeling of landslides in spatially variable and strain-softening soils subjected to seismic loads,1,0,-0.0052908230572938,0.34681267,0.3521034885197877
+30,“又一村”深度体验旅游网站,Inorganic/organic combination: Inorganic particles/polymer composites for tissue engineering applications,1,0,-0.091211050748825,0.31743813,0.4086491763591766
+31,大数据时代下网络虚假指控的法律规制,Three-dimensional evaluation of skeletal and dental effects of treatment with maxillary skeletal expansion,1,0,-0.0920950770378112,0.32428777,0.41638284921646107
+32,深度生成模型的后门设计与实现,Changes in the global burden of untreated dental caries from 1990 to 2019: A systematic analysis for the Global Burden of Disease study,1,0,-0.0076865758746862,0.2749591,0.28264566324651236
+33,声动力学调控神经炎症防治心梗后室性心律失常的研究,Preparation and dynamic response properties of colorimetric indicator films containing pH-sensitive anthocyanins,1,0,-0.0010667275637388,0.3734777,0.37454442493617535
+34,低功耗类脑智能室内监护系统,Permissioned Blockchain-Based Anonymous and Traceable Aggregate Signature Scheme for Industrial Internet of Things,1,0,0.2230499684810638,0.413217,0.1901670396327973
+35,探究模仿或利用抗体基因V区原理的蛋白质定向进化系统,A Comprehensive Review on Radiomics and Deep Learning for Nasopharyngeal Carcinoma Imaging,1,0,0.1517739295959472,0.43894744,0.2871735095977784
+36,大规模金融股权知识图谱风险子图的分析与发现,Natural polysaccharides based self-assembled nanoparticles for biomedical applications – A review,1,0,-0.1012504249811172,0.30121654,0.40246696770191187
+37,基于接近传感的非接触式人体红外温度测温系统,C/EBPβ/AEP Signaling Drives Alzheimer’s Disease Pathogenesis,1,0,-0.0022379681468009,0.37848103,0.38071899861097325
+38,基于语料库的中美社会责任报告对比研究,Selective photocatalytic oxidation of sulfides with dioxygen over carbazole–fluorene conjugated microporous polymers,1,0,-0.0249830912798643,0.28467262,0.3096557091921568
+39,正二十烷降解微生物的筛选及其降解条件的探究,"Quercetin attenuates the proliferation, inflammation, and oxidative stress of high glucose-induced human mesangial cells by regulating the miR-485-5p/YAP1 pathway",1,0,0.2112973183393478,0.3871377,0.1758403927087784
+40,消费者维权的边界与敲诈勒索罪,Simple-Structured Blue Thermally Activated Delayed Fluorescence Emitter for Solution-Processed Organic Light-Emitting Diodes with External Quantum Efficiency of over 20%,1,0,-0.0191529132425785,0.28314015,0.3022930659353733
+41,基于二代测序技术分析月经血HPV整合位点指导宫颈病变分层,Tuning of Förster Resonance Energy Transfer in Metal–Organic Frameworks: Toward Amplified Fluorescence Sensing,1,0,-0.0443048067390918,0.4244311,0.46873589232563967
+42,端到端古汉字智能识别方法研究,Cell damage repair mechanism in a desert green algae Chlorella sp. against UV-B radiation,1,0,-0.0927509665489196,0.29651287,0.3892638385295867
+43,互联网+背景下电竞比赛盈利模式的研究——以英雄联盟为例,Electrooxidation enables highly regioselective dearomative annulation of indole and benzofuran derivatives,1,0,-0.1165996119379997,0.29698396,0.41358356922864914
+44,大数据促进小微企业贷款,Decoupling Zero-Shot Semantic Segmentation,1,0,0.1193655878305435,0.39238137,0.2730157822370529
+45,一种DHODH抑制剂作为广谱流感聚合酶双功能抑制剂,Application of Low-Field NMR to the Pore Structure of Concrete,1,0,-0.0594498813152313,0.3330099,0.39245977997779846
+46,中风患者家庭照顾者出院准备度的干预,Prediction of the durability of high-performance concrete using an integrated RF-LSSVM model,1,0,-0.1138362511992454,0.34654617,0.4603824242949485
+47,宋代女词人群像的可视化展示,Thick Clouds Removing From Multitemporal Landsat Images Using Spatiotemporal Neural Networks,1,0,0.1391100436449051,0.3719747,0.23286466300487518
+48,基于深度学习降尺度的全球气候变化对流域径流的影响,EZH2 depletion potentiates MYC degradation inhibiting neuroblastoma and small cell carcinoma tumor formation,1,0,0.0047502312809228,0.34062228,0.335872044786811
+49,基于位置服务的校园旅游游客路径跟踪研究,Precise p-type and n-type doping of two-dimensional semiconductors for monolithic integrated circuits,1,0,-0.1030287593603134,0.3517941,0.4548228532075882
+50,保险企业践行ESG研究,Deep building footprint update network: A semi-supervised method for updating existing building footprint from bi-temporal remote sensing images,1,0,0.0662582442164421,0.28999928,0.22374103218317032
+51,人工智能算法市场风险识别与监管对策研究,"Overview of structure, function and integrated utilization of marine shell",1,0,-0.0128172077238559,0.3127417,0.3255589045584201
+52,基于区块链技术的金融行业客户信息管理模型及应用研究,"How vicarious learning increases users’ knowledge adoption in live streaming: The roles of parasocial interaction, social media affordances, and knowledge consensus",1,0,0.3584815859794616,0.3987568,0.04027521610260015
+53,基于深度学习的正畸患者口腔卫生状况自动评估工具,A radial 3D polycaprolactone nanofiber scaffold modified by biomineralization and silk fibroin coating promote bone regeneration in vivo,1,0,-0.0342151895165443,0.44929808,0.48351327329874033
+54,人为干扰对城市绿地鸟类群落结构的影响,Estimating snow depth by combining satellite data and ground-based observations over Alaska: A deep learning approach,1,0,0.1151266545057296,0.33291602,0.21778936684131628
+55,以拟人化社交型人工智能对抗社会排斥的研究与应用,Improving estimation of maize leaf area index by combining of UAV-based multispectral and thermal infrared data: The potential of new texture index,1,0,0.0018089078366756,0.31909752,0.31728861108422285
+56,活性维生素D预防肌肉减少症的作用机制研究,A Guided Deep Learning Approach for Joint Road Extraction and Intersection Detection From RS Images and Taxi Trajectories,1,0,-0.0236306004226207,0.35376924,0.37739984318614
+57,基于unity3D高度仿真技术的地理教学场景构建与功能开发,Enhancing resistance to radiation hardening and radiation thermal conductivity degradation by tungsten/graphene interface engineering,1,0,0.0729090571403503,0.4273639,0.3544548451900483
+58,基于大数据的“十四五”时期中国省份营商环境评估与优化：从“中国特色”到“对标世行、国际可比”,Evaluation of the effects of grass and shrub cover on overland flow resistance and its attributes under simulated rainfall,1,0,0.1300831884145736,0.36559063,0.23550744354724892
+59,一项关于人工智能辅助胆胰系统超声内镜的研究,Exploring the potential of multi-source unsupervised domain adaptation in crop mapping using Sentinel-2 images,2,1,0.0693442970514297,0.44848287,0.37913857400417333
+60,“互联网＋”下旅游产业的文化复兴—一款以诗词为基调的旅行小程序,Rapid lateral flow immunoassay for the fluorescence detection of SARS-CoV-2 RNA,1,0,-0.0028794817626476,0.24335256,0.24623204395174977
+61,短视频版权保护与法律治理,"Tuning water-cellulose interactions via copper-coordinated mercerization for hydro-actuated, shape-memory cellulosic hydroplastics",1,0,-0.0139335021376609,0.33115977,0.34509327262639994
+62,新冠疫情期间全球特大城市夜间灯光亮度时空变化特征分析,SCDNET: A novel convolutional network for semantic change detection in high resolution optical remote sensing imagery,4,1,0.2017720490694046,0.40826416,0.2064921110868454
+63,基于柔性传感器和机器学习的血压监测应用系统,Bacteria-based bioactive materials for cancer imaging and therapy,1,0,0.1423955708742141,0.4594321,0.3170365244150163
+64,短视频平台老年人直播形象的呈现策略研究,Superoxide generated by blue light photocatalysis of g-C3N4/TiO2 for selective conversion of amines,1,0,-0.0597315691411495,0.28297305,0.3427046202123165
+65,布布为赢—新时代美育背景下游戏设计领域在创新教育方面的新应用,Hexagonal RuSe<sub>2</sub> Nanosheets for Highly Efficient Hydrogen Evolution Electrocatalysis,1,0,-0.0195001363754272,0.36671966,0.38621979951858515
+66,赛博织梦一基于虚拟偶像产业的政治经济学研究,A Reconfigurable Bipolar Image Sensor for High-Efficiency Dynamic Vision Recognition,1,0,0.0079146493226289,0.33195418,0.3240395318716765
+67,智能货车安全监测系统,Study of Open-Charm Decays and Radiative Transitions of the <i>X</i>(3872),1,0,-0.0310038160532712,0.28334588,0.31434969417750824
+68,大功率器件封装有机硅凝胶耐热性改性研究,Direct demonstration of triplet excimer in purely organic room temperature phosphorescence through rational molecular design,2,1,0.4710044264793396,0.41448826,-0.056516170501708984
+69,中国品牌在国际传播中的叙事策略构建与效果评价研究,Targeting Ferroptosis as a Novel Approach to Alleviate Aortic Dissection,1,0,-0.0075957104563713,0.35268217,0.360277883708477
+70,靶向苹果酸酶ME1治疗结直肠癌的分子机制研究,Unsupervised Multimodal Change Detection Based on Structural Relationship Graph Representation Learning,1,0,-0.0963713303208351,0.31987885,0.41625017672777176
+71,非侵入式水凝胶实时监测平台的设计及应用,Association between long-term exposure to ambient air pollution and obesity in a Chinese rural population: The Henan Rural Cohort Study,1,0,0.065514288842678,0.2930706,0.22755632549524313
+72,基于“3ds Max+Unity”的武汉市工业遗产景观数字化交互平台构架设计——以龟北片工业区为例,In-situ exsolution of nanoparticles from Ni substituted Sr2Fe1.5Mo0.5O6 perovskite oxides with different Ni doping contents,1,0,0.0213002152740955,0.35990086,0.3386006467044354
+73,基于稀疏图构建及快速变换估计的多站点云配准算法研究,"Kinetic Resolution of Racemic 3,4-Disubstituted 1,4,5,6-Tetrahydropyridine and 3,4-Disubstituted 1,4- Dihydropyridines via Rh-Catalyzed Asymmetric Hydrogenation",1,0,0.0169889312237501,0.35879517,0.3418062347918749
+74,数字经济时代的市场与政府关系研究——基于“淘宝村”的田野调查,Targeting Notch1-YAP Circuit Reprograms Macrophage Polarization and Alleviates Acute Liver Injury in Mice,1,0,-0.0741832852363586,0.31200868,0.38619196414947504
+75,基于人脸特征识别与中医面诊的健康评估系统,Novel function of SART1 in HNF4α transcriptional regulation contributes to its antiviral role during HBV infection,1,0,0.0986575037240982,0.32821336,0.2295558601617813
+76,尼古丁通过α7nAChR调控HTR-8/SVneo细胞线粒体中MLN64的表达影响孕酮合成,Learning Deep Cross-Modal Embedding Networks for Zero-Shot Remote Sensing Image Scene Classification,1,0,-0.0843692570924758,0.31486842,0.3992376774549483
+77,无人机自动巡航的主要通讯模块设计,Sustaining Trade during COVID-19 Pandemic: Establishing a Conceptual Model Including COVID-19 Impact,1,0,0.1549367308616638,0.25484008,0.09990334510803225
+78,Android智能手机的米级北斗/GNSS协同定位技术研究,"Seamless mapping of long-term (2010–2020) daily global XCO <sub>2</sub> and XCH <sub>4</sub> from the Greenhouse Gases Observing Satellite (GOSAT), Orbiting Carbon Observatory 2 (OCO-2), and CAMS global greenhouse gas reanalysis (CAMS-EGG4) with a spatiotemporally self-supervised fusion method",3,1,0.1785410344600677,0.43278006,0.25423902273178106
+79,电商扶贫背景下西部地区农产品的网络营销——基于区域品牌化建设视角,Centennial response of Greenland’s three largest outlet glaciers,1,0,-0.000745927914977,0.21506013,0.21580605767667285
+80,农业供给侧结构性改革背景下中小农产品企业产品,"Land change modeler and CA-Markov chain analysis for land use land cover change using satellite data of Peshawar, Pakistan",2,1,0.3000739812850952,0.33595872,0.035884737968444824
+81,近五年助力中华文化成功“出海”的产品案例分析,The same molecule but a different molecular conformation results in a different room temperature phosphorescence in phenothiazine derivatives,1,0,-0.0063336938619613,0.2285572,0.23489089310169214
+82,基于嵌入式CNN的小型无人机单目视觉避障技术的研究,Electrochemical Oxidation Dearomatization of Anisol Derivatives toward Spiropyrrolidines and Spirolactones,1,0,-0.0464245043694973,0.30291104,0.34933554753661156
+83,CYP1B1敲除对糖尿病小鼠妊娠结局的影响,Study on the Uncertainty of Machine Learning Model for Earthquake-Induced Landslide Susceptibility Assessment,1,0,-0.0372023656964302,0.26103652,0.2982388809323311
+84,六自由度机械臂避障路径规划技术研究,Individual Capital Structure and Health Behaviors among Chinese Middle-Aged and Older Adults: A Cross-Sectional Analysis Using Bourdieu’s Theory of Capitals,1,0,0.0032600946724414,0.32802716,0.32476706430315977
+85,基于网络法的台风灾害下电网系统风险评估与韧性研究,Multifunctional MOF‐Based Microneedle Patch With Synergistic Chemo‐Photodynamic Antibacterial Effect and Sustained Release of Growth Factor for Chronic Wound Healing,1,0,-0.0329222939908504,0.34147978,0.3744020722806453
+86,基于手机影像和点云的植物识别APP,Automatic detection and update of landslide inventory before and after impoundments at the Lianghekou reservoir using Sentinel-1 InSAR,3,1,0.169077068567276,0.423212,0.2541349232196808
+87,上市公司管理人员舞弊风险量化分析模型,lenstronomy II: A gravitational lensing software ecosystem,1,0,0.0401275604963302,0.36583894,0.3257113844156266
+88,孤儿成年后安置问题法律研究,Suppressed ion migration for high-performance X-ray detectors based on atmosphere-controlled EFG-grown perovskite CsPbBr3 single crystals,1,0,-0.1132948994636535,0.28562847,0.39892336726188654
+89,中国企业领导者的企业家精神评价指标体系研究,Origins of Electron-Transfer Regime in Persulfate-Based Nonradical Oxidation Processes,1,0,-0.0713881030678749,0.25403827,0.3254263773560524
+90,多发性骨髓瘤患者临床护理思维训练虚拟仿真项目开发与应用研究,Multi‐Color Pure Organic Room Temperature Phosphorescent Materials with Long Lifetime and High Efficiency,1,0,-0.0215678811073303,0.36599326,0.3875611424446106
+91,农村地区慢性病经济风险的家庭应对行为研究,Toward Robust Detection of Puppet Attacks via Characterizing Fingertip-Touch Behaviors,1,0,0.0721997618675232,0.3133976,0.24119782447814941
+92,VEGF/VEGFR-2经由Eph/ephrin双向信号通路调控子宫内膜异位症神经血管生成的机制研究,<scp>miR396b</scp>/<i>GRF6</i> module contributes to salt tolerance in rice,1,0,0.1181136518716812,0.3921676,0.2740539461374283
+93,社区老人肌少症认知现状及干预模式构建,A combined microRNA and transcriptome analyses illuminates the resistance response of rice against brown planthopper,1,0,-0.0116820652037858,0.31972396,0.3314060289412736
+94,Bmal1在成牙骨质细胞矿化中的调控作用,Electric Double Layer Effects in Electrocatalysis: Insights from Ab Initio Simulation and Hierarchical Continuum Modeling,1,0,-0.0264738369733095,0.3110544,0.33752824552357197
+95,互联网平台企业“二选一”行为的法律规制研究,Highly Efficient Quasi‐2D Green Perovskite Light‐Emitting Diodes with Bifunctional Amino Acid,1,0,-0.0492676496505737,0.28726745,0.33653509616851807
+96,TGF-β/Smad 在抗HMGCR抗体介导的坏死性肌病中保护作用及机制的研究,Thermoelectric Properties of Strained β-Cu<sub>2</sub>Se,1,0,0.011070242151618,0.42398596,0.41291571594774723
+97,滇紫草多糖的提取、纯化、结构表征及活性初步研究,Synergistic Catalysis with Azomethine Ylides,1,0,0.2249816060066223,0.35102242,0.1260408163070679
+98,网络异常准实时发现与报文转发,A novel cooperative compensation method to compensate for return stroke of stick-slip piezoelectric actuators,1,0,-0.0233392044901847,0.373322,0.3966612145304679
+99,大规模实景三维模型纹理智能化处理,Machine Learning-Based Short-Term GPS TEC Forecasting During High Solar Activity and Magnetic Storm Periods,2,1,0.2980934679508209,0.38854253,0.09044906497001648
+100,新型液滴微流控芯片与等离子体质谱联用的单细胞分析技术,m6A modification-tuned sphingolipid metabolism regulates postnatal liver development in male mice,1,0,0.2138828337192535,0.3592524,0.1453695595264435
+101,基于单细胞组学技术解析牙龈成纤维细胞衰老在牙周炎免疫中的作用及机制研究,Federated Learning in Heterogeneous Networks With Unreliable Communication,1,0,0.0227314550429582,0.3815615,0.3588300328701735
+102,基于人群行为与空间特征数据化、可视化分析的高校家属区微改造设计的研究,"Synthesis, analysis and characterization of nitrogen/sulfur co-doped activated carbon for high-performance all-printed flexible supercapacitor",1,0,-0.0892234295606613,0.36806148,0.45728491246700287
+103,典型地区野生动物禁食机制考察与法律规制研究——以湖北、云南、福建三省为例,"A Survey on Advancing the DBMS Query Optimizer: Cardinality Estimation, Cost Model, and Plan Enumeration",1,0,0.199123352766037,0.3375848,0.13846144080162048
+104,1913-1938年间武汉大学学者关于比较文学文献资料收集整理再研究：,Understanding the Mechanisms of Summer Extreme Precipitation Events in Xinjiang of Arid Northwest China,1,0,0.2986301481723785,0.3258764,0.027246266603469904
+105,基于信任评估的无人机攻击检测,Experimental investigation on dynamic response of concrete gravity dam under shock wave and bubble pulsation,1,0,0.0262208096683025,0.3733245,0.3471037037670613
+106,基于情绪反应模型的组织中不文明行为的螺旋效应研究,Prognostic Value of Clinical Biochemistry-Based Indexes in Nasopharyngeal Carcinoma,1,0,0.0046923859044909,0.37349552,0.3688031332567335
+107,水稻反温敏核不育基因rtms2的克隆及其育性调控机理研究,Mechanical behavior of steel fiber reinforced recycled aggregate concrete under dynamic triaxial compression,1,0,-0.0379464924335479,0.36208528,0.4000317752361297
+108,书田-校园学习资源交易与知识分享社区,A numerical method to consider the interaction between multiple fractures in frozen rocks based on XFEM,1,0,-0.023189689964056,0.32183793,0.3450276218354702
+109,NcoR1通过肝肠轴调节胆汁酸-肠道微生态对肝缺血再灌注损伤的机制研究,RNF115 plays dual roles in innate antiviral responses by catalyzing distinct ubiquitination of MAVS and MITA,1,0,0.3446867167949676,0.35972506,0.015038341283798273
+110,中国金融开放前景及其对世界金融市场带来的机遇,Revealing the crystalline packing structure of Y6 in the active layer of organic solar cells: the critical role of solvent additives,1,0,0.0620386973023414,0.27834475,0.2163060531020165
+111,增值税“留底退税”对企业价值的影响研究,NEPdb: A Database of T-Cell Experimentally-Validated Neoantigens and Pan-Cancer Predicted Neoepitopes for Cancer Immunotherapy,1,0,0.1239727139472961,0.26349092,0.13951820135116583
+112,微信公众号软文广告报价方案优化模型研究,Quantifying factory-scale CO<sub>2</sub>/CH<sub>4</sub> emission based on mobile measurements and EMISSION-PARTITION model: cases in China,1,0,0.1635341197252273,0.35140848,0.1878743618726731
+113,不同口内扫描仪学习曲线的构建以及在口腔临床修复学临床前教学中的应用,Targeting IGF2BP3 in Cancer,1,0,0.1202404350042343,0.4155243,0.29528386890888214
+114,基于机器学习的新型光伏器件性能优化及其制备工艺研究,Change Detection Based on Supervised Contrastive Learning for High-Resolution Remote Sensing Imagery,2,1,0.3952744007110595,0.4709256,0.07565119862556463
+115,基于货运大数据的物流规划决策支持系统,The psychological impact of COVID-19 outbreak on medical staff and the general public,1,0,0.0227942038327455,0.2248137,0.20201949588954454
+116,基于3D光刻的集成光学设计和工艺,"3-month, 6-month, 9-month, and 12-month respiratory outcomes in patients following COVID-19-related hospitalisation: a prospective study",1,0,0.0341807678341865,0.3590702,0.32488944381475454
+117,火星大气建模,A Novel Two-Stage Constant Force Compliant Microgripper,1,0,0.0486150607466697,0.36564207,0.31702701002359396
+118,故毡焕帐——民族景观建筑增材制造工艺,Alternative polyadenylation by sequential activation of distal and proximal PolyA sites,1,0,0.0735318213701248,0.40560216,0.33207033574581146
+119,浅析全球化视角下中国文化的海外传播—— 以中国饮食文化的海外印象变迁为例,Synchronous recognition of amines in oxidative carbonylation toward unsymmetrical ureas,1,0,0.000768270343542,0.27683473,0.2760664559900762
+120,基于蓝牙5.1信号测角度从而实现定位方向,Imitating Architectural Mortise‐Tenon Structure for Stable Ni‐Rich Layered Cathodes,1,0,0.1262763738632202,0.39160448,0.2653281092643738
+121,低空飞行器多通道无线供电技术研究,Electrooxidative Activation of B−B Bond in B<sub>2</sub>cat<sub>2</sub>: Access to <i>gem</i>‐Diborylalkanes via Paired Electrolysis,1,0,0.1263048946857452,0.36896712,0.24266222119331363
+122,基于无人机的实时目标识别系统,Hyperthermia Targeting the Tumor Microenvironment Facilitates Immune Checkpoint Inhibitors,1,0,0.0635003894567489,0.40858275,0.34508235752582556
+123,基于病理图像的乳腺癌新辅助化疗智能疗效预测,Using green technology for a better tomorrow: How enterprises and government utilize the carbon trading system and incentive policies,1,0,0.0821521803736686,0.2866855,0.2045333161950112
+124,基于RGBD相机的动态场景下的3D语义地图构建,Multi-strategy multi-objective differential evolutionary algorithm with reinforcement learning,1,0,0.2501025795936584,0.4450737,0.194971114397049
+125,基于机器学习的建筑设计审图绘图,Improved 3D Stem Mapping Method and Elliptic Hypothesis-Based DBH Estimation from Terrestrial Laser Scanning Data,1,0,0.3622604012489319,0.46175814,0.0994977355003357
+126,桃源拾遗录——历史类解谜书,"EasyCatch, a convenient, sensitive and specific CRISPR detection system for cancer gene mutations",1,0,0.0615798942744731,0.313541,0.2519611008465291
+127,利用遥感影像的COVID-19对我国水稻种植影响分析,The moderating role of technological innovation and renewable energy on CO <sub>2</sub> emission in O.E.C.D. countries: evidence from panel quantile regression approach,2,1,0.3468679785728454,0.36036223,0.013494253158569391
+128,先秦散文与口传叙事研究,ReSC-net: Hyperspectral Image Classification Based on Attention-Enhanced Residual Module and Spatial-Channel Attention,1,0,0.0521697178483009,0.35576737,0.30359765142202383
+129,从认知语言学视角看敦煌繁化俗字,The Environmental Kuznets Curve hypothesis for carbon and ecological footprints in South Asia: the role of renewable energy,1,0,0.0263412781059741,0.33520925,0.3088679723441602
+130,新型配电系统的网格化运行优化指标研究,Balance learning for ship detection from synthetic aperture radar remote sensing imagery,1,0,0.2458164393901825,0.41214785,0.16633141040802002
+131,多种椅旁牙科树脂材料老化行为的比较研究,Aggregation‐Induced Emission Luminogens with Photoresponsive Behaviors for Biomedical Applications,1,0,0.0734796002507209,0.42501,0.35153039544820797
+132,药用植物黄花蒿体内萜类合酶的多样性及其功能,Breastfeeding and the Longitudinal Changes of Body Mass Index in Childhood and Adulthood: A Systematic Review,1,0,-0.1511786729097366,0.3098805,0.46105916798114777
+133,综合性大学在校本科生营养素养评价及其相关影响因素研究,"Global, Regional, and National Incidence and Year Lived with Disability for Benign Prostatic Hyperplasia from 1990 to 2019",2,1,0.1666521281003952,0.42574084,0.2590887099504471
+134,街道品质评价指标体系构建——以武汉大学街道为例,Employees’ Green Enterprise Motivation and Green Creative Process Engagement and Their Impact on Green Creative Performance,1,0,0.1742897629737854,0.40793258,0.2336428165435791
+135,女性主义视角下中国乙女游戏文化圈中的性别符号构建,Research status of replacement gases for SF6 in power industry,1,0,-0.1397477239370346,0.25633717,0.39608488976955414
+136,变异链球菌和口腔微生物在IgA肾病患者口腔检出率的相关性分析,"Post-discharge surveillance and positive virus detection in two medical staff recovered from coronavirus disease 2019 (COVID-19), China, January to February 2020",2,1,0.1585969626903534,0.35873994,0.2001429796218872
+137,基于地理信息融合的车联网信息安全系统研究,Association Between ABO Blood Group System and COVID-19 Susceptibility in Wuhan,1,0,0.0639934614300727,0.35954377,0.29555030912160885
+138,基于多光谱激光雷达的地物目标识别研究,An Optimal Scheduling Strategy of a Microgrid with V2G Based on Deep Q-Learning,1,0,0.259097695350647,0.4449878,0.1858901083469391
+139,中越边境旧-新过渡期石器制作工艺的实验研究,Fractal Analysis on Pore Structure and Modeling of Hydration of Magnesium Phosphate Cement Paste,1,0,0.3447432219982147,0.41347027,0.068727046251297
+140,集播种、管理及收获于一体的小型专用机械设计与制作,Point Cloud Completion Via Skeleton-Detail Transformer,1,0,0.1107533127069473,0.40215972,0.29140640795230865
+141,医疗保险视阈下医养结合的实施情况与优化建议——以武汉市为例,Closed Cyclic DNA Machine for Sensitive Logic Operation and APE1 Detection,1,0,0.04089330509305,0.31356364,0.27267033979296684
+142,基于深度学习的路标图像识别,Optimizing block morphology for reducing traffic pollutant concentration in adjacent external spaces of street canyons: A machine learning approach,2,1,0.3442170321941376,0.5754015,0.2311844527721405
+143,可重构多稳态机器人的设计研究,Interfacial Engineering of Bi<sub>19</sub>Br<sub>3</sub>S<sub>27</sub> Nanowires Promotes Metallic Photocatalytic CO<sub>2</sub> Reduction Activity under Near-Infrared Light Irradiation,1,0,0.0791933834552764,0.3712288,0.29203543066978466
+144,基于无人机影像的高精地图道路标识识别方法,Direct current electric field induced gradient hydrogel actuators with rapid thermo-responsive performance as soft manipulators,1,0,0.0875532403588295,0.32574892,0.23819568008184433
+145,去甲基化酶KDM5A在CCl4诱导的急性肝损伤中的作用及机制研究,Change Detection Based on Supervised Contrastive Learning for High-Resolution Remote Sensing Imagery,1,0,-0.0639561340212822,0.3580009,0.42195703834295273
+146,与多发性骨髓瘤复发难治相关基因的生物信息学研究,Chitin nanofibrils assisted 3D printing all-chitin hydrogels for wound dressing,1,0,0.1500622630119323,0.3338666,0.18380433320999154
+147,纳米硅基负极材料电化学制备技术,Parkinson’s disease kinase LRRK2 coordinates a cell-intrinsic itaconate-dependent defence pathway against intracellular Salmonella,1,0,0.0607752576470375,0.28441393,0.22363867610692978
+148,新文科背景下法学本科教育改革的问题研究,Fine-tuning the pore environment of ultramicroporous three-dimensional covalent organic frameworks for efficient one-step ethylene purification,1,0,-0.0540781021118164,0.36542603,0.4195041358470917
+149,基于图像质量无监督估计的人脸识别系统,Detection of vertical root fractures by cone-beam computed tomography based on deep learning,2,1,0.2116496264934539,0.46388957,0.2522399425506593
+150,基于储钠正极/锌负极的长寿命水系双离子电池的研究,Hyperthermia Targeting the Tumor Microenvironment Facilitates Immune Checkpoint Inhibitors,1,0,0.1723169386386871,0.38129455,0.20897760987281802

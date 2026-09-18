@@ -1,0 +1,71 @@
+Advisor-Level Dependence Sensitivity
+============================================================
+
+Single-advisor projects: 3186 / 3714; complete cases n=2716
+Colleges: 39; advisors: 1221; advisors with >=2 projects: 680 (2175 projects)
+
+--- Model A: college-only RI, single-advisor subset ---
+             Mixed Linear Model Regression Results
+================================================================
+Model:               MixedLM    Dependent Variable:    rtas     
+No. Observations:    2716       Method:                REML     
+No. Groups:          39         Scale:                 0.0017   
+Min. group size:     3          Log-Likelihood:        4674.4848
+Max. group size:     263        Converged:             Yes      
+Mean group size:     69.6                                       
+----------------------------------------------------------------
+                      Coef.  Std.Err.   z    P>|z| [0.025 0.975]
+----------------------------------------------------------------
+Intercept              0.136    0.012 11.473 0.000  0.112  0.159
+is_provincial         -0.000    0.002 -0.066 0.947 -0.004  0.003
+is_national           -0.002    0.002 -0.723 0.470 -0.006  0.003
+year_centered          0.003    0.001  3.870 0.000  0.001  0.004
+log_prior3y            0.004    0.001  5.736 0.000  0.003  0.006
+log_prior_supervision -0.005    0.002 -3.571 0.000 -0.008 -0.002
+Group Var              0.005    0.030                           
+================================================================
+
+ICC_college=0.7487  marg R2=0.0067  cond R2=0.7554
+
+--- Model B: crossed (1|college)+(1|advisor) [BOUNDARY SOLUTION — unreliable]---
+             Mixed Linear Model Regression Results
+================================================================
+Model:               MixedLM    Dependent Variable:    rtas     
+No. Observations:    2716       Method:                REML     
+No. Groups:          39         Scale:                 0.0012   
+Min. group size:     3          Log-Likelihood:        4109.5019
+Max. group size:     263        Converged:             Yes      
+Mean group size:     69.6                                       
+----------------------------------------------------------------
+                      Coef.  Std.Err.   z    P>|z| [0.025 0.975]
+----------------------------------------------------------------
+Intercept              0.102    0.004 27.138 0.000  0.094  0.109
+is_provincial          0.002    0.002  1.008 0.313 -0.002  0.006
+is_national            0.002    0.003  0.574 0.566 -0.004  0.007
+year_centered          0.006    0.001  5.392 0.000  0.004  0.008
+log_prior3y            0.018    0.001 13.716 0.000  0.016  0.021
+log_prior_supervision -0.014    0.002 -6.063 0.000 -0.018 -0.009
+advisor Var            0.003    0.006                           
+================================================================
+
+var_college=0.000000 var_advisor=0.003144 var_resid=0.001201
+ICC_college=0.0000 ICC_advisor=0.6360 ICC_clustered=0.6360
+marg R2=0.1212  cond R2=0.7571
+
+--- Model C: college FE + advisor-clustered SE (reliable dependence check) ---
+                 term      coef       se         z        p    ci_low   ci_high stars
+            Intercept  0.348838 0.010711 32.569469 0.000000  0.327846  0.369830   ***
+        is_provincial -0.000218 0.001914 -0.114025 0.909218 -0.003969  0.003532    ns
+          is_national -0.001932 0.002631 -0.734302 0.462765 -0.007088  0.003225    ns
+        year_centered  0.002566 0.000795  3.228572 0.001244  0.001008  0.004123    **
+          log_prior3y  0.004264 0.000983  4.336121 0.000015  0.002337  0.006192   ***
+log_prior_supervision -0.005260 0.001806 -2.912437 0.003586 -0.008800 -0.001720    **
+
+--- Coefficient comparison ---
+                 term  coef_primary  se_primary  p_primary  ci_low_primary  ci_high_primary stars_primary  coef_subset_college  se_subset_college         z  p_subset_college  ci_low_subset_college  ci_high_subset_college stars_subset_college  coef_crossed  se_crossed  z_crossed  p_crossed  ci_low_crossed  ci_high_crossed stars_crossed  delta_crossed_vs_subset  delta_crossed_vs_primary ci_excludes_zero_crossed  coef_collegeFE_advCluster  se_feCluster  z_feCluster  p_feCluster  ci_low_feCluster  ci_high_feCluster stars_feCluster  delta_feCluster_vs_primary  ci_excludes_zero_feCluster
+            Intercept      0.135360    0.011490   0.000000        0.112841         0.157880           ***             0.135598           0.011819 11.472678          0.000000               0.112433                0.158763                  ***      0.101592    0.003743  27.138367   0.000000        0.094255         0.108929           ***                -0.034006                 -0.033769                     True                   0.348838      0.010711    32.569469     0.000000          0.327846           0.369830             ***                    0.213478                        True
+          is_national     -0.001624    0.002158   0.451680       -0.005853         0.002605            ns            -0.001719           0.002379 -0.722543          0.469960              -0.006382                0.002944                   ns      0.001517    0.002641   0.574337   0.565740       -0.003659         0.006692            ns                 0.003235                  0.003141                    False                  -0.001932      0.002631    -0.734302     0.462765         -0.007088           0.003225              ns                   -0.000308                       False
+        is_provincial      0.000615    0.001717   0.720038       -0.002749         0.003980            ns            -0.000121           0.001824 -0.066370          0.947083              -0.003697                0.003454                   ns      0.001997    0.001981   1.008358   0.313282       -0.001885         0.005880            ns                 0.002118                  0.001382                    False                  -0.000218      0.001914    -0.114025     0.909218         -0.003969           0.003532              ns                   -0.000833                       False
+          log_prior3y      0.004266    0.000720   0.000000        0.002854         0.005678           ***             0.004412           0.000769  5.736209          0.000000               0.002904                0.005919                  ***      0.018285    0.001333  13.715806   0.000000        0.015672         0.020898           ***                 0.013874                  0.014020                     True                   0.004264      0.000983     4.336121     0.000015          0.002337           0.006192             ***                   -0.000001                        True
+log_prior_supervision     -0.006287    0.001469   0.000019       -0.009166        -0.003409           ***            -0.005443           0.001524 -3.570584          0.000356              -0.008430               -0.002455                  ***     -0.013622    0.002247  -6.063462   0.000000       -0.018026        -0.009219           ***                -0.008180                 -0.007335                     True                  -0.005260      0.001806    -2.912437     0.003586         -0.008800          -0.001720              **                    0.001027                        True
+        year_centered      0.003132    0.000642   0.000001        0.001873         0.004391           ***             0.002653           0.000685  3.870275          0.000109               0.001309                0.003996                  ***      0.005518    0.001023   5.392450   0.000000        0.003513         0.007524           ***                 0.002866                  0.002386                     True                   0.002566      0.000795     3.228572     0.001244          0.001008           0.004123              **                   -0.000566                        True
