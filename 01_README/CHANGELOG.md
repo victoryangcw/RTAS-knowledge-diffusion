@@ -5,6 +5,32 @@ config, data, or code that could affect downstream numbers.
 
 ---
 
+## [v1.0-cand.14] — 2026-09-18 — TWENTY-SECOND ROUND: ADVISOR-LEVEL DEPENDENCE SENSITIVITY
+
+Milestone status: ✅ RQ3 advisor-dependence robustness added.
+All frozen primary statistics unchanged.
+
+### Advisor-dependence sensitivity (new `03_CODE/18_advisor_dependence_sensitivity.py`)
+- Motivation: primary MixedLM clusters only within colleges; advisors supervise
+  repeated projects (18.8% of individual advisors supervise ≥4).
+- Multiple membership: no primary-advisor flag; 528 co-supervised projects are
+  excluded rather than duplicated. Analysis restricted to 3,186 single-advisor
+  projects (2,716 complete cases; 1,221 advisors; 680 with ≥2 projects).
+- Crossed RI model `(1|college)+(1|advisor)` converges to a BOUNDARY solution
+  (college variance = 0) and is unreliable: advisor-level covariates vary mainly
+  between advisors (within-advisor SD of log prior3y = 18% of total; constant
+  within advisor for ~30% of repeat advisors). Reported transparently, not used.
+- Reliable check: college FE + advisor-clustered SE. All substantive conclusions
+  unchanged: log_prior3y β=+0.0043 (p=1.5e-5, CI excludes 0), log_prior_supervision
+  β=−0.0053 (p=0.004), year β=+0.0026 (p=0.001), funding dummies ns.
+  Coefficient moves < 0.001 vs frozen primary; only SEs increase modestly.
+- Manuscript: new §3.4 "Advisor-dependence sensitivity" paragraph; Methods RQ3
+  pointer; new Limitation 9 (multiple membership of co-supervised projects).
+- Also backfilled frozen outputs for cand.13 robustness analyses
+  (BGE-M3, leave-advisor-out) into `05_VALIDATION/robustness/`, `06_RESULTS/hlm/`.
+
+---
+
 ## [v1.0-cand.13] — 2026-09-14 — TWENTY-FIRST ROUND: VERIFY AUDIT + RQ4 UNIT FIX
 
 Milestone status: ✅ All 6 VERIFY items resolved; RQ4 individual-advisor replacement.

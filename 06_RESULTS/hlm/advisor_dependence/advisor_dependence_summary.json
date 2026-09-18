@@ -1,0 +1,172 @@
+{
+  "design": "single-advisor projects only (advisor_count==1); college RI vs college+advisor crossed RI on identical cases; college FE + advisor-clustered SE as robust fallback",
+  "n_projects_single_advisor_total": 3186,
+  "n_multi_advisor_excluded": 528,
+  "n_complete_cases": 2716,
+  "n_colleges": 39,
+  "n_advisors": 1221,
+  "n_advisors_with_ge2_projects": 680,
+  "n_projects_under_repeat_advisors": 2175,
+  "structure_diagnostics": {
+    "advisors_appearing_in_multiple_colleges": 131,
+    "note": "crossing is partly artificial (identical Chinese names across colleges were not disambiguated)"
+  },
+  "frozen_primary_n3231": {
+    "n": 3231,
+    "n_colleges": 39,
+    "icc": 0.7376,
+    "r2_marginal": 0.0075,
+    "r2_conditional": 0.7395
+  },
+  "model_A_subset_college_only": {
+    "converged": true,
+    "var_college": 0.00522016682009286,
+    "var_advisor": 0.0,
+    "var_resid": 0.0017055081983153053,
+    "icc_college": 0.7486684651732168,
+    "icc_advisor": 0.0,
+    "icc_clustered": 0.7486684651732168,
+    "r2_marginal": 0.00673011706014846,
+    "r2_conditional": 0.7553985822333653
+  },
+  "model_B_crossed": {
+    "converged": true,
+    "boundary_solution": true,
+    "var_college": 0.0,
+    "var_advisor": 0.0031441146837856864,
+    "var_resid": 0.0012006286451844714,
+    "icc_college": 0.0,
+    "icc_advisor": 0.6359801740833112,
+    "icc_clustered": 0.6359801740833112,
+    "r2_marginal": 0.12116099550836446,
+    "r2_conditional": 0.7571411695916757,
+    "coefficients": {
+      "log_prior3y": {
+        "coef": 0.018285399018615454,
+        "se": 0.0013331625416983356,
+        "p": 8.165373370776812e-43,
+        "ci": [
+          0.01567244845134884,
+          0.02089834958588207
+        ],
+        "stars": "***"
+      },
+      "log_prior_supervision": {
+        "coef": -0.0136223299572767,
+        "se": 0.0022466259187555156,
+        "p": 1.3322261164152279e-09,
+        "ci": [
+          -0.01802563584477172,
+          -0.00921902406978168
+        ],
+        "stars": "***"
+      },
+      "year_centered": {
+        "coef": 0.005518156454673131,
+        "se": 0.0010233116284252605,
+        "p": 6.95035699955906e-08,
+        "ci": [
+          0.0035125025179985865,
+          0.007523810391347676
+        ],
+        "stars": "***"
+      },
+      "is_provincial": {
+        "coef": 0.0019973825955778633,
+        "se": 0.0019808258744023785,
+        "p": 0.3132823911156639,
+        "ci": [
+          -0.001884964777895859,
+          0.005879729969051586
+        ],
+        "stars": "ns"
+      },
+      "is_national": {
+        "coef": 0.001516540029337292,
+        "se": 0.0026405073360882846,
+        "p": 0.5657400404824828,
+        "ci": [
+          -0.0036587592503095462,
+          0.00669183930898413
+        ],
+        "stars": "ns"
+      }
+    },
+    "interpretation_warning": "boundary solution (var_college=0) and 4x movement in log_prior3y: advisor-level covariates vary mainly BETWEEN advisors (within-advisor SD 18% of total for log_prior3y; constant within advisor for ~30% of repeat advisors), so crossed-RE fixed effects are not stably identified. Treat Model C as the reliable dependence sensitivity."
+  },
+  "model_C_collegeFE_advisor_clustered": {
+    "n": 2716,
+    "model": "OLS college FE, SE clustered by advisor",
+    "coefficients": {
+      "Intercept": {
+        "coef": 0.3488380096638172,
+        "se": 0.010710583175136314,
+        "p": 1.1101219762564834e-232,
+        "ci": [
+          0.3278456523871293,
+          0.36983036694050503
+        ],
+        "stars": "***"
+      },
+      "is_provincial": {
+        "coef": -0.00021819411435777467,
+        "se": 0.001913569213810728,
+        "p": 0.909218230426923,
+        "ci": [
+          -0.003968720855351427,
+          0.003532332626635878
+        ],
+        "stars": "ns"
+      },
+      "is_national": {
+        "coef": -0.0019319100179689408,
+        "se": 0.0026309474330843915,
+        "p": 0.4627646862838496,
+        "ci": [
+          -0.007088472232032452,
+          0.00322465219609457
+        ],
+        "stars": "ns"
+      },
+      "year_centered": {
+        "coef": 0.0025656981881991697,
+        "se": 0.0007946852182538244,
+        "p": 0.0012441007709630258,
+        "ci": [
+          0.0010081437813753216,
+          0.004123252595023018
+        ],
+        "stars": "**"
+      },
+      "log_prior3y": {
+        "coef": 0.0042644440667905055,
+        "se": 0.0009834697010469118,
+        "p": 1.4501883756717427e-05,
+        "ci": [
+          0.0023368788728521843,
+          0.006192009260728827
+        ],
+        "stars": "***"
+      },
+      "log_prior_supervision": {
+        "coef": -0.005260198517531883,
+        "se": 0.0018061158840040196,
+        "p": 0.003586206662951534,
+        "ci": [
+          -0.008800120602085484,
+          -0.0017202764329782823
+        ],
+        "stars": "**"
+      }
+    }
+  },
+  "log_prior3y": {
+    "frozen_primary": 0.0042657649071921,
+    "subset_college_only": 0.004411727995649408,
+    "crossed_college_advisor": 0.018285399018615454,
+    "collegeFE_advisor_clustered": 0.0042644440667905055,
+    "delta_crossed_minus_subset": 0.013873671022966046,
+    "delta_crossed_minus_primary": 0.014019634111423353,
+    "delta_feCluster_minus_primary": -1.3208404015946362e-06
+  }
+}
