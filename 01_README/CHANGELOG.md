@@ -32,9 +32,18 @@ All frozen primary statistics unchanged.
   pointer; new Limitation 9 (multiple membership of co-supervised projects).
 
 ### Final consistency pass (same day; no new analysis, no frozen numbers changed)
-- 178-topic wording audited: top-20% target is 177 but a tie at the cutoff
-  fraction (0.0879%) yields 178 high-research topics (HRHT 5 + HRLT 173);
-  Methods/Results both say 178 "including ties at the boundary".
+- 178-topic wording audited against atomic doc_topic_assignments.csv (60,615
+  rows = 56,901 papers + 3,714 projects, no missing/duplicate docs; 886
+  contiguous topic ids 0-885 + Topic -1 outlier bucket of 23,318 docs correctly
+  excluded). Frozen rule metadata: "top-20% topics (n>=177); frac>=0.0879%".
+  The 0.0879% value equals exactly 50 articles; EIGHT topics tie at 50 papers
+  (ids 155,174,180,181,183,185,186,187; ranks 171-178), rank 170 has 51, rank
+  179 has 49. Inclusive >= classification therefore yields 178 (5 HRHT +
+  173 HRLT), not an omission. Recomputing flags from the atomic file reproduces
+  the frozen high_paper/high_project sets exactly (178 / 15); clustered totals
+  35,547 papers + 21,354 outliers = 56,901 and 1,750 + 1,964 = 3,714.
+  topic_info.csv/doc_topic_assignments.csv mtimes are 2026-09-03 (original
+  freeze), untouched by all later rounds.
 - RTAS definition: replaced ambiguous "a co-supervised article counts once"
   with explicit within-college-once / once-per-college dedup rule; added
   abstract-asymmetry justification for titles-only scoring.
