@@ -1,6 +1,6 @@
 # Measuring Research–Training Semantic Alignment: Project-Level Cross-Lingual Embeddings, Topic Prevalence Asymmetries, and Resource Concentration in Undergraduate Innovation Programs
 
-**Submission clean version v1.0 (frozen from master manuscript v1.0-cand.13; all statistics from frozen CSVs in `03_FINAL_ANALYSIS/`)**
+**Submission clean version v1.0 (frozen from master manuscript v1.0-cand.14; all statistics from frozen CSVs in `03_FINAL_ANALYSIS/`)**
 **Target journal: Scientometrics**
 
 ---
@@ -23,7 +23,7 @@ Existing work on research–teaching relationships operates mostly at the level 
 
 ### 1.2 This study
 
-We introduce RTAS (Research–Training Alignment Score), defined for each project as the mean cosine similarity between the multilingual sentence embedding of its title and the embeddings of the unique articles assigned to its college through advisor–author linkage over a cumulative window. RTAS is deliberately *not* a performance ranking: it measures where student topics fall relative to the observed college research portfolio (an observable proxy for the research frontier), not novelty, leadership, or impact.
+We introduce RTAS (Research–Training Alignment Score), defined for each project as the mean cosine similarity between the multilingual sentence embedding of its title and the embeddings of the unique articles assigned to its college through advisor–author linkage over a cumulative window. RTAS is deliberately *not* a performance ranking: it measures where student topics fall relative to the observed, advisor-linked college research portfolio, not novelty, leadership, or impact.
 
 We ask four research questions about the 2020–2024 cohorts of one large comprehensive Chinese university (40 colleges):
 
@@ -46,7 +46,7 @@ A single-institution design is a deliberate choice: it holds the funding regime,
 
 ### 2.1 Data sources and corpus tiers
 
-**Projects.** 3,714 undergraduate innovation projects approved in 2020–2024 at the case university (university-level 1,375, 37.0%; provincial 1,657, 44.6%; national 682, 18.4%), each with title (92% Chinese), level, year, college (40), and advisor(s). Multi-advisor fields were split using the same delimiter rules as in advisor-covariate construction, yielding 1,834 individual advisors and 4,244 advisor–project links (528 projects were co-supervised).
+**Projects.** 3,714 undergraduate innovation projects approved in 2020–2024 at one large comprehensive Chinese university (university-level 1,375, 37.0%; provincial 1,657, 44.6%; national 682, 18.4%), each with title (92% Chinese), level, year, college (40), and advisor(s). Multi-advisor fields were split using the same delimiter rules as in advisor-covariate construction, yielding 1,834 individual advisors and 4,244 advisor–project links (528 projects were co-supervised).
 
 **Articles.** 56,901 articles (type=article, 2020–2024) retrieved from OpenAlex for institution I37461747 via cursor pagination, with 100% English titles; yearly distribution 9,970 / 10,117 / 12,002 / 11,954 / 12,858. An extended 2017–2019 pool (22,438 articles; total 79,339) serves *only* to compute advisors' pre-project publication windows and does not enter RTAS or topic modeling.
 
@@ -60,7 +60,7 @@ For college $c$, year $t$, project $p$:
 
 $$\text{RTAS}(p,c,t)=\frac{1}{|P_{c,t}|}\sum_{j\in P_{c,t}}\cos(\mathbf e_p,\mathbf e_j),$$
 
-where $\mathbf e_p$ is the L2-normalized 384-dim embedding of the project title, and $P_{c,t}$ is the set of unique articles assigned to college $c$ over the cumulative window $[2020,t]$ via advisor–author linkage (a co-supervised article counts once; cross-college articles count once per college). Aggregation is the mean cosine. Titles-only is a design requirement, not a shortcut: project-side unstructured content does not exist in the original records, so the title is the only symmetric, cross-lingually comparable text unit on both sides; the cost (sparse semantics) is discussed in Sect. 5. "Research frontier" is operationalized as the *observed advisor-linked college research portfolio*—an observable proxy; RTAS does not measure novelty or influence (no citation or journal-tier information enters the score, except that advisor covariates use pre-project publication counts).
+where $\mathbf e_p$ is the L2-normalized 384-dim embedding of the project title, and $P_{c,t}$ is the set of unique articles assigned to college $c$ over the cumulative window $[2020,t]$ via advisor–author linkage. If an article is linked to multiple advisors within the same college, it is counted once in that college portfolio; if it is linked to advisors in multiple colleges, it is counted once per college. Aggregation is the mean cosine. Titles-only is a design requirement, not a shortcut: project-side unstructured content does not exist in the original records, so the title is the only symmetric, cross-lingually comparable text unit on both sides. Although article abstracts are available for a subset of OpenAlex records, no corresponding project abstracts exist in the institutional records; using article abstracts would therefore introduce a systematic information-granularity asymmetry between the two corpora. The cost of titles-only scoring (sparse semantics) is discussed in Sect. 5. "Research frontier" is used throughout as shorthand for the *observed advisor-linked college research portfolio*, not as a directly measured construct; RTAS does not measure novelty or influence (no citation or journal-tier information enters the score, except that advisor covariates use pre-project publication counts).
 
 RTAS is distinct from scholar-level research–teaching composites such as the RT-score (Scafetta 2025) and from correlational studies of research and teaching indicators (Maisano et al. 2023): it is a project-level semantic alignment measure and is not used for performance ranking.
 
@@ -91,7 +91,7 @@ Each analysis uses the window its question requires, stated explicitly: RTAS use
 
 - **RQ1.** One-way ANOVA with Tukey HSD for familywise pairwise comparisons (Δ = higher − lower level); Welch pairwise tests are reported as supplementary checks. These comparisons are descriptive, not confirmatory, because the aggregation-selection composite already weighs level separation.
 - **RQ2.** Quadrant classification used pre-specified cumulative prevalence cutoffs (article side: ≥ 1.5%; project side: ≥ 0.500%) with a pre-specified fallback: if a fixed cutoff identified fewer than two high-prevalence topics, the top 20% of topics by that side's prevalence were classified as high. Under the frozen 886-topic solution, no topic reached the article-side 1.5% cutoff (≈ 854 of 56,901 articles), so the fallback applied (effective cutoff 0.0879%, ≈ 50 articles; top 20%, 178 topics including ties at the boundary); the project-side 0.500% cutoff was feasible (15 topics) and remained fixed. Article-side sensitivity used top-15%/20%/25%. Diffusion lags were computed only for topics meeting the Sect. 2.6 annual rule on both sides.
-- **RQ3.** A two-level random-intercept mixed model was estimated using REML (`statsmodels MixedLM`), with projects nested within colleges (primary complete cases n = 3,231, 39 colleges; high-confidence-match sensitivity n = 2,750). Year was entered as a continuous variable centered at 2022. Fixed effects included provincial- and national-level indicators, log-transformed advisor pre-project three-year publication output, and log-transformed prior supervisory load (strictly year < focal year, mean across co-advisors). An unconditional means model gives the null ICC. An advisor-dependence sensitivity on single-advisor projects uses college fixed effects with advisor-clustered standard errors, repeated with clusters defined by college × advisor name as a homonym guard (Sect. 3.4).
+- **RQ3.** A two-level random-intercept mixed model was estimated using REML (`statsmodels MixedLM`), with projects nested within colleges (primary complete cases n = 3,231, 39 colleges; high-confidence-match sensitivity n = 2,750). Year was entered as a continuous variable centered at 2022. Fixed effects included provincial- and national-level indicators, log-transformed advisor pre-project three-year publication output, and log-transformed prior supervisory load (strictly year < focal year, mean across co-advisors). An unconditional means model gives the null ICC. Model fit is summarized with marginal R² (variance explained by fixed effects) and conditional R² (variance explained jointly by fixed and random effects), following Nakagawa and Schielzeth (2013). An advisor-dependence sensitivity on single-advisor projects uses college fixed effects with advisor-clustered standard errors, repeated with clusters defined by college × advisor name as a homonym guard (Sect. 3.4).
 - **RQ4.** Gini and Pareto concentration of national projects across supervisors; a supervisor-year lagged logistic model P(nat_t) ~ nat_{t−1} + log(1+load_{t−1}) + year FE (categorical year fixed effects with 2021 as reference, because the earliest outcome year is t = 2021 given the t−1 lag; standard errors clustered by supervisor). Multi-advisor fields were split so that each distinct advisor–project pair was treated as one supervisory link (co-supervised projects contributed one link to each listed individual advisor); the analysis unit is the individual advisor (1,834). Main sample 979 supervisor-years, 627 advisors; robustness sample 2,469/1,560. This replaces a cross-sectional top-5% regression whose OR is constructively inflated by definition (top-5% membership is itself ranked on cumulative national projects).
 
 All numbers derive from frozen CSVs under a fixed seed (42); no statistic was hand-edited.
@@ -102,7 +102,7 @@ All numbers derive from frozen CSVs under a fixed seed (42); no statistic was ha
 
 ### 3.1 Funding level and alignment (RQ1)
 
-Mean RTAS rises monotonically with level: university 0.1212, provincial 0.1391, national 0.1460. ANOVA F(2, 3711) = 35.72, p = 4.3×10⁻¹⁶, η² = 1.89% (95% bootstrap CI [1.14%, 2.86%]). Tukey HSD: P−U +0.0179***, N−U +0.0248***, N−P +0.0070 (p-adj = 0.082, ns); the largest pairwise gap (N−U) has Welch t = 7.375, p = 2.9×10⁻¹³, d = +0.352. The strict ordering is University < Provincial ≤ National. In the hierarchical model, however, provincial (β = +0.0006) and national (β = −0.0016) dummies are indistinguishable from zero (95% CIs cross 0): the raw level differences are attenuated to near zero after accounting for college and advisor context; administrative level itself has no independent association with alignment.
+Mean RTAS rises monotonically with level: university 0.1212, provincial 0.1391, national 0.1460. ANOVA F(2, 3711) = 35.72, p = 4.3×10⁻¹⁶, η² = 1.89% (95% bootstrap CI [1.14%, 2.86%]). Tukey HSD: P−U +0.0179***, N−U +0.0248***, N−P +0.0070 (p-adj = 0.082, ns); the largest pairwise gap (N−U) has Welch t = 7.375, p = 2.9×10⁻¹³, d = +0.352. The descriptive ordering is university below provincial and national, while national is not significantly distinguished from provincial. In the hierarchical model, however, provincial (β = +0.0006) and national (β = −0.0016) dummies are indistinguishable from zero (95% CIs cross 0): the raw level differences are attenuated to near zero after accounting for college and advisor context; administrative level itself has no independent association with alignment.
 
 ### 3.2 Static prevalence quadrants (RQ2, classification)
 
@@ -126,7 +126,7 @@ Under the annual first non-trivial presence rule, only 29 of 886 topics (3.27%) 
 
 The unconditional means model gives ICC = 0.7523; the full random-intercept model yields ICC = 0.7376—about three quarters of RTAS variance lies between colleges. The marginal R² was 0.0075, whereas the conditional R² was 0.7395, indicating that the observed fixed effects explained relatively little variance compared with the substantial between-college component. Among the observed project-level covariates, the advisor measures show the clearest associations:
 
-- Advisors' **pre-project 3-year publication output** is robustly and positively associated with alignment (β = +0.0043, p = 3.2×10⁻⁹); moving from 0 to 10 pre-project publications corresponds to ≈ +0.010 RTAS (≈ 0.14 SD).
+- Advisors' **pre-project 3-year publication output** is robustly and positively associated with alignment (β = +0.0043, p = 3.3×10⁻⁹); moving from 0 to 10 pre-project publications corresponds to ≈ +0.010 RTAS (≈ 0.14 SD).
 - **Prior supervisory load** (pre-project cumulative supervised projects) is negatively associated (β = −0.0063, p = 1.9×10⁻⁵), consistent with a capacity-dilution interpretation.
 - **Year** (centered at 2022, entered as a continuous variable) is positively associated with RTAS (β = +0.00313 per year, p < 0.001); funding-level indicators are null (Sect. 3.1).
 
@@ -204,7 +204,7 @@ We introduced RTAS, a project-level, cross-lingual semantic alignment measure, a
 
 | Fig. | Content | File |
 |---|---|---|
-| S1 | Supervisor transition matrix | `supplementary/Figure7_TransitionMatrix` |
+| S1 | Supervisory-load distribution across 1,834 individual advisors (projects per advisor, 2020–2024) | `supplementary/FigureS2_SupervisorLoad` |
 | S2 | Four-quadrant summary bars (clustered-only denominators) | `supplementary/Figure11_QuadrantSummary` |
 | S3a | Topic dynamics in undergraduate innovation projects (trend) | `supplementary/Figure13a_TopicTrend` |
 | S3b | Top-15 topic prevalence heatmap | `supplementary/Figure13b_TopicHeatmap` |
