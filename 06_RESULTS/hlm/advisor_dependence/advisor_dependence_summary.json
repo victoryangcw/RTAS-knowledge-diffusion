@@ -160,13 +160,83 @@
       }
     }
   },
+  "model_D_collegeFE_college_x_advisor_clustered": {
+    "n": 2716,
+    "model": "OLS college FE, SE clustered by college x advisor-name",
+    "n_clusters_raw_advisor_name": 1221,
+    "n_clusters_college_x_advisor": 1333,
+    "coefficients": {
+      "Intercept": {
+        "coef": 0.3488380096638172,
+        "se": 0.010695847947167094,
+        "p": 2.5684298209350056e-233,
+        "ci": [
+          0.32787453290325297,
+          0.3698014864243814
+        ],
+        "stars": "***"
+      },
+      "is_provincial": {
+        "coef": -0.00021819411435777467,
+        "se": 0.001909670357915079,
+        "p": 0.9090336912161173,
+        "ci": [
+          -0.003961079238215044,
+          0.0035246910094994944
+        ],
+        "stars": "ns"
+      },
+      "is_national": {
+        "coef": -0.0019319100179689408,
+        "se": 0.0026291579569167407,
+        "p": 0.4624602063734907,
+        "ci": [
+          -0.007084964923192664,
+          0.0032211448872547822
+        ],
+        "stars": "ns"
+      },
+      "year_centered": {
+        "coef": 0.0025656981881991697,
+        "se": 0.0007942387240942114,
+        "p": 0.0012362290286105934,
+        "ci": [
+          0.0010090188938474704,
+          0.004122377482550869
+        ],
+        "stars": "**"
+      },
+      "log_prior3y": {
+        "coef": 0.0042644440667905055,
+        "se": 0.0009723552562967602,
+        "p": 1.1562122965085922e-05,
+        "ci": [
+          0.0023586627842706416,
+          0.006170225349310369
+        ],
+        "stars": "***"
+      },
+      "log_prior_supervision": {
+        "coef": -0.005260198517531883,
+        "se": 0.001809638063328922,
+        "p": 0.003651836048367349,
+        "ci": [
+          -0.008807023946709383,
+          -0.0017133730883543818
+        ],
+        "stars": "**"
+      }
+    }
+  },
   "log_prior3y": {
     "frozen_primary": 0.0042657649071921,
     "subset_college_only": 0.004411727995649408,
     "crossed_college_advisor": 0.018285399018615454,
     "collegeFE_advisor_clustered": 0.0042644440667905055,
+    "collegeFE_college_x_advisor_clustered": 0.0042644440667905055,
     "delta_crossed_minus_subset": 0.013873671022966046,
     "delta_crossed_minus_primary": 0.014019634111423353,
-    "delta_feCluster_minus_primary": -1.3208404015946362e-06
+    "delta_feCluster_minus_primary": -1.3208404015946362e-06,
+    "delta_cxaCluster_minus_primary": -1.3208404015946362e-06
   }
 }
