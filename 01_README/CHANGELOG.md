@@ -5,6 +5,81 @@ config, data, or code that could affect downstream numbers.
 
 ---
 
+## [v1.0-cand.14] — 2026-09-18 — TWENTY-THIRD ROUND: NUMERICAL PROVENANCE AUDIT
+
+Milestone status: ✅ Full read-only numerical provenance audit completed.
+No frozen analysis output changed; no pipeline re-run. Five presentation-level
+manuscript corrections (one stale statistic, three wording/rounding fixes, one
+Methods sentence). New artifacts: `03_CODE/19_numerical_provenance_audit.py`
+(read-only; 115 checks across 7 modules, 115 PASS) and
+`06_RESULTS/19_numerical_provenance_ledger.csv` (per-number source file, column,
+formula, recomputed value).
+
+### Coverage — every headline number independently recomputed
+1. **corpus/linkage**: 3,714 projects; level counts 1,375/1,657/682 and
+   37.0/44.6/18.4%; 1,834 advisors / 4,244 links / 528 co-supervised (rebuilt via
+   frozen delimiter regex); 56,901 articles with exact yearly counts; 22,438
+   prehistory; 79,339 total; 33,312 college-assigned (58.54%); match status
+   2,750/748/216; 60,615 joint docs.
+2. **aggregation/RTAS**: five composites recomputed from frozen formula
+   (.742/.480/.447/.398/.300, mean wins); final RTAS describe() exact
+   (mean .1337, SD .0723, median .1362, range −.0575/.3960); 0→10-publication
+   shift 0.004266×ln11=0.01024 ≈ 0.142 SD.
+3. **validation**: ρ=.405, AUC=.880, Kendall .327, related-only −.253, LOO
+   .018; Rater A QWK .465 / exact 72%; Rater B QWK .606 / exact 78%; A–B QWK
+   .826; retest .643; LLM .459/.638/.933; baselines .300/.638 etc.; BGE-M3
+   .334/.811; paired-bootstrap CIs — all reproduced.
+   Convention findings (no data error): QWK is computed on the FIXED rubric grid
+   {1,2,3,4} (sklearn default observed-labels-only gives .409 — the frozen .606
+   is correct); AUC uses the frozen default-argsort tie convention (Mann-Whitney
+   average-rank equivalent here).
+4. **topic/lag**: 29 defined-lag topics (3.27% of 886; 24 HRLT + 5 HRHT)
+   rebuilt atomically from yearly prevalence under the ≥3 docs/≥0.2% (articles)
+   and ≥2/≥0.2% (projects) rule; HRLT 12/9/3 = 50.0/37.5/12.5%; overall median
+   0, mean +0.59; 13 zero-lag topics; rebuild is row-identical to frozen
+   topic_first_year_adoption.csv.
+5. **RQ1**: group means .1212/.1391/.1460; F(2,3711)=35.72, p=4.3e-16,
+   η²=1.89% (bootstrap CI [1.14,2.86]); Tukey +.0179***/+.0248***/+.0070
+   (p=.082); Welch N–U t=7.375, p=2.9e-13, d=.352.
+6. **RQ3 variance decomposition** (in-memory REML refit from frozen table;
+   prior-supervision column rebuilt from atoms and identical to frozen):
+   n=3,231/39; null τ₀₀=.005438, σ²=.001791 → ICC .7523; full τ₀₀=.004944,
+   σ²=.001759 → ICC .7376; var(FE)=.000050 → marginal R²=.0075,
+   conditional R²=.7395 (Nakagawa-Schielzeth/Johnson); β log_prior3y=.004266
+   (p=3.201e-9), supervision=−.006287, year=.003132.
+7. **RQ4** (highest residual risk — all definitions locked): Gini computed over
+   ALL 1,834 advisors including 1,236 with zero national projects
+   (.7458 national / .3677 total); top-5% = ceil(0.05×1834=91.7) = 92 advisors
+   holding 30.99%; top-20% = int(366.8) = 366 advisors holding 71.91%;
+   top-5% exposure = 560 projects with ANY top-5% advisor, project-deduped once
+   (560+3,154=3,714), d=.083, Welch p=.065; lagged logits rebuilt: sample A
+   979 supervisor-years/627 advisors OR 2.06 [1.53,2.76]; sample B
+   2,469/1,560 OR 2.45 [1.91,3.16]. Advisor load 818 (44.6%) one project,
+   345 (18.8%) ≥4.
+
+### Manuscript corrections (presentation only; frozen numbers untouched)
+- **§2.1 linkage**: "mean 1.83 colleges per matched article" → **1.37**.
+  Full-corpus truth 45,619 article–college edges / 33,312 = 1.3694 (9,608
+  articles with >1 college); 1.83 was a stale 12K-first-batch-era statistic.
+- **§2.1 projects**: "title (92% Chinese)" → "title (on average 92% Chinese
+  characters)". The frozen 0.92337 is the mean within-title CJK character
+  share, not the share of Chinese-language titles (Chinese-majority titles
+  are 98.57%; 99.92% contain any CJK).
+- **§2.1 articles**: "with 100% English titles" → "predominantly English
+  titles (56,858 of 56,901, 99.9%, contain no Chinese characters)"; 43 full-
+  corpus titles contain CJK characters (the 100% was exact only on the 12K
+  first batch).
+- **§2.4 LLM second rater**: "ρ = 0.638 (p < 10⁻¹⁸)" → "p = 1.7×10⁻¹⁸"
+  (exact frozen p=1.73e-18, which is not below 1e-18).
+- **Methods closing sentence**: "All numbers derive from frozen CSVs under a
+  fixed seed (42); no statistic was hand-edited." → "All reported statistics
+  were generated from frozen analysis outputs; values are rounded for
+  presentation. Seed 42 was used wherever stochastic procedures required a
+  random seed." (presentation rounding, e.g. 3.26e-9→3.3e-9, is normal
+  formatting, not hand-editing).
+
+---
+
 ## [v1.0-cand.14] — 2026-09-18 — TWENTY-SECOND ROUND: ADVISOR-LEVEL DEPENDENCE SENSITIVITY
 
 Milestone status: ✅ RQ3 advisor-dependence robustness added.
