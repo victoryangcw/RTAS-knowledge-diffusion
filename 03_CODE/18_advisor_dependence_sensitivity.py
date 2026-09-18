@@ -25,9 +25,14 @@ DESIGN CHOICE (multiple membership):
   Comparing A vs B on the SAME observations isolates the effect of adding
   the advisor level; frozen primary (n=3,231) is shown for reference.
 
-FALLBACK (if crossed MixedLM does not converge):
+FALLBACK (if crossed MixedLM does not converge / boundary solution):
   College fixed effects (dummies) + advisor-clustered robust SE (OLS),
   same single-advisor subset.
+
+HOMONYM GUARD (Model D):
+  Same college-FE OLS but SEs clustered on college x normalized advisor name,
+  so identical Chinese names appearing in different colleges are not merged
+  into one cluster.
 
 QUESTION:
   After explicitly accounting for repeated observations within advisors,
@@ -201,6 +206,40 @@ coC['stars'] = np.where(coC['p'] < 0.001, '***',
 fitC = {'n': n_proj, 'model': 'OLS college FE, SE clustered by advisor'}
 print(coC[~coC['term'].str.startswith('C(college)')].round(6).to_string(index=False))
 
+# ------------------------------------------------------------
+# 4b. Cluster-ID check: college x normalized advisor name
+#     Guards against identical Chinese names across colleges
+#     (homonyms) being merged into one advisor cluster.
+# ------------------------------------------------------------
+print('\n' + '='*60)
+print('[4b] College FE OLS, SE clustered by college x advisor-name ID')
+d['cluster_id_cxa'] = (d['college'].astype(str).str.strip()
+                       + '||' + d['advisor_id'].astype(str).str.strip())
+n_clusters_raw = int(d['advisor_id'].nunique())
+n_clusters_cxa = int(d['cluster_id_cxa'].nunique())
+mmD = smf.ols(FORMULA + ' + C(college)', data=d)
+resD = mmD.fit(cov_type='cluster', cov_kwds={'groups': d['cluster_id_cxa']})
+ciD = resD.conf_int()
+coD = pd.DataFrame({
+    'term': resD.params.index,
+    'coef': resD.params.values,
+    'se': resD.bse.values,
+    'z': resD.tvalues.values,
+    'p': resD.pvalues.values,
+    'ci_low': ciD[0].values,
+    'ci_high': ciD[1].values,
+})
+coD['stars'] = np.where(coD['p'] < 0.001, '***',
+                np.where(coD['p'] < 0.01, '**',
+                np.where(coD['p'] < 0.05, '*', 'ns')))
+fitD = {'n': n_proj,
+        'model': 'OLS college FE, SE clustered by college x advisor-name',
+        'n_clusters_raw_advisor_name': n_clusters_raw,
+        'n_clusters_college_x_advisor': n_clusters_cxa}
+print(f'  clusters: raw advisor name = {n_clusters_raw}; '
+      f'college x advisor = {n_clusters_cxa}')
+print(coD[~coD['term'].str.startswith('C(college)')].round(6).to_string(index=False))
+
 boundary = crossed_ok and (fitB['var_college'] < 1e-10)
 if boundary:
     print('\n[NOTE] Crossed fit is a BOUNDARY solution (var_college=0); '
@@ -240,6 +279,12 @@ cmp = cmp.merge(cc, on='term', how='outer')
 cmp['delta_feCluster_vs_primary'] = cmp['coef_collegeFE_advCluster'] - cmp['coef_primary']
 cmp['ci_excludes_zero_feCluster'] = ((cmp['ci_low_feCluster'] > 0) & (cmp['ci_high_feCluster'] > 0)) | \
                                     ((cmp['ci_low_feCluster'] < 0) & (cmp['ci_high_feCluster'] < 0))
+# Attach college x advisor-name clustered results (homonym guard)
+cdx = coD.rename(columns={
+    'coef': 'coef_collegeFE_cxaCluster', 'se': 'se_cxaCluster', 'z': 'z_cxaCluster',
+    'p': 'p_cxaCluster', 'ci_low': 'ci_low_cxaCluster', 'ci_high': 'ci_high_cxaCluster',
+    'stars': 'stars_cxaCluster'})
+cmp = cmp.merge(cdx, on='term', how='outer')
 
 keep_terms = ['Intercept', 'is_provincial', 'is_national', 'year_centered',
               'log_prior3y', 'log_prior_supervision']
@@ -279,6 +324,13 @@ summary = {
             'ci': [float(r['ci_low']), float(r['ci_high'])], 'stars': r['stars']}
             for _, r in coC[~coC['term'].str.startswith('C(college)')].iterrows()},
     },
+    'model_D_collegeFE_college_x_advisor_clustered': {
+        **fitD,
+        'coefficients': {r['term']: {
+            'coef': float(r['coef']), 'se': float(r['se']), 'p': float(r['p']),
+            'ci': [float(r['ci_low']), float(r['ci_high'])], 'stars': r['stars']}
+            for _, r in coD[~coD['term'].str.startswith('C(college)')].iterrows()},
+    },
 }
 if crossed_ok:
     key_terms = ['log_prior3y', 'log_prior_supervision', 'year_centered',
@@ -302,19 +354,35 @@ if crossed_ok:
             'crossed-RE fixed effects are not stably identified. Treat '
             'Model C as the reliable dependence sensitivity.') if boundary else '',
     }
-    # headline deltas
+    # headline deltas (crossed reference)
     b3 = coB.loc[coB.term == 'log_prior3y', 'coef'].iloc[0]
     a3 = coA.loc[coA.term == 'log_prior3y', 'coef'].iloc[0]
     p3 = fp.loc[fp.term == 'log_prior3y', 'coef'].iloc[0]
     c3 = coC.loc[coC.term == 'log_prior3y', 'coef'].iloc[0]
+    d3v = coD.loc[coD.term == 'log_prior3y', 'coef'].iloc[0]
     summary['log_prior3y'] = {
         'frozen_primary': float(p3),
         'subset_college_only': float(a3),
         'crossed_college_advisor': float(b3),
         'collegeFE_advisor_clustered': float(c3),
+        'collegeFE_college_x_advisor_clustered': float(d3v),
         'delta_crossed_minus_subset': float(b3 - a3),
         'delta_crossed_minus_primary': float(b3 - p3),
         'delta_feCluster_minus_primary': float(c3 - p3),
+        'delta_cxaCluster_minus_primary': float(d3v - p3),
+    }
+else:
+    a3 = coA.loc[coA.term == 'log_prior3y', 'coef'].iloc[0]
+    p3 = fp.loc[fp.term == 'log_prior3y', 'coef'].iloc[0]
+    c3 = coC.loc[coC.term == 'log_prior3y', 'coef'].iloc[0]
+    d3v = coD.loc[coD.term == 'log_prior3y', 'coef'].iloc[0]
+    summary['log_prior3y'] = {
+        'frozen_primary': float(p3),
+        'subset_college_only': float(a3),
+        'collegeFE_advisor_clustered': float(c3),
+        'collegeFE_college_x_advisor_clustered': float(d3v),
+        'delta_feCluster_minus_primary': float(c3 - p3),
+        'delta_cxaCluster_minus_primary': float(d3v - p3),
     }
 
 with open(OUT / 'advisor_dependence_summary.json', 'w', encoding='utf-8') as f:
@@ -342,6 +410,9 @@ with open(OUT / 'advisor_dependence_summary.txt', 'w', encoding='utf-8') as f:
         f.write(f"marg R2={fitB['r2_marginal']:.4f}  cond R2={fitB['r2_conditional']:.4f}\n\n")
     f.write('--- Model C: college FE + advisor-clustered SE (reliable dependence check) ---\n')
     f.write(coC[~coC['term'].str.startswith('C(college)')].round(6).to_string(index=False))
+    f.write(f'\n\n--- Model D: college FE + SE clustered by college x advisor-name '
+            f'(homonym guard; clusters {n_clusters_raw} -> {n_clusters_cxa}) ---\n')
+    f.write(coD[~coD['term'].str.startswith('C(college)')].round(6).to_string(index=False))
     f.write('\n\n--- Coefficient comparison ---\n')
     f.write(cmp.round(6).to_string(index=False))
 
@@ -352,4 +423,5 @@ if crossed_ok:
     print(f"log_prior3y: primary={lp['frozen_primary']:+.6f}  "
           f"subset={lp['subset_college_only']:+.6f}  "
           f"crossed={lp['crossed_college_advisor']:+.6f}{'  [BOUNDARY]' if boundary else ''}  "
-          f"collegeFE+advCluster={lp['collegeFE_advisor_clustered']:+.6f}")
+          f"collegeFE+advCluster={lp['collegeFE_advisor_clustered']:+.6f}  "
+          f"collegeFE+cxaCluster={lp['collegeFE_college_x_advisor_clustered']:+.6f}")

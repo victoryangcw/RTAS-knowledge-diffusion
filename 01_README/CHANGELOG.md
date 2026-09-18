@@ -23,7 +23,11 @@ All frozen primary statistics unchanged.
 - Reliable check: college FE + advisor-clustered SE. All substantive conclusions
   unchanged: log_prior3y β=+0.0043 (p=1.5e-5, CI excludes 0), log_prior_supervision
   β=−0.0053 (p=0.004), year β=+0.0026 (p=0.001), funding dummies ns.
-  Coefficient moves < 0.001 vs frozen primary; only SEs increase modestly.
+  Coefficient magnitudes changed only modestly vs frozen primary; signs and
+  inferential conclusions preserved; SEs increase as expected under clustering.
+- Homonym guard (Model D): SEs clustered by college x advisor name (1,333 clusters
+  vs 1,221 raw names); point estimates identical, SEs virtually unchanged
+  (log_prior3y SE 0.000983 -> 0.000972), same conclusions.
 - Manuscript: new §3.4 "Advisor-dependence sensitivity" paragraph; Methods RQ3
   pointer; new Limitation 9 (multiple membership of co-supervised projects).
 - Also backfilled frozen outputs for cand.13 robustness analyses
