@@ -476,7 +476,6 @@ def fig5_college_caterpillar():
     re_df = re_df.sort_values('blup', ascending=True)  # ascending so rank 1 lands on top row
     re_df['college_en'] = re_df['college'].apply(translate_college)
     n_all = len(re_df)
-    n_sig = int(((re_df['blup_ci_low'] > 0) | (re_df['blup_ci_high'] < 0)).sum())
     fig, ax = plt.subplots(figsize=(9.5, max(8.5, 0.30 * n_all + 1.5)))
     for i, (_, r) in enumerate(re_df.iterrows()):
         lo, hi = r['blup_ci_low'], r['blup_ci_high']
