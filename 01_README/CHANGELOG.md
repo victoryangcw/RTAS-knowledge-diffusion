@@ -5,6 +5,58 @@ config, data, or code that could affect downstream numbers.
 
 ---
 
+## [v1.1-postaudit] — 2026-09-19 — TWENTY-FOURTH ROUND: LATEX V7 SOURCE INGESTED INTO REPO
+
+Milestone status: ✅ LaTeX source becomes Git truth; preview PDF separated; tag deferred.
+
+New `manuscript/` tree (single commit, no recurring binary churn):
+`main.tex` + `supplementary content inside main.tex` + `references_FINAL.bib` +
+`README_AUDIT.txt` + `figures/` (12 PNGs, manuscript numbering Figure 1–7 / S1–S4) +
+`preview/RTAS_postaudit_preview.pdf` (the V7 zip's own 25-page compile).
+
+### V7 caliber verification (all pass)
+- Post-audit markers present in main.tex: Wuhan University ×7; 1.37 colleges per
+  matched article; eight-topic tie at ranks 171–178 → inclusive ≥ → 178; 92.3%
+  mean Chinese-character share; 56,858/56,901 = 99.9% CJK-free article titles;
+  LLM p = 1.7×10⁻¹⁸.
+- Banned legacy strings zero hits: 1.83, "100% English", "one large comprehensive
+  Chinese university", "33 of 39", RI-CLPM, pipeline-v2.
+- V7 = V6 text + 3 added references (Chen et al. 2024 M3-Embedding; Robertson &
+  Zaragoza 2009 BM25; Seabold & Perktold 2010 statsmodels): 38 cited keys, all
+  resolved in references_FINAL.bib (1 unused entry `hamers1989similarity` kept).
+
+### Figure audit (zip vs frozen dev figures, md5 + visual)
+- All 12 LaTeX figures differ byte-wise from dev exports (renumbered set).
+- Figure 1 Roadmap: clean — RI-CLPM box absent; embedded stats verified
+  (3,714/56,901/33,312/58.5%/22,438/ρs=.405/composite .742/F=35.7/η²=1.89%/
+  Gini .746/Top5 31.0%/OR 2.06/ICC 0.738/29/886/+0.5 yr).
+- Figure S1: new supervisory-load distribution (not the old transition matrix);
+  818/671/345 sum to 1,834; mean 2.314, max 10 ✓.
+- **Figure 5: zip copy was STALE** — carried the removed in-figure note
+  "33 of 39 colleges have CIs excluding 0". Replaced with the clean dev PNG
+  (`05_FINAL_FIGURES/main/Figure5_CollegeCaterpillar.png`, subtitle now only
+  "model-adjusted college deviations").
+
+### ledger → LaTeX number check: 112 targeted checks, 100% PASS
+Apparent misses all resolved as phrasing variants: "24 definable high-research/
+low-project topics"; "50.0% (12/24) research-side first, 37.5% same-year, 12.5%
+project-side"; Model C precision via 95% CIs (SE not printed); 0→10 publications
+rendered as "approximately +0.010 RTAS (approximately 0.14 SD)"; outlier
+composition (21,354/1,964) was never part of the manuscript text (audit-only fact).
+
+### Build compatibility fix
+`\graphicspath{{figures/}}` added to the preamble so the flat-name
+`\includegraphics{...}` calls resolve inside the new subdirectory layout.
+
+### Outstanding before tagging `submission-v1.1-postaudit`
+1. Recompile with the clean Figure 5 (preview PDF page with Figure 5 still shows
+   the stale render).
+2. Fill placeholders: author names/affiliations, Funding, Ethics approval,
+   Author contributions.
+3. Final skim of the recompiled PDF.
+
+---
+
 ## [v1.0-cand.14] — 2026-09-18 — TWENTY-THIRD ROUND: NUMERICAL PROVENANCE AUDIT
 
 Milestone status: ✅ Full read-only numerical provenance audit completed.
