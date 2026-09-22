@@ -5,6 +5,51 @@ config, data, or code that could affect downstream numbers.
 
 ---
 
+## [v1.1-postaudit] — 2026-09-22 — TWENTY-FIFTH ROUND: RAW-REGISTRY AUDIT + FIGURE TITLE UNIFICATION
+
+### Upstream raw-registry audit (new script: `03_CODE/20_raw_registry_audit.py`)
+Re-parsed the four official WHU ITTP registry Excels (2021–2024) from
+`D:\大创研究` and reconciled them against the merged 3,887-row table and the
+frozen 3,714-row analytic dataset:
+- **A1 project types**: official registries contain 163 entrepreneurship
+  projects (创业训练/创业实践); all 163 are in the merged table and **160 are
+  in the frozen 3,714 dataset** (4.3%; 3 fell in excluded colleges). Their
+  mean RTAS is lower (0.100 vs 0.135, d = −0.49); excluding them leaves every
+  MixedLM conclusion intact (ICC 0.7373; all signs/significances stable).
+  No official 2020 registry exists in the archive (incl. 大创.rar), so 2020
+  types cannot be officially classified.
+- **A2 uniqueness**: 3,714 unique project IDs; (year, normalized-title) keys
+  all unique; 7 cross-year same-title pairs are legitimate renewals.
+- **A3 tiers PASS**: 1,375 university (37.0%) / 1,657 provincial (44.6%) /
+  682 national (18.4%). Coverage note: the archived 2022 registry contains
+  no university-level projects (0 rows in both official list and merge).
+- **A4 advisor split PASS**: 1,834 advisors / 4,244 links / 528 co-supervised.
+- **173/8 reconciliation confirmed**: 177 merged rows absent vs 4 frozen-only
+  rows = net 173; the 4 are the SAME projects with mojibake titles (literal
+  `?` substitution), not extra rows; true exclusion = 173 rows / 8 colleges.
+- **A8 missingness (3,714 → 3,231)**: 483 excluded ~11–15% per year/level;
+  concentrated in humanities units (Marxism 51%, History 41%); excluded
+  projects have lower mean RTAS (0.099 vs 0.139).
+
+### B4 fix: top-5% share 30.8% → 31.0% in the Matthew figure
+`_build_individual.py` used ceil(0.05×1834)=92 for the headline (30.99%) but
+int() truncation → 91 for the Pareto panel bar (30.75%). Pareto top5 now uses
+the same 92-advisor rule; both frozen `individual_advisor_audit.json` copies
+updated (30.993%; advisor counts added). top1/top10/top20 unchanged
+(8.7/49.8/71.9; top20 = 366 as in the frozen text).
+
+### Figure title unification (all 12 LaTeX figures)
+All in-figure figure-level titles/suptitles removed; LaTeX captions carry
+titles and statistics. Retained: axis labels, legends, data labels, inset
+label, and neutral panel labels (a)/(b)/(c). Matthew panel titles made
+neutral ("(a) Lorenz curve", "(b) Concentration by advisor percentile",
+"(c) Lagged national-project persistence"); embedded Gini/share stats moved
+out of the image. Stacked lag layout reclaimed (gridspec top 0.90→0.97).
+Filenames unchanged; PNG + PDF regenerated for all 12 and mirrored into
+`manuscript/figures/` and `02_FIGURES/`.
+
+---
+
 ## [v1.1-postaudit] — 2026-09-19 — TWENTY-FOURTH ROUND: LATEX V7 SOURCE INGESTED INTO REPO
 
 Milestone status: ✅ LaTeX source becomes Git truth; preview PDF separated; tag deferred.
