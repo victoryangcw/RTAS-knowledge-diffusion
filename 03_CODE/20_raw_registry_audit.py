@@ -167,19 +167,28 @@ def main():
     ent['_in_frozen'] = [(int(y), t) in fkeys for y, t in zip(ent['year'], ent['ntitle'])]
     n_ent_merged = int(ent['_in_merged'].sum())
     n_ent_frozen = int(ent['_in_frozen'].sum())
+    # official registry rows can be duplicated (two 2024 titles appear twice);
+    # the frozen dataset holds each project once -> count UNIQUE projects too
+    n_ent_frozen_unique = int(
+        ent.loc[ent['_in_frozen'], ['year', 'ntitle']].drop_duplicates().shape[0])
+    n_dup_rows = n_ent_frozen - n_ent_frozen_unique
     print(f'\nEntrepreneurship rows by year/type in frozen 3,714:')
     print(ent[ent['_in_frozen']].groupby(['year', 'type']).size().to_string())
     print('By level in frozen:')
     print(ent[ent['_in_frozen']]['level'].value_counts().to_string())
     print(f'OFFICIAL entrepreneurship rows 2021-24 = {len(ent)}; '
-          f'in merged = {n_ent_merged}; in frozen 3,714 = {n_ent_frozen}')
+          f'in merged = {n_ent_merged}; in frozen 3,714 = {n_ent_frozen} rows '
+          f'= {n_ent_frozen_unique} UNIQUE projects ({n_dup_rows} duplicate '
+          f'registry rows: same title listed twice in the official list)')
     not_in_frozen = ent[~ent['_in_frozen']]
     print(f'Entrepreneurship rows NOT in frozen ({len(not_in_frozen)}):')
     print(not_in_frozen[['year', 'type', 'level', 'title', 'college']].to_string(index=False))
     check('A1 entrepreneurship projects inside MERGED 3,887 table',
           n_ent_merged == 0, f'{n_ent_merged} of {len(ent)} (year-keyed)')
     check('A1 entrepreneurship projects inside FROZEN 3,714 dataset',
-          n_ent_frozen == 0, f'{n_ent_frozen} (year-keyed)')
+          n_ent_frozen == 0,
+          f'{n_ent_frozen} registry rows = {n_ent_frozen_unique} unique '
+          f'projects ({n_ent_frozen_unique/len(fr):.1%} of frozen)')
 
     # how many official 2021-24 rows overall are captured by merged/frozen (year-keyed)
     reg['_in_merged'] = [(int(y), t) in mkeys for y, t in zip(reg['year'], reg['ntitle'])]
