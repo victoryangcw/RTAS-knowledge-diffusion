@@ -112,7 +112,7 @@ The study makes three contributions. First, it provides a reproducible, project-
 
 \subsection{Data sources and corpus tiers}
 
-\textbf{Projects.} The project corpus contains 3,714 undergraduate innovation projects approved at Wuhan University in 2020--2024: 1,375 university-level (37.0\%), 1,657 provincial-level (44.6\%), and 682 national-level (18.4\%). The project records were compiled from administrative records supplied by teaching administrators in the 40 colleges and subsequently consolidated into a unified study dataset. Each record contains title (project titles contain 92.3\% Chinese characters on average), level, year, college (40), and advisor information. Using the same delimiter and normalization rules as the advisor-covariate construction, multi-advisor fields were split into individual advisors: 1,834 individual advisors and 4,244 distinct advisor--project links are represented, and 528 projects are co-supervised.
+\textbf{Projects.} The project corpus contains 3,714 undergraduate innovation projects approved at Wuhan University in 2020--2024: 1,375 university-level (37.0\%), 1,657 provincial-level (44.6\%), and 682 national-level (18.4\%). The project records were compiled from administrative records supplied by teaching administrators in the 40 colleges and subsequently consolidated into a unified study dataset. Each record contains title (project titles contain 92.3\% Chinese characters on average), level, year, college (40), and advisor information. Using the same delimiter and normalization rules as the advisor-covariate construction, multi-advisor fields were split into individual advisors: 1,834 individual advisors and 4,244 distinct advisor--project links are represented, and 528 projects are co-supervised. We additionally re-parsed the four official approval lists for 2021--2024, which carry a project-type field absent from the consolidated table: this independently reproduced the tier counts and the 1,834/4,244/528 advisor rebuild, and showed that the analytic sample pools two program tracks---158 unique projects (4.3\%; 74, 23, 26, and 35 in 2021--2024) are entrepreneurship training or practice projects rather than innovation training projects. No type-labeled official list exists for 2020, so track membership cannot be recovered for that cohort; a sensitivity analysis excluding the 158 identifiable entrepreneurship projects leaves every mixed-model conclusion unchanged (Online Resource 1, Table~S1). The archived 2022 official list itself contains no university-level entries, so that year's tier composition reflects source-registry coverage rather than any analytical reclassification.
 
 \textbf{Articles.} A total of 56,901 OpenAlex records of type \texttt{article} were retrieved for Wuhan University (OpenAlex institution ID I37461747) for publication years 2020--2024 via cursor pagination on September 3, 2026. Titles were predominantly English: 56,858 of 56,901 titles (99.9\%) contained no Chinese characters; yearly counts were 9,970 / 10,117 / 12,002 / 11,954 / 12,858. OpenAlex provides an open scholarly metadata infrastructure \citep{priem2022openalex}; recent comparative work documents strong reference coverage while also identifying database-specific limitations \citep{culbert2025openalex}. An additional 22,438 articles published in 2017--2019 were retrieved on September 4, 2026 (total 79,339) and serve \emph{only} to compute advisors' pre-project publication windows; these records do not enter RTAS or topic modeling.
 
@@ -357,6 +357,8 @@ For research policy, the results suggest that administrative funding tier is les
 
 \item \textbf{Prior-supervision history.} The project registry begins in 2020, so prior supervisory load is left-censored at that year; the covariate captures previously observed projects, not an advisor's full pre-2020 supervision history.
 
+\item \textbf{Registry coverage and program tracks.} Official project-type labels exist only for 2021--2024; the 2020 cohort's track (innovation vs entrepreneurship) cannot be classified from the available administrative archive, and the archived 2022 official list contains no university-level entries. The analytic sample consequently pools both tracks (158 identifiable entrepreneurship projects, 4.3\%, which have lower RTAS on average: 0.100 vs 0.135, Cohen $d=-0.49$). Excluding these projects from the mixed model preserves every coefficient sign and significance classification (Table~S1), but a fully track-stratified treatment of the 2020 cohort is not possible from the available records.
+
 \item \textbf{Within-year ordering.} RTAS reference portfolios include articles from the focal calendar year $t$. Because the analysis is annual, it does not establish whether a same-year article preceded or followed the project's approval date; RTAS should therefore be interpreted as contemporaneous annual alignment rather than strict within-year temporal precedence.
 
 \item \textbf{Advisor-level dependence and multiple membership.} The primary mixed model accounts for clustering by college but does not include a separate advisor random effect. A single-advisor sensitivity using college fixed effects and advisor-clustered standard errors preserved all substantive fixed-effect conclusions, including under the college $\times$ advisor homonym guard. However, 528 co-supervised projects have no primary-advisor designation, so a full multiple-membership model is not estimated.
@@ -493,6 +495,40 @@ Corresponding author: email@domain.edu
 \caption{Descriptive RTAS means for all 40 colleges using the full project dataset. The one-way college ANOVA shown in the figure uses 39 colleges because the single-project college cannot contribute a within-group variance estimate; this ANOVA effect size is distinct from the adjusted mixed-model ICC in the main text. The ordering is descriptive and should not be interpreted as a performance ranking.}
 \label{fig:s4}
 \end{figure}
+
+
+\section*{Supplementary Tables}
+
+% ---------------------------------------------------------
+% Table S1
+% ---------------------------------------------------------
+
+The official 2021--2024 approval lists classify projects as innovation training or entrepreneurship training/practice. Matching on (year, normalized title) identifies 158 unique entrepreneurship projects inside the frozen 3,714-row dataset (4.3\%; 74/23/26/35 across 2021--2024; 53 university-, 64 provincial-, and 41 national-level). These projects have lower alignment than the remaining 3,556 projects: mean RTAS $=0.100$ (SD $=0.053$) versus $0.135$ (SD $=0.073$); Welch $t=-7.90$, $p<0.001$, Cohen $d=-0.49$ (pooled SD). Table~S1 re-estimates the frozen random-intercept specification (REML, clustered by college, covariates taken from the frozen dataset unchanged) after excluding these 158 projects: the complete-case sample falls from 3,231 to 3,085 projects, ICC changes from 0.7376 to 0.7373, every coefficient retains its sign and significance classification, and the funding-level indicators remain non-significant. The 2020 cohort is retained in both fits because no type-labeled official registry exists for that year.
+
+\begin{table}[H]
+\centering
+\caption{Sensitivity of the Table~6 mixed model to excluding the 158 officially typed entrepreneurship projects (2021--2024).}
+\label{tab:s1}
+\begin{tabular}{lrrrr}
+\toprule
+& \multicolumn{2}{c}{Primary ($N=3{,}231$)} & \multicolumn{2}{c}{Excluding entrepreneurship ($N=3{,}085$)}\\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}
+Predictor & $\beta$ & $p$ & $\beta$ & $p$\\
+\midrule
+Provincial vs university & 0.00062 & 0.720 & 0.00085 & 0.627\\
+National vs university & $-0.00162$ & 0.452 & $-0.00205$ & 0.357\\
+Year (per year; centered 2022) & 0.00313 & $<0.001$ & 0.00293 & $<0.001$\\
+Advisor prior 3y works, $\log(1+x)$ & 0.00427 & $<0.001$ & 0.00480 & $<0.001$\\
+Advisor prior supervised projects, $\log(1+x)$ & $-0.00629$ & $<0.001$ & $-0.00567$ & $<0.001$\\
+\midrule
+ICC & 0.7376 & & 0.7373 & \\
+Number of colleges & 39 & & 39 & \\
+\bottomrule
+\end{tabular}
+
+\vspace{1mm}
+\footnotesize Same specification as Table~6: RTAS $\sim$ provincial $+$ national $+$ year $+$ $\log(1+\text{prior 3y works})$ $+$ $\log(1+\text{prior supervised projects})$, random intercept by college, REML. Entrepreneurship projects are identified from the official 2021--2024 project-type field; 2020 track membership is unobservable, so no 2020 project is excluded.
+\end{table}
 
 
 \end{document}

@@ -12,12 +12,19 @@ Re-parsed the four official WHU ITTP registry Excels (2021–2024) from
 `D:\大创研究` and reconciled them against the merged 3,887-row table and the
 frozen 3,714-row analytic dataset:
 - **A1 project types**: official registries contain 163 entrepreneurship
-  projects (创业训练/创业实践); all 163 are in the merged table and **160 are
-  in the frozen 3,714 dataset** (4.3%; 3 fell in excluded colleges). Their
-  mean RTAS is lower (0.100 vs 0.135, d = −0.49); excluding them leaves every
-  MixedLM conclusion intact (ICC 0.7373; all signs/significances stable).
-  No official 2020 registry exists in the archive (incl. 大创.rar), so 2020
-  types cannot be officially classified.
+  rows (创业训练/创业实践; exact types); all are in the merged table and
+  **158 UNIQUE projects are in the frozen 3,714 dataset (4.3%)** — the audit's
+  160 row count included two 2024 titles that are duplicated rows in the
+  official list itself. By year 74/23/26/35; by tier 53 university /
+  64 provincial / 41 national. Their mean RTAS is lower (0.100 vs 0.135,
+  Welch $p=2.5\times10^{-13}$, d = −0.49). Excluding them re-fits the frozen
+  v2b MixedLM on n = 3,085 complete cases: ICC 0.7373, every coefficient sign
+  and significance classification preserved (new script
+  `03_CODE/21_entrepreneurship_exclusion_sensitivity.py`; outputs
+  `06_RESULTS/hlm/entrepreneurship_exclusion/`; manuscript Methods,
+  Limitations, and Supplementary Table S1 updated). No official 2020 registry
+  exists in the archive (incl. 大创.rar), so 2020 types cannot be classified
+  and the sensitivity excludes no 2020 project.
 - **A2 uniqueness**: 3,714 unique project IDs; (year, normalized-title) keys
   all unique; 7 cross-year same-title pairs are legitimate renewals.
 - **A3 tiers PASS**: 1,375 university (37.0%) / 1,657 provincial (44.6%) /
