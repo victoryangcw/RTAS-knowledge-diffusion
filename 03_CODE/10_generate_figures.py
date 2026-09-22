@@ -264,8 +264,7 @@ def fig2_roadmap():
     # Row 3 -> Row 4
     elbow(edges[bert]['bottom'], edges[diff]['top'], y_mid=1.25)     # BERTopic -> Diffusion Lag
 
-    ax.set_title('RTAS Technical Roadmap — Dual-Corpus Data to Discovery',
-                 fontsize=12, fontweight='bold', pad=10)
+    # v1.1: in-figure title removed; the LaTeX caption carries the figure title.
     fig.tight_layout()
     savefig(fig, 'Figure2_Roadmap')
 
@@ -297,7 +296,7 @@ def fig3_quadrant_scatter():
     ax.set_ylim(0, ymax * 1.12)
     ax.set_xlabel('Paper Prevalence (%)', fontweight='bold')
     ax.set_ylabel('Project Prevalence (%)', fontweight='bold')
-    ax.set_title('Topic Distribution across Research-Training Quadrants', fontweight='bold')
+    # v1.1: in-figure title removed; caption carries it (inset label retained).
 
     # v1.0-cand.4 reviewer audit: (1) zoomed inset over the crowded origin so the
     # 698 LRLT + small-topic mass becomes legible; (2) bubble-size reference legend
@@ -454,8 +453,7 @@ def fig4_project_level():
     ax.set_xticks(x); ax.set_xticklabels(order, fontsize=11.5)
     ax.set_ylabel('RTAS (per project, 3,714 observations)', fontweight='bold', fontsize=10.5)
     ax.set_xlabel('Project Level', fontweight='bold', fontsize=10.5)
-    fig.suptitle('Per-Project RTAS by Project Funding Level (n = 3,714)',
-                 fontweight='bold', fontsize=11.5, y=0.975)
+    # v1.1: in-figure suptitle removed; the LaTeX caption carries the title.
 
     savefig(fig, 'Figure4_Distribution')
 
@@ -491,9 +489,7 @@ def fig5_college_caterpillar():
     ax.set_xlabel('College random intercept (BLUP) with 95% CI — contribution to college-mean RTAS\n'
                   'MixedLM v2b: ICC = 0.738; 39 colleges; CI = BLUP ± 1.96·conditional SE (wider = fewer projects)',
                   fontweight='bold', fontsize=8.8)
-    ax.set_title('College Random Effects on Research–Training Alignment (Caterpillar Plot)\n'
-                 'model-adjusted college deviations',
-                 fontweight='bold', fontsize=10.5)
+    # v1.1: in-figure title removed entirely; the LaTeX caption carries it.
     ax.grid(axis='x', alpha=0.25, linewidth=0.5)
     ax.margins(y=0.012)
     fig.tight_layout()
@@ -557,10 +553,8 @@ def fig6_hlm_forest():
     ax.set_yticks(y_pos)
     ax.set_yticklabels(d_plot['label'].values, fontsize=10)
     ax.set_xlabel('Coefficient (β) with 95% CI', fontweight='bold', fontsize=9.5)
-    fig.suptitle('Two-level mixed model (projects nested in colleges, random intercept)\n'
-                 f'ICC = {icc_val}   |   n = {nobs_val} projects   |   {ngrp_val} college groups   |   '
-                 'exact β, 95% CIs, and p-values reported in the HLM results table',
-                 fontweight='bold', fontsize=11, y=0.99)
+    # v1.1: in-figure suptitle removed; ICC / n / groups and exact statistics
+    # live in the LaTeX caption and the HLM results table.
 
     savefig(fig, 'Figure6_HLM_Forest')
 
@@ -636,7 +630,7 @@ def fig8_diffusion_lag_patterns():
     axA.set_xlabel('Lag (years): year(project first non-trivial presence) −\n'
                    'year(paper first non-trivial presence)', fontweight='bold', fontsize=9.5)
     axA.set_ylabel('Number of topics', fontweight='bold', fontsize=10)
-    axA.set_title(f'(a) Overall lag distribution ({n_lag}/886 topics defined; median={lag_med:.1f}, mean={lag_mean:+.2f} yr)',
+    axA.set_title('(a) Overall lag distribution',
                   fontweight='bold', fontsize=10.5)
     for bar, n, pct in zip(bars, d['n_topics'], d['pct_topics']):
         axA.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 0.25,
@@ -650,9 +644,9 @@ def fig8_diffusion_lag_patterns():
     axA.legend(handles=legend_elements, loc='upper left', bbox_to_anchor=(1.01, 1.0),
                fontsize=8, frameon=False)
     axA.grid(axis='y', alpha=0.25, linewidth=0.5)
-    fig.suptitle('Diffusion-Lag Patterns: Distribution of Defined Topic Lags\n' + lag_note,
-                 fontweight='bold', fontsize=11, y=1.00)
-    fig.tight_layout(rect=[0, 0, 1, 0.93])
+    # v1.1: suptitle removed; defined-lag count / median / mean and the
+    # direction note live in the LaTeX caption and the panel legend.
+    fig.tight_layout()
     savefig(fig, 'Figure8a_LagDistribution')
 
     # ---- 8b: defined-lag quadrants (HRLT / HRHT only) ----
@@ -709,9 +703,8 @@ def fig8_diffusion_lag_patterns():
              transform=axB.transAxes, ha='right', va='top', fontsize=7.8, color='#555',
              style='italic', linespacing=1.4)
 
-    fig.suptitle('Diffusion-Lag Patterns: Defined Lag by Quadrant\n' + lag_note,
-                 fontweight='bold', fontsize=11, y=1.00)
-    fig.tight_layout(rect=[0, 0, 1, 0.93])
+    # v1.1: suptitle removed; the LaTeX caption carries the figure title.
+    fig.tight_layout()
     savefig(fig, 'Figure8b_LagByQuadrant')
 
     # ---- 8-STACKED (v1.0-cand.12): vertical 2-row composite for main text ----
@@ -723,8 +716,8 @@ def fig8_diffusion_lag_patterns():
     # the empty negative-lag region) instead of the outside-right slot.
     rng_s = np.random.default_rng(7)
     fig = plt.figure(figsize=(7.6, 10.8))
-    gs = gridspec.GridSpec(2, 1, height_ratios=[1.0, 1.05], hspace=0.45,
-                           left=0.105, right=0.97, top=0.90, bottom=0.065)
+    gs = gridspec.GridSpec(2, 1, height_ratios=[1.0, 1.05], hspace=0.38,
+                           left=0.105, right=0.97, top=0.97, bottom=0.065)
     axS1 = fig.add_subplot(gs[0])
     axS2 = fig.add_subplot(gs[1])
 
@@ -737,8 +730,7 @@ def fig8_diffusion_lag_patterns():
     axS1.set_xlabel('Lag (years): year(project first non-trivial presence) −\n'
                     'year(paper first non-trivial presence)', fontweight='bold', fontsize=10)
     axS1.set_ylabel('Number of topics', fontweight='bold', fontsize=10.5)
-    axS1.set_title(f'(a) Overall lag distribution ({n_lag}/886 topics defined; '
-                   f'median={lag_med:.1f}, mean={lag_mean:+.2f} yr)',
+    axS1.set_title('(a) Overall lag distribution',
                    fontweight='bold', fontsize=11)
     for bar, n, pct in zip(bars_s, d['n_topics'], d['pct_topics']):
         axS1.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 0.25,
@@ -781,8 +773,8 @@ def fig8_diffusion_lag_patterns():
               transform=axS2.transAxes, ha='right', va='top', fontsize=8.5, color='#555',
               style='italic', linespacing=1.4)
 
-    fig.suptitle('Diffusion-Lag Patterns: Distribution of Defined Topic Lags\n' + lag_note,
-                 fontweight='bold', fontsize=12, y=0.965)
+    # v1.1: suptitle removed; defined-lag count / median / mean and the
+    # direction note live in the LaTeX caption and the panel legend.
     savefig(fig, 'Figure8_DiffusionLag_Stacked')
 
 # ================================================================
@@ -837,7 +829,7 @@ def fig10_matthew_effect():
     ax1.fill_between(lorenz_x, lorenz_x, lorenz_y, alpha=0.1, color=COLORS['red'])
     ax1.set_xlabel('Cumulative share of advisors (sorted)', fontweight='bold')
     ax1.set_ylabel('Cumulative share of national projects', fontweight='bold')
-    ax1.set_title(f'(a) Lorenz Curve: National Project Allocation\n(Gini = {gini_nat:.3f}, Top 5% hold {top5_share:.1f}%)', fontweight='bold', fontsize=9)
+    ax1.set_title('(a) Lorenz curve', fontweight='bold', fontsize=9.5)
     ax1.legend(fontsize=7.5)
 
     # (b) Pareto bar
@@ -851,7 +843,7 @@ def fig10_matthew_effect():
         ax2.text(bar.get_x() + bar.get_width()/2, v + 1, f'{v:.1f}%', ha='center', fontsize=8, fontweight='bold')
     ax2.set_xlabel('Top N% advisors', fontweight='bold')
     ax2.set_ylabel('Share of national projects (%)', fontweight='bold')
-    ax2.set_title(f'(b) Pareto Concentration\n(Top 20% advisors hold {top20_share:.1f}%)', fontweight='bold', fontsize=9)
+    ax2.set_title('(b) Concentration by advisor percentile', fontweight='bold', fontsize=9.5)
     ax2.legend(fontsize=7.5)
 
     # (c) Lagged path-dependence OR forest (two samples).
@@ -879,11 +871,11 @@ def fig10_matthew_effect():
     ax3.set_ylim(-0.75, 1.85)
     ax3.set_xlabel("Odds ratio of a national project in year t\ngiven one in t-1 (logit, year FE, SE clustered by advisor)",
                    fontweight='bold', fontsize=8.5)
-    ax3.set_title('(c) Path Dependence: Lagged Logistic\n(national project persistence t-1 -> t)', fontweight='bold', fontsize=9)
+    ax3.set_title('(c) Lagged national-project persistence', fontweight='bold', fontsize=9.5)
     ax3.grid(axis='x', alpha=0.25, linewidth=0.5)
 
-    fig.suptitle('The Matthew Effect in National Project Allocation: Concentration AND Persistence',
-                 fontweight='bold', fontsize=11.5, y=1.02)
+    # v1.1: suptitle removed (theory-laden "Matthew Effect" wording and the
+    # embedded Gini/top-share stats all live in the neutral LaTeX caption).
     fig.tight_layout()
     savefig(fig, 'Figure10_MatthewEffect')
 
@@ -919,9 +911,8 @@ def fig11_quadrant_summary():
     axes[2].set_ylabel('Number of projects', fontweight='bold')
     axes[2].set_title('Clustered project documents', fontweight='bold')
 
-    fig.suptitle('Four-Quadrant Topic Summary\n'
-                 'Denominators = clustered documents only; BERTopic outliers (38.47% of docs) are outside the four quadrants',
-                 fontweight='bold', fontsize=10.5, y=1.04)
+    # v1.1: suptitle removed; clustered-only denominator / outlier-rate note
+    # lives in the LaTeX caption. Mini panel metric labels retained.
     fig.tight_layout()
     savefig(fig, 'Figure11_QuadrantSummary', subdir='supp')
 
@@ -948,9 +939,7 @@ def fig12_college_rtas_ranking():
     rank_labels = [f"{int(r)}.  {name}" for r, name in zip(d['rank'], d['college_en'])]
     ax.set_yticklabels(rank_labels, fontsize=8)
     ax.set_xlabel('RTAS (mean)', fontweight='bold')
-    ax.set_title(f'All {n_all} Colleges by RTAS — Descriptive Ordering (Appendix)\n'
-                 'College ANOVA: F(38,3674)=195.45, p < .001, η²=66.90%',
-                 fontweight='bold', fontsize=10)
+    # v1.1: in-figure title + ANOVA statistics removed; reported in the caption.
     for i, (val, n) in enumerate(zip(d['rtas_mean'], d['n_projects'])):
         ax.text(val + 0.003, i, f'{val:.3f} (n={n})', va='center', fontsize=6.5)
     ax.set_xlim(0, max(d['rtas_mean']) * 1.25)
@@ -983,9 +972,8 @@ def figS1_supervisor_load():
     bars = ax.bar(labels, counts, color=COLORS['navy'], edgecolor='white', linewidth=0.6, width=0.72)
     ax.set_xlabel('Projects supervised, 2020–2024 (per individual advisor)', fontweight='bold')
     ax.set_ylabel('Number of advisors', fontweight='bold')
-    ax.set_title(f'Supervisory-Load Distribution across {n_adv:,} Individual Advisors\n'
-                 f'{pct[0]:.1f}% supervised one project; {100 * (load >= 4).mean():.1f}% supervised four or more',
-                 fontweight='bold', fontsize=10.5)
+    # v1.1: in-figure title removed; advisor count / 44.6% / 18.8% stats live
+    # in the main text and the LaTeX caption.
     for b, c, p in zip(bars, counts, pct):
         ax.text(b.get_x() + b.get_width() / 2, b.get_height() + max(counts) * 0.012,
                 f'{c}\n({p:.1f}%)', ha='center', va='bottom', fontsize=7.6)
@@ -1055,8 +1043,6 @@ def fig13_topic_dynamics():
                 seen.append(t)
         return ' '.join(seen[:3]) if seen else f'Topic {tid}'
 
-    suptitle_note = ('shares of all projects per year; topics = BERTopic clusters')
-
     # ---- 13a: two-line diversification trend (standalone) ----
     fig, axA = plt.subplots(figsize=(7.4, 5.8))
     axA.plot(years, top15_share.values, 'o-', color=COLORS['blue'], linewidth=2.2, markersize=7,
@@ -1072,14 +1058,13 @@ def fig13_topic_dynamics():
     axA.set_xticks(years)
     axA.set_xlabel('Year', fontweight='bold', fontsize=11)
     axA.set_ylabel('Share of all project documents (%)', fontweight='bold', fontsize=10)
-    axA.set_title('(a) Top-15 topic share declines while other clustered topics gain share', fontweight='bold', fontsize=11)
+    axA.set_title('(a) Topic share trends', fontweight='bold', fontsize=11)
     axA.legend(fontsize=8.5, loc='upper right', framealpha=0.9)  # v1.0-cand.7: moved to upper-right corner
     axA.set_ylim(0, max(longtail_share.max(), top15_share.max()) * 1.22)
     axA.margins(x=0.06)
     axA.grid(axis='y', alpha=0.25, linewidth=0.5)
-    fig.suptitle('Topic Dynamics in Undergraduate Innovation Projects, 2020-2024\n' + suptitle_note,
-                 fontweight='bold', fontsize=11.5, y=1.00)
-    fig.tight_layout(rect=[0, 0, 1, 0.93])
+    # v1.1: suptitle removed; the share-denominator note lives in the caption.
+    fig.tight_layout()
     savefig(fig, 'Figure13a_TopicTrend', subdir='supp')
 
     # ---- 13b: 15 x 5 heatmap (standalone; rows sorted by lifetime share, top = largest) ----
@@ -1101,10 +1086,9 @@ def fig13_topic_dynamics():
     cbar = fig.colorbar(im, ax=axB, shrink=0.82, pad=0.015)
     cbar.set_label('Project-side prevalence (% of all projects / yr)', fontsize=8)
     cbar.ax.tick_params(labelsize=7)
-    axB.set_title('(b) Top-15 topic prevalence heatmap', fontweight='bold', fontsize=11)
-    fig.suptitle('Topic Dynamics in Undergraduate Innovation Projects, 2020-2024\n' + suptitle_note,
-                 fontweight='bold', fontsize=11.5, y=1.00)
-    fig.tight_layout(rect=[0, 0, 1, 0.94])
+    axB.set_title('(b) Topic prevalence heatmap', fontweight='bold', fontsize=11)
+    # v1.1: suptitle removed; the LaTeX caption carries the figure title.
+    fig.tight_layout()
     savefig(fig, 'Figure13b_TopicHeatmap', subdir='supp')
 
 # ================================================================
