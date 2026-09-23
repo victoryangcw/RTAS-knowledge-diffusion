@@ -5,6 +5,67 @@ config, data, or code that could affect downstream numbers.
 
 ---
 
+## [v1.1-postaudit] — 2026-09-23 — TWENTY-SIXTH ROUND: EXCLUDE-2022 SENSITIVITY + UIETP TERMINOLOGY + FINAL FIGURE CLEANUP + HISTORY RELOCATION
+
+### New sensitivity: exclude the entire 2022 cohort (`03_CODE/22_exclude_2022_sensitivity.py`)
+The archived official 2022 list contains no university-level entries
+(316 provincial + 150 national; 435 survive the eight-college exclusion); it is
+unknown whether this is the 2022 institutional arrangement or source-file
+coverage. Dropping all 435 projects from 2022 and re-running both RQ1 and the
+primary MixedLM (script self-checks against frozen numbers first:
+0.1212/0.1391/0.1460, F = 35.72, η² = 1.89%, ICC = 0.7376 — all reproduced
+exactly):
+- **RQ1 (n = 3,279)**: university mean unchanged at 0.1212 (2022 had no
+  university projects); provincial 0.1391 → 0.1407; national 0.1460;
+  F(2,3276) = 35.80, p < 0.001, η² = 2.14%; Tukey P−U +0.0195*** and
+  N−U +0.0248*** remain, N−P remains non-significant (+0.0053, p = 0.312).
+- **MixedLM (n = 2,852, 39 colleges)**: ICC = 0.7409; every coefficient keeps
+  sign and significance classification; provincial/national indicators remain
+  non-significant (p = 0.351 / 0.353).
+- Outputs: `06_RESULTS/hlm/exclude_2022_sensitivity/`; manuscript Methods,
+  Limitations, and new Supplementary **Table S2** (Panels A + B) updated.
+
+### UIETP terminology (factual correction, no result changes)
+The program is the Undergraduate **Innovation and Entrepreneurship** Training
+Program, not purely undergraduate research/innovation projects. Updated
+abstract, keywords, Introduction, Methods (full program name + two-track
+statement), Conclusion, Figure 1 and Figure S3a captions, README files, and the
+roadmap figure corpus box ("3,714 UIETP projects (CN; innovation +
+entrepreneurship tracks)"). The LaTeX title still says "Undergraduate
+Innovation Programs" and is left for the author's final title decision (two
+candidate titles under discussion); the supplementary title page mirrors it.
+
+### Limitations: uneven complete-case missingness
+Linkage-coverage item now states explicitly that the 483 excluded complete
+cases are uneven across colleges (Marxism 51%, History 41%) and have lower
+mean RTAS (0.099 vs 0.139), i.e. complete-case exclusion may underrepresent
+units with lower linkage coverage; high-confidence and other sensitivities
+preserve the conclusions.
+
+### Final figure cleanup (data-free visual changes)
+- **Figure 5 (caterpillar)**: x-axis label shortened to
+  "College random intercept (BLUP; 95% CI)"; ICC = 0.7376, n = 3,231, 39
+  colleges, and the BLUP ± 1.96·conditional-SE construction moved into the
+  LaTeX caption.
+- **Figure S3a / S3b**: residual "(a) Topic share trends" and
+  "(b) Topic prevalence heatmap" panel labels removed (the panels are now
+  standalone supplementary figures).
+- **Figure 1 (roadmap)**: "Matthew (RQ4)" box renamed to
+  "Concentration & persistence (RQ4)" to avoid theory-laden naming;
+  regenerated PNG + PDF synced to `manuscript/figures/` (LaTeX names) and
+  `02_FIGURES/` (generator names), hash-verified.
+
+### Historical working drafts relocated
+`04_MANUSCRIPT/SUBMISSION_manuscript_v1.0.md` and
+`manuscript_draft_v0.9.md` (contain superseded numbers: 1.83 colleges/article,
+"100% English", old Pareto values, internal review logs and names) moved via
+`git mv` to `archive/internal_history/`; the empty `04_MANUSCRIPT/` folder was
+removed. The current submission source is `manuscript/main.tex` only.
+Root and governance READMEs updated (folder tree, 7 + 5 figure count, UIETP
+key number).
+
+---
+
 ## [v1.1-postaudit] — 2026-09-22 — TWENTY-FIFTH ROUND: RAW-REGISTRY AUDIT + FIGURE TITLE UNIFICATION
 
 ### Upstream raw-registry audit (new script: `03_CODE/20_raw_registry_audit.py`)

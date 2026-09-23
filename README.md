@@ -1,16 +1,19 @@
 # RTAS: Research-Training Alignment Score
 
 Public reproducibility repository for the RTAS study on semantic alignment between
-Wuhan University innovation-training project titles and OpenAlex paper titles (2020–2024).
+Wuhan University Undergraduate Innovation and Entrepreneurship Training Program (UIETP)
+project titles and OpenAlex paper titles (2020–2024).
 
 ## What this repo contains
 
 | Folder | Content |
 |--------|---------|
 | `01_README/` | Governance: protocol, config snapshot, changelog, checksums |
-| `02_FIGURES/` | 7 main figures + 4 supplementary figures (PDF + PNG) |
-| `03_CODE/` | Reproducible analysis scripts (01–10) + R script (09) |
-| `04_MANUSCRIPT/` | Manuscript draft (Markdown) |
+| `02_FIGURES/` | 7 main figures + 5 supplementary figures (PDF + PNG) |
+| `03_CODE/` | Reproducible analysis scripts (01–22) + R script (09) |
+| `06_RESULTS/` | Frozen analysis outputs (aggregate counts and coefficients only; no person/project-identifying data) |
+| `manuscript/` | Current submission manuscript (LaTeX; `main.tex` + `figures/`) |
+| `archive/internal_history/` | Superseded working drafts (Markdown); retained for provenance, not part of the submission |
 
 ## What this repo does NOT contain
 
@@ -23,7 +26,7 @@ Wuhan University innovation-training project titles and OpenAlex paper titles (2
 
 | Number | What it is |
 |--------|------------|
-| 3,714 | Innovation-training projects |
+| 3,714 | UIETP projects (innovation-training + entrepreneurship-training tracks) |
 | 56,901 | OpenAlex papers (WHU, article type, 2020–2024) |
 | 60,615 | Joint corpus for BERTopic (= 3,714 + 56,901) |
 | 33,312 | Matched papers (58.5% of 56,901) |
