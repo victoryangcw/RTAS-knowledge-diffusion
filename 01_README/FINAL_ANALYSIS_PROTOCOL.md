@@ -1,3 +1,6 @@
+> **HISTORICAL v0.2 FREEZE RECORD — NOT THE CURRENT NUMERICAL SOURCE OF TRUTH.**  
+> This document is retained for provenance and contains superseded first-batch/pre-audit values (for example, 12,000-paper development-stage statistics). For current post-audit manuscript values, use `../06_RESULTS/19_numerical_provenance_ledger.csv`, `../manuscript/data_verification.tex`, and the root `README.md`.
+
 # FINAL ANALYSIS PROTOCOL — RTAS Project
 **Version**: v0.2 (RTAS frozen)  |  **Date**: 2026-09-03  |  **Status**: FROZEN — DO NOT RE-OPEN WITHOUT FORMAL CHANGELIST.
 
