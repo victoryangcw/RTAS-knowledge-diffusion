@@ -252,17 +252,17 @@ def audit_validation():
     ref50 = df.set_index("pair_id")["annotator1_score"]
     merged = rA.merge(rB, on="pair_id", suffixes=("_A", "_B"))
     ref = merged["pair_id"].map(ref50).astype(float).values
-    a_ = merged["score"].astype(float).values          # Rater A (Rater A)
-    b_ = merged["rating"].astype(float).values         # Rater B (Rater B)
+    a_ = merged["score"].astype(float).values          # Rater A
+    b_ = merged["rating"].astype(float).values         # Rater B
     qwk_a = cohen_kappa_score(ref, a_, weights="quadratic", labels=[1,2,3,4])
     qwk_b = cohen_kappa_score(ref, b_, weights="quadratic", labels=[1,2,3,4])
     qwk_ab = cohen_kappa_score(a_, b_, weights="quadratic", labels=[1,2,3,4])
     rho_ab, _ = spearmanr(a_, b_)
-    record("Rater A (Rater A) QWK", 0.465, round(qwk_a, 4), close(qwk_a, 0.46483, 0.001),
+    record("Rater A QWK", 0.465, round(qwk_a, 4), close(qwk_a, 0.46483, 0.001),
            "second_rater_50pairs_filled vs annotator1 (50)", "quadratic-weighted kappa")
     record("Rater A exact agreement", "72%", f"{100*(ref==a_).mean():.0f}%",
            (ref == a_).mean() == 0.72, "same 50 pairs", "share identical")
-    record("Rater B (Rater B) QWK", 0.606, round(qwk_b, 4), close(qwk_b, 0.60545, 0.001),
+    record("Rater B QWK", 0.606, round(qwk_b, 4), close(qwk_b, 0.60545, 0.001),
            "second_rater_50pairs_raterB vs annotator1", "quadratic-weighted kappa")
     record("Rater B exact agreement", "78%", f"{100*(ref==b_).mean():.0f}%",
            (ref == b_).mean() == 0.78, "same", "share identical")
