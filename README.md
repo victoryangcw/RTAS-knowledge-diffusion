@@ -20,12 +20,12 @@ A compiled snapshot of the manuscript is in `manuscript/preview/`.
 
 | Folder | Content |
 |--------|---------|
-| `01_README/` | Governance: analysis protocol, frozen config, changelog, checksums |
+| `01_README/` | Governance/history: original v0.2 protocol/config (retained for provenance), changelog, checksums |
 | `02_FIGURES/` | Full engineering figure set — 9 main (incl. standalone 8a/8b panels) + 5 supplementary, PDF + PNG, engineering file names |
 | `03_CODE/` | Reproducible analysis scripts 01–22 (09 in R), incl. the figure generator `10_generate_figures.py` |
 | `05_VALIDATION/` | Validity-program artefacts: 150-pair rating files, rater-agreement statistics, lexical baselines, BGE-M3 benchmark |
 | `06_RESULTS/` | Frozen aggregate outputs (counts and coefficients only) + the 115-check numerical provenance ledger |
-| `manuscript/figures/` | The 12 submission figures named as in the paper (7 main + S1–S4), PDF + PNG |
+| `manuscript/figures/` | Submission artwork: 7 main figures + 5 supplementary files/panels (S1, S2, S3a, S3b, S4), PDF + PNG |
 | `manuscript/preview/` | Compiled paper snapshots (latest: `RTAS_final_package_2026-09-23.pdf`) |
 | `manuscript/data_verification.tex` | Ready-to-insert blocks for the manuscript master: the "Data verification and numerical provenance" subsection and supplement Tables S3–S4 |
 | `archive/internal_history/` | Superseded working drafts (provenance only; not part of the submission) |
@@ -33,6 +33,15 @@ A compiled snapshot of the manuscript is in `manuscript/preview/`.
 The LaTeX master of the manuscript is maintained on Overleaf; this repository
 mirrors the submission figure set, the compiled snapshot, and the verification
 fragment.
+
+### Current canonical sources
+
+For **current post-audit numbers**, use `06_RESULTS/19_numerical_provenance_ledger.csv`
+and `manuscript/data_verification.tex`. The files
+`01_README/FINAL_ANALYSIS_PROTOCOL.md` and `01_README/final_config.yaml` are the
+historical v0.2 freeze records. They are retained for provenance and contain
+superseded first-batch/pre-audit values; they are **not** the current numerical
+source of truth.
 
 ## What this repo does NOT contain
 
@@ -44,7 +53,7 @@ fragment.
 
 | Number | What it is |
 |--------|------------|
-| 3,714 | UIETP projects, 2020–2024 (1,375 university / 1,657 provincial / 682 national; innovation-training + entrepreneurship-training tracks) |
+| 3,714 | UIETP projects, 2020–2024 (1,375 university / 1,657 provincial / 682 national); official 2021–2024 type labels identify 158 entrepreneurship-track projects, while 2020 type labels are unavailable |
 | 56,901 | OpenAlex articles (WHU, type=article, 2020–2024); +22,438 from 2017–2019 used only for pre-project advisor covariates |
 | 33,312 (58.5%) | Articles advisor-matched to academic units; these form the RTAS reference portfolios |
 | 60,615 | Joint BERTopic corpus (56,901 + 3,714 titles) → 886 non-outlier topics |

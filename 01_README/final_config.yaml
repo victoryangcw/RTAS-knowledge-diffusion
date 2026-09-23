@@ -1,3 +1,9 @@
+# HISTORICAL v0.2 FREEZE CONFIG — retained for provenance only.
+# IMPORTANT: several values below are superseded first-batch/pre-audit values.
+# Do NOT use this file as the current manuscript numerical source of truth.
+# Current post-audit values: ../06_RESULTS/19_numerical_provenance_ledger.csv
+# and ../manuscript/data_verification.tex.
+
 # =============================================================================
 # FINAL CONFIG v0.2  (RTAS frozen)
 # Machine-readable companion of FINAL_ANALYSIS_PROTOCOL.md.
