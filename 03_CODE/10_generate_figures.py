@@ -193,7 +193,7 @@ def fig2_roadmap():
     BW2, BH2 = 2.4, 1.15        # standard box size
     boxes = [
         # Row 1 (y=5.4): the two corpora
-        (0.60, 5.40, 5.20, 1.15, 'Main RTAS corpus\n3,714 undergraduate innovation projects (CN)  +  56,901 OpenAlex papers (EN), 2020-2024\nRTAS reference portfolios: 33,312 college-assigned papers (58.5%)', COLORS['blue']),
+        (0.60, 5.40, 5.20, 1.15, 'Main RTAS corpus\n3,714 UIETP projects (CN; innovation + entrepreneurship tracks)  +  56,901 OpenAlex papers (EN), 2020-2024\nRTAS reference portfolios: 33,312 college-assigned papers (58.5%)', COLORS['blue']),
         (6.30, 5.40, 4.60, 1.15, 'Auxiliary advisor-history corpus\n22,438 OpenAlex papers, 2017-2019\n-> pre-project covariate windows [t-3, t-1]', None),
         # Row 2 (y=3.45): method pipeline
         (0.60, 3.45, BW2, BH2, 'Embedding\nMultilingual MiniLM\nL12-v2 (384-dim)\nPairwise semantic validity\n$\\rho_s$ = .405 (n=150, p=2.6e-7)', COLORS['teal']),
@@ -205,7 +205,7 @@ def fig2_roadmap():
         #   Frozen. Left column = text-mining branch, right columns = RTAS analyses.)
         (3.40, 1.50, BW2, BH2, 'Heterogeneity (RQ1)\nF(2,3711)=35.7\neta2=1.89%\nd=0.352', COLORS['blue']),
         (0.60, 1.50, BW2, BH2, 'BERTopic (RQ2)\nUMAP+HDBSCAN\nK=886 topics\n4-quadrant', COLORS['orange']),
-        (6.30, 1.50, BW2, BH2, 'Matthew (RQ4)\nGini=0.746\nTop5%=31.0%\nlag-OR=2.06***', COLORS['red']),
+        (6.30, 1.50, BW2, BH2, 'Concentration &\npersistence (RQ4)\nGini=0.746\nTop5%=31.0%\nlag-OR=2.06***', COLORS['red']),
         (9.10, 1.50, BW2, BH2, 'HLM (RQ3)\nMixedLM RE\nICC=0.738, 39 colleges\nclean prior supervision', COLORS['purple']),
         # Row 4 (y=0.05): downstream
         (3.40, 0.05, BW2, 1.00, 'Diffusion Lag (RQ2)\n29/886 defined\nHRLT median +0.5 yr', COLORS['gray']),
@@ -486,9 +486,8 @@ def fig5_college_caterpillar():
               for _, r in re_df.iterrows()]
     ax.set_yticks(range(n_all))
     ax.set_yticklabels(labels, fontsize=8)
-    ax.set_xlabel('College random intercept (BLUP) with 95% CI — contribution to college-mean RTAS\n'
-                  'MixedLM v2b: ICC = 0.738; 39 colleges; CI = BLUP ± 1.96·conditional SE (wider = fewer projects)',
-                  fontweight='bold', fontsize=8.8)
+    ax.set_xlabel('College random intercept (BLUP; 95% CI)',
+                  fontweight='bold', fontsize=9.5)
     # v1.1: in-figure title removed entirely; the LaTeX caption carries it.
     ax.grid(axis='x', alpha=0.25, linewidth=0.5)
     ax.margins(y=0.012)
@@ -1058,7 +1057,8 @@ def fig13_topic_dynamics():
     axA.set_xticks(years)
     axA.set_xlabel('Year', fontweight='bold', fontsize=11)
     axA.set_ylabel('Share of all project documents (%)', fontweight='bold', fontsize=10)
-    axA.set_title('(a) Topic share trends', fontweight='bold', fontsize=11)
+    # v1.1: standalone supplementary figure -> no (a) panel label; caption
+    # carries the title.
     axA.legend(fontsize=8.5, loc='upper right', framealpha=0.9)  # v1.0-cand.7: moved to upper-right corner
     axA.set_ylim(0, max(longtail_share.max(), top15_share.max()) * 1.22)
     axA.margins(x=0.06)
@@ -1086,8 +1086,8 @@ def fig13_topic_dynamics():
     cbar = fig.colorbar(im, ax=axB, shrink=0.82, pad=0.015)
     cbar.set_label('Project-side prevalence (% of all projects / yr)', fontsize=8)
     cbar.ax.tick_params(labelsize=7)
-    axB.set_title('(b) Topic prevalence heatmap', fontweight='bold', fontsize=11)
-    # v1.1: suptitle removed; the LaTeX caption carries the figure title.
+    # v1.1: standalone supplementary figure -> no (b) panel label; caption
+    # carries the figure title. Suptitle also removed.
     fig.tight_layout()
     savefig(fig, 'Figure13b_TopicHeatmap', subdir='supp')
 

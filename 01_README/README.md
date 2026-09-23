@@ -16,18 +16,20 @@ This folder contains the protocol, configuration, and changelog for the RTAS stu
 ```
 RTAS/
 ├── 01_README/          ← governance (this folder)
-├── 02_FIGURES/         ← 7 main + 4 supplementary figures (PDF + PNG)
+├── 02_FIGURES/         ← 7 main + 5 supplementary figures (PDF + PNG)
 │   ├── main/
 │   └── supplementary/
-├── 03_CODE/            ← reproducible analysis scripts (01–10)
-└── 04_MANUSCRIPT/      ← manuscript draft (Markdown)
+├── 03_CODE/            ← reproducible analysis scripts (01–22)
+├── 06_RESULTS/         ← frozen aggregate outputs (counts/coefficients only)
+├── manuscript/         ← current submission manuscript (LaTeX)
+└── archive/internal_history/  ← superseded Markdown working drafts (provenance only)
 ```
 
 ## Key numbers (v1.0-cand.5 frozen)
 
 | Number | What it is |
 |--------|------------|
-| 3,714 | Innovation-training projects |
+| 3,714 | UIETP projects (innovation-training + entrepreneurship-training tracks) |
 | 56,901 | OpenAlex papers (WHU, article type, 2020–2024) |
 | 60,615 | Joint corpus for BERTopic (= 3,714 + 56,901) |
 | 33,312 | Matched papers (58.5% of 56,901) |

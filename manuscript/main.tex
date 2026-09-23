@@ -70,16 +70,16 @@ Author Name$^{1}$\\
 \maketitle
 
 \begin{abstract}
-Universities increasingly expect undergraduate research-training programs to reflect active faculty research, yet project-level alignment is rarely measured directly. We propose the Research--Training Alignment Score (RTAS), the mean cosine similarity between a student project-title embedding and unique OpenAlex-indexed articles assigned to the same college through advisor--author linkage. We apply RTAS to 3,714 undergraduate innovation projects (2020--2024) and 56,901 articles at Wuhan University; 33,312 articles (58.5\%) enter college-specific reference portfolios. Pairwise validation on 150 human-rated title pairs provides evidence of pairwise semantic validity (Spearman $\rho=0.405$; area under the ROC curve $=0.880$), supported by independent human raters, test--retest reliability, an LLM second rater, and lexical baselines. Mean RTAS differs by funding level (university 0.1212, provincial 0.1391, national 0.1460; $\eta^2=1.89\%$), but adjusted funding-level coefficients are not statistically distinguishable from zero. Joint BERTopic modeling (60,615 documents; 886 non-outlier topics) identifies 173 high-research/low-project and 10 low-research/high-project topics. Temporal onset is definable for 29/886 topics (3.27\%); among 24 definable high-research/low-project topics, median lag is $+0.5$ years. National-project allocation is concentrated (Gini $=0.746$; top 5\% share $=31.0\%$) and persistent (odds ratio $=2.06$, 95\% confidence interval [1.53, 2.76]), while project-level exposure to top-5\% advisors shows only a small mean RTAS difference that is not statistically distinguishable from zero ($d=0.083$, $p=0.065$). In the mixed model (intraclass correlation coefficient $=0.738$), advisor pre-project publication activity in the institution-linked OpenAlex corpus is positively associated with RTAS, whereas prior supervisory load is negatively associated. RTAS indexes semantic alignment, not training quality; estimates are observational.
+Universities increasingly expect undergraduate research-training programs to reflect active faculty research, yet project-level alignment is rarely measured directly. We propose the Research--Training Alignment Score (RTAS), the mean cosine similarity between a student project-title embedding and unique OpenAlex-indexed articles assigned to the same college through advisor--author linkage. We apply RTAS to 3,714 projects (2020--2024) approved under Wuhan University's Undergraduate Innovation and Entrepreneurship Training Program, which comprises both innovation-training and entrepreneurship-training tracks, and to 56,901 articles at the same university; 33,312 articles (58.5\%) enter college-specific reference portfolios. Pairwise validation on 150 human-rated title pairs provides evidence of pairwise semantic validity (Spearman $\rho=0.405$; area under the ROC curve $=0.880$), supported by independent human raters, test--retest reliability, an LLM second rater, and lexical baselines. Mean RTAS differs by funding level (university 0.1212, provincial 0.1391, national 0.1460; $\eta^2=1.89\%$), but adjusted funding-level coefficients are not statistically distinguishable from zero. Joint BERTopic modeling (60,615 documents; 886 non-outlier topics) identifies 173 high-research/low-project and 10 low-research/high-project topics. Temporal onset is definable for 29/886 topics (3.27\%); among 24 definable high-research/low-project topics, median lag is $+0.5$ years. National-project allocation is concentrated (Gini $=0.746$; top 5\% share $=31.0\%$) and persistent (odds ratio $=2.06$, 95\% confidence interval [1.53, 2.76]), while project-level exposure to top-5\% advisors shows only a small mean RTAS difference that is not statistically distinguishable from zero ($d=0.083$, $p=0.065$). In the mixed model (intraclass correlation coefficient $=0.738$), advisor pre-project publication activity in the institution-linked OpenAlex corpus is positively associated with RTAS, whereas prior supervisory load is negatively associated. RTAS indexes semantic alignment, not training quality; estimates are observational.
 \end{abstract}
 
-\noindent\textbf{Keywords:} research--training alignment; undergraduate innovation; multilingual sentence embeddings; BERTopic; multilevel modeling; cumulative advantage
+\noindent\textbf{Keywords:} research--training alignment; undergraduate innovation and entrepreneurship training; multilingual sentence embeddings; BERTopic; multilevel modeling; cumulative advantage
 
 \section{Introduction}
 
 \subsection{Motivation}
 
-Research universities worldwide have made the integration of research and teaching a central policy goal, although the empirical relationship between research performance and teaching is neither automatic nor uniformly positive \citep{hattie1996relationship,healey2005linking,brew2003teaching,linn2015undergraduate}. At Wuhan University, undergraduate innovation projects are recorded at university, provincial, and national levels and are carried out under faculty supervision. This setting raises a scientometric question: whether the topics students pursue align with the research their colleges are actively publishing, and how funding level, advisor characteristics, and the concentration of supervisory resources relate to that alignment.
+Research universities worldwide have made the integration of research and teaching a central policy goal, although the empirical relationship between research performance and teaching is neither automatic nor uniformly positive \citep{hattie1996relationship,healey2005linking,brew2003teaching,linn2015undergraduate}. At Wuhan University, undergraduate innovation and entrepreneurship training projects are administered at university, provincial, and national levels and are carried out under faculty supervision. This setting raises a scientometric question: whether the topics students pursue align with the research their colleges are actively publishing, and how funding level, advisor characteristics, and the concentration of supervisory resources relate to that alignment.
 
 Existing work on research--teaching relationships operates mostly at the level of individual scholars or institutions, using performance composites and indicator correlations \citep{maisano2023empirical,scafetta2025rt,xiong2026nexus}. The scholar-level RT-score of \citet{scafetta2025rt}, for example, combines research and teaching performance into a faculty-level index. Scientometrics has long represented relations among documents through co-citation, bibliographic coupling, co-word analysis, topical networks, and publication-level classification \citep{small1973cocitation,boyack2010cocitation,callon1991coword,yanding2012networks,waltman2012classification}. More recent work extends this tradition with publication embeddings and semantic analysis \citep{lamers2021appraisal,huang2022interdisciplinarity,motohashi2024measuring}. What remains underdeveloped is a project-level measure of \emph{semantic} alignment: whether the content of a student project falls within the college's actual research portfolio. Such a measure must bridge languages (Chinese project titles; English article titles) and scale to tens of thousands of titles.
 
@@ -104,7 +104,7 @@ The study makes three contributions. First, it provides a reproducible, project-
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.98\linewidth]{Figure1_Roadmap.png}
-\caption{Analytical roadmap and data structure. The 2020--2024 retrieval corpus contains 56,901 OpenAlex articles and 3,714 undergraduate innovation projects. Of the article corpus, 33,312 articles (58.5\%) receive at least one college assignment through advisor--author matching and form the college-specific RTAS reference portfolios. The full 56,901-article corpus is combined with all project titles for BERTopic. The auxiliary 2017--2019 OpenAlex pool is used only for temporally prior advisor covariates.}
+\caption{Analytical roadmap and data structure. The 2020--2024 retrieval corpus contains 56,901 OpenAlex articles and 3,714 UIETP projects spanning the innovation-training and entrepreneurship-training tracks. Of the article corpus, 33,312 articles (58.5\%) receive at least one college assignment through advisor--author matching and form the college-specific RTAS reference portfolios. The full 56,901-article corpus is combined with all project titles for BERTopic. The auxiliary 2017--2019 OpenAlex pool is used only for temporally prior advisor covariates.}
 \label{fig:roadmap}
 \end{figure}
 
@@ -112,7 +112,7 @@ The study makes three contributions. First, it provides a reproducible, project-
 
 \subsection{Data sources and corpus tiers}
 
-\textbf{Projects.} The project corpus contains 3,714 undergraduate innovation projects approved at Wuhan University in 2020--2024: 1,375 university-level (37.0\%), 1,657 provincial-level (44.6\%), and 682 national-level (18.4\%). The project records were compiled from administrative records supplied by teaching administrators in the 40 colleges and subsequently consolidated into a unified study dataset. Each record contains title (project titles contain 92.3\% Chinese characters on average), level, year, college (40), and advisor information. Using the same delimiter and normalization rules as the advisor-covariate construction, multi-advisor fields were split into individual advisors: 1,834 individual advisors and 4,244 distinct advisor--project links are represented, and 528 projects are co-supervised. We additionally re-parsed the four official approval lists for 2021--2024, which carry a project-type field absent from the consolidated table: this independently reproduced the tier counts and the 1,834/4,244/528 advisor rebuild, and showed that the analytic sample pools two program tracks---158 unique projects (4.3\%; 74, 23, 26, and 35 in 2021--2024) are entrepreneurship training or practice projects rather than innovation training projects. No type-labeled official list exists for 2020, so track membership cannot be recovered for that cohort; a sensitivity analysis excluding the 158 identifiable entrepreneurship projects leaves every mixed-model conclusion unchanged (Online Resource 1, Table~S1). The archived 2022 official list itself contains no university-level entries, so that year's tier composition reflects source-registry coverage rather than any analytical reclassification.
+\textbf{Projects.} The project corpus contains 3,714 projects approved under Wuhan University's Undergraduate Innovation and Entrepreneurship Training Program (UIETP) in 2020--2024: 1,375 university-level (37.0\%), 1,657 provincial-level (44.6\%), and 682 national-level (18.4\%). The program explicitly comprises two tracks---innovation training and entrepreneurship training/practice---rather than consisting solely of research projects. The project records were compiled from administrative records supplied by teaching administrators in the 40 colleges and subsequently consolidated into a unified study dataset. Each record contains title (project titles contain 92.3\% Chinese characters on average), level, year, college (40), and advisor information. Using the same delimiter and normalization rules as the advisor-covariate construction, multi-advisor fields were split into individual advisors: 1,834 individual advisors and 4,244 distinct advisor--project links are represented, and 528 projects are co-supervised. We additionally re-parsed the four official approval lists for 2021--2024, which carry a project-type field absent from the consolidated table: this independently reproduced the tier counts and the 1,834/4,244/528 advisor rebuild, and showed that 158 unique projects (4.3\%; 74, 23, 26, and 35 in 2021--2024) are entrepreneurship training or practice projects rather than innovation training projects. No type-labeled official list exists for 2020, so track membership cannot be recovered for that cohort; a sensitivity analysis excluding the 158 identifiable entrepreneurship projects leaves every mixed-model conclusion unchanged (Online Resource 1, Table~S1). A second sensitivity analysis drops the entire 2022 cohort and likewise leaves the RQ1 tier contrasts and mixed-model conclusions unchanged (Online Resource 1, Table~S2), addressing the fact that the archived 2022 official list itself contains no university-level entries; that year's tier composition therefore reflects source-registry coverage rather than any analytical reclassification.
 
 \textbf{Articles.} A total of 56,901 OpenAlex records of type \texttt{article} were retrieved for Wuhan University (OpenAlex institution ID I37461747) for publication years 2020--2024 via cursor pagination on September 3, 2026. Titles were predominantly English: 56,858 of 56,901 titles (99.9\%) contained no Chinese characters; yearly counts were 9,970 / 10,117 / 12,002 / 11,954 / 12,858. OpenAlex provides an open scholarly metadata infrastructure \citep{priem2022openalex}; recent comparative work documents strong reference coverage while also identifying database-specific limitations \citep{culbert2025openalex}. An additional 22,438 articles published in 2017--2019 were retrieved on September 4, 2026 (total 79,339) and serve \emph{only} to compute advisors' pre-project publication windows; these records do not enter RTAS or topic modeling.
 
@@ -309,7 +309,7 @@ Advisor prior supervised projects, $\log(1+x)$ & $-0.00629$ & [$-0.00917$, $-0.0
 \begin{figure}[H]
 \centering
 \includegraphics[height=0.84\textheight,keepaspectratio]{Figure5_CollegeCaterpillar.png}
-\caption{Model-adjusted college random effects from the primary mixed model. Points are college-level best linear unbiased predictions (BLUPs) and horizontal bars are approximate 95\% conditional intervals. The full project dataset contains 40 colleges; the primary complete-case MixedLM contains 39. These BLUP intervals are descriptive and are not simultaneous or multiple-comparison-adjusted tests. College effects reflect organizational and disciplinary context and are not interpreted as performance rankings.}
+\caption{Model-adjusted college random effects from the primary mixed model (ICC $=0.7376$). Points are college-level best linear unbiased predictions (BLUPs) and horizontal bars are approximate 95\% conditional intervals (BLUP $\pm 1.96$ conditional standard errors; intervals are wider for colleges with fewer projects). The full project dataset contains 40 colleges; the primary complete-case MixedLM contains 39 ($N=3{,}231$ projects). These BLUP intervals are descriptive and are not simultaneous or multiple-comparison-adjusted tests. College effects reflect organizational and disciplinary context and are not interpreted as performance rankings.}
 \label{fig:college}
 \end{figure}
 
@@ -351,13 +351,13 @@ For research policy, the results suggest that administrative funding tier is les
 
 \item \textbf{Titles-only sparsity.} Titles are the only symmetric cross-lingual unit, but they compress semantics; alignment is measured on title distributions, not full texts.
 
-\item \textbf{Linkage coverage.} 58.5\% of articles are advisor-matched to colleges; unmatched articles, including cases with missing affiliations or pinyin ambiguity, are excluded from college reference portfolios. Rule-based name linkage can generate both false-positive and false-negative assignments, so the direction of any resulting bias is uncertain. Author-level identity resolution (e.g., OpenAlex author IDs) remains future work.
+\item \textbf{Linkage coverage.} 58.5\% of articles are advisor-matched to colleges; unmatched articles, including cases with missing affiliations or pinyin ambiguity, are excluded from college reference portfolios. Rule-based name linkage can generate both false-positive and false-negative assignments, so the direction of any resulting bias is uncertain. Author-level identity resolution (e.g., OpenAlex author IDs) remains future work. At the project level, complete-case estimation of the mixed model uses 3,231 of 3,714 projects, and the 483 excluded cases are not evenly distributed across colleges: exclusion rates are highest in humanities and social-science units with lower linkage coverage (51\% in the School of Marxism; 41\% in the School of History), and excluded projects have lower mean RTAS (0.099 vs 0.139). Complete-case exclusion may therefore underrepresent precisely those units, although the high-confidence-match sample and the other sensitivity analyses preserve all substantive conclusions.
 
 \item \textbf{Single institution.} Holding one institutional setting fixed aids within-institution comparison but limits external validity; replication at universities with different disciplinary layouts is required before generalization.
 
 \item \textbf{Prior-supervision history.} The project registry begins in 2020, so prior supervisory load is left-censored at that year; the covariate captures previously observed projects, not an advisor's full pre-2020 supervision history.
 
-\item \textbf{Registry coverage and program tracks.} Official project-type labels exist only for 2021--2024; the 2020 cohort's track (innovation vs entrepreneurship) cannot be classified from the available administrative archive, and the archived 2022 official list contains no university-level entries. The analytic sample consequently pools both tracks (158 identifiable entrepreneurship projects, 4.3\%, which have lower RTAS on average: 0.100 vs 0.135, Cohen $d=-0.49$). Excluding these projects from the mixed model preserves every coefficient sign and significance classification (Table~S1), but a fully track-stratified treatment of the 2020 cohort is not possible from the available records.
+\item \textbf{Registry coverage and program tracks.} Official project-type labels exist only for 2021--2024; the 2020 cohort's track (innovation vs entrepreneurship) cannot be classified from the available administrative archive, and the archived 2022 official list contains no university-level entries. The analytic sample consequently pools both tracks (158 identifiable entrepreneurship projects, 4.3\%, which have lower RTAS on average: 0.100 vs 0.135, Cohen $d=-0.49$). Excluding these projects from the mixed model preserves every coefficient sign and significance classification (Table~S1), but a fully track-stratified treatment of the 2020 cohort is not possible from the available records. Whether the missing 2022 university-level records reflect the institutional arrangement that year or source-file coverage alone cannot be determined; a sensitivity that drops the entire 2022 cohort leaves the RQ1 tier contrasts and mixed-model conclusions unchanged (Table~S2).
 
 \item \textbf{Within-year ordering.} RTAS reference portfolios include articles from the focal calendar year $t$. Because the analysis is annual, it does not establish whether a same-year article preceded or followed the project's approval date; RTAS should therefore be interpreted as contemporaneous annual alignment rather than strict within-year temporal precedence.
 
@@ -374,7 +374,7 @@ For research policy, the results suggest that administrative funding tier is les
 
 \section{Conclusion}
 
-We introduced RTAS, a project-level, cross-lingual semantic alignment measure, and applied it to 3,714 undergraduate innovation projects and 56,901 articles at Wuhan University. Alignment rises with project funding level in raw comparisons, but adjusted funding-level coefficients are not statistically distinguishable from zero once college context and advisor characteristics are modeled. Research-side and project-side topic prevalence are markedly asymmetric (173 high-research/low-project vs 10 low-research/high-project topics), and temporal lags are definable for only 29 topics. Of these, 24 fall in the high-research/low-project stratum, within which the median lag is $+0.5$ years. National project allocation is highly concentrated and shows lagged persistence, yet projects linked to top-5\% advisors show only a small mean alignment difference that is not statistically distinguishable from zero; advisors' pre-project publication activity in the institution-linked OpenAlex corpus is positively associated with alignment and prior supervisory load is negatively associated, a pattern compatible with capacity dilution but not causally identified. The analytic workflow emphasizes reproducibility and bounded interpretation; RTAS indexes alignment, not quality.
+We introduced RTAS, a project-level, cross-lingual semantic alignment measure, and applied it to 3,714 UIETP projects and 56,901 articles at Wuhan University. Alignment rises with project funding level in raw comparisons, but adjusted funding-level coefficients are not statistically distinguishable from zero once college context and advisor characteristics are modeled. Research-side and project-side topic prevalence are markedly asymmetric (173 high-research/low-project vs 10 low-research/high-project topics), and temporal lags are definable for only 29 topics. Of these, 24 fall in the high-research/low-project stratum, within which the median lag is $+0.5$ years. National project allocation is highly concentrated and shows lagged persistence, yet projects linked to top-5\% advisors show only a small mean alignment difference that is not statistically distinguishable from zero; advisors' pre-project publication activity in the institution-linked OpenAlex corpus is positively associated with alignment and prior supervisory load is negatively associated, a pattern compatible with capacity dilution but not causally identified. The analytic workflow emphasizes reproducibility and bounded interpretation; RTAS indexes alignment, not quality.
 
 \section*{Statements and Declarations}
 
@@ -469,7 +469,7 @@ Corresponding author: email@domain.edu
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.92\linewidth]{FigureS3a_TopicTrend.png}
-\caption*{\textbf{Figure S3a.} Topic dynamics in undergraduate innovation projects, 2020--2024: aggregate share of the 15 most prevalent clustered topics versus all other clustered topics. Annual denominators include all projects, whereas BERTopic outliers are absent from both plotted numerators; consequently, the two lines do not sum to 100\%. This is a prevalence-share comparison, not a formal diversity index.}
+\caption*{\textbf{Figure S3a.} Topic dynamics in UIETP projects, 2020--2024: aggregate share of the 15 most prevalent clustered topics versus all other clustered topics. Annual denominators include all projects, whereas BERTopic outliers are absent from both plotted numerators; consequently, the two lines do not sum to 100\%. This is a prevalence-share comparison, not a formal diversity index.}
 \end{figure}
 
 
@@ -528,6 +528,58 @@ Number of colleges & 39 & & 39 & \\
 
 \vspace{1mm}
 \footnotesize Same specification as Table~6: RTAS $\sim$ provincial $+$ national $+$ year $+$ $\log(1+\text{prior 3y works})$ $+$ $\log(1+\text{prior supervised projects})$, random intercept by college, REML. Entrepreneurship projects are identified from the official 2021--2024 project-type field; 2020 track membership is unobservable, so no 2020 project is excluded.
+\end{table}
+
+% ---------------------------------------------------------
+% Table S2
+% ---------------------------------------------------------
+
+The archived official 2022 approval list contains no university-level entries (316 provincial and 150 national projects; 435 projects from that list remain in the frozen dataset after the eight-college exclusion). To check whether the RQ1 funding-tier comparison or the primary mixed model depends on this structurally different cohort, Table~S2 repeats both analyses after dropping all 435 projects approved in 2022. Because 2022 contributes no university-level projects, the university-tier mean is necessarily unchanged. At RQ1 ($N=3{,}279$ projects with RTAS), the overall contrast strengthens slightly ($F(2,3276)=35.80$, $p<0.001$, $\eta^2=2.14\%$); both significant Tukey contrasts against university tier remain significant, and the national--provincial contrast remains non-significant ($+0.0053$, adjusted $p=0.31$). In the mixed model, complete cases fall from 3,231 to 2,852 and the ICC is 0.7409; every coefficient retains its sign and significance classification, and the funding-level indicators remain non-significant.
+
+\begin{table}[H]
+\centering
+\caption{Sensitivity to excluding the entire 2022 cohort, whose archived official list contains no university-level records.}
+\label{tab:s2}
+\footnotesize
+\begin{tabular}{lcc}
+\toprule
+\multicolumn{3}{l}{\textit{Panel A. RQ1 project-level RTAS by funding tier}}\\
+& Primary & Excluding 2022\\
+& ($N=3{,}714$) & ($N=3{,}279$)\\
+\midrule
+University, mean (SD) & 0.1212 (0.0694) & 0.1212 (0.0694)\\
+Provincial, mean (SD) & 0.1391 (0.0728) & 0.1407 (0.0728)\\
+National, mean (SD) & 0.1460 (0.0731) & 0.1460 (0.0723)\\
+One-way ANOVA $F$ & 35.72 & 35.80\\
+ANOVA $\eta^2$ & 1.89\% & 2.14\%\\
+Tukey: provincial $-$ university & $+0.0179^{***}$ & $+0.0195^{***}$\\
+Tukey: national $-$ university & $+0.0248^{***}$ & $+0.0248^{***}$\\
+Tukey: national $-$ provincial & $+0.0070$ ($p=0.082$) & $+0.0053$ ($p=0.312$)\\
+\bottomrule
+\end{tabular}
+
+\vspace{1.5em}
+
+\begin{tabular}{lrrrr}
+\toprule
+\multicolumn{5}{l}{\textit{Panel B. Primary mixed model (random intercept by college, REML)}}\\
+& \multicolumn{2}{c}{Primary ($N=3{,}231$)} & \multicolumn{2}{c}{Excluding 2022 ($N=2{,}852$)}\\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}
+Predictor & $\beta$ & $p$ & $\beta$ & $p$\\
+\midrule
+Provincial vs university & 0.00062 & 0.720 & 0.00166 & 0.351\\
+National vs university & $-0.00162$ & 0.452 & $-0.00212$ & 0.353\\
+Year (per year; centered 2022) & 0.00313 & $<0.001$ & 0.00285 & $<0.001$\\
+Advisor prior 3y works, $\log(1+x)$ & 0.00427 & $<0.001$ & 0.00434 & $<0.001$\\
+Advisor prior supervised projects, $\log(1+x)$ & $-0.00629$ & $<0.001$ & $-0.00494$ & 0.002\\
+\midrule
+ICC & 0.7376 & & 0.7409 & \\
+Number of colleges & 39 & & 39 & \\
+\bottomrule
+\end{tabular}
+
+\vspace{1mm}
+\footnotesize $^{***}p<0.001$. Panel~A uses project-level RTAS values (one-way ANOVA, Tukey HSD); Panel~B uses the same specification as Tables~6 and~S1. The 2022 cohort is the only year with no university-level records in the archived source registry; excluding it cannot alter the university-tier mean but changes the composition of the other two tiers.
 \end{table}
 
 

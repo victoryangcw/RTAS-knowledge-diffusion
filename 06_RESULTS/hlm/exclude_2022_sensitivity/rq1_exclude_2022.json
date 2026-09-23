@@ -1,0 +1,100 @@
+{
+  "full": {
+    "sample": "full_frozen_3714",
+    "n_total": 3714,
+    "n_with_rtas": 3714,
+    "tiers": {
+      "university": {
+        "n": 1375,
+        "mean": 0.12118649188719623,
+        "sd": 0.06935231940503885
+      },
+      "provincial": {
+        "n": 1657,
+        "mean": 0.139054577256306,
+        "sd": 0.07283322970494227
+      },
+      "national": {
+        "n": 682,
+        "mean": 0.14602654944143265,
+        "sd": 0.07314999821637123
+      }
+    },
+    "anova": {
+      "F": 35.71611212677558,
+      "df_between": 2,
+      "df_within": 3711,
+      "p": 4.3260148187539004e-16,
+      "eta_squared": 0.01888526218540458
+    },
+    "tukey_hsd": {
+      "provincial_minus_university": {
+        "meandiff": 0.0179,
+        "p_adj": 0.0,
+        "ci_low": 0.0117,
+        "ci_hi": 0.024
+      },
+      "national_minus_university": {
+        "meandiff": -0.0248,
+        "p_adj": 0.0,
+        "ci_low": -0.0327,
+        "ci_hi": -0.017
+      },
+      "national_minus_provincial": {
+        "meandiff": -0.007,
+        "p_adj": 0.0821,
+        "ci_low": -0.0146,
+        "ci_hi": 0.0007
+      }
+    }
+  },
+  "exclude_2022": {
+    "sample": "exclude_2022",
+    "n_total": 3279,
+    "n_with_rtas": 3279,
+    "tiers": {
+      "university": {
+        "n": 1375,
+        "mean": 0.12118649188719623,
+        "sd": 0.06935231940503885
+      },
+      "provincial": {
+        "n": 1360,
+        "mean": 0.14070990905304767,
+        "sd": 0.07280652047765762
+      },
+      "national": {
+        "n": 544,
+        "mean": 0.14598113692066841,
+        "sd": 0.07227704150032263
+      }
+    },
+    "anova": {
+      "F": 35.80078798155142,
+      "df_between": 2,
+      "df_within": 3276,
+      "p": 4.1628621976501667e-16,
+      "eta_squared": 0.021388918106989212
+    },
+    "tukey_hsd": {
+      "provincial_minus_university": {
+        "meandiff": 0.0195,
+        "p_adj": 0.0,
+        "ci_low": 0.0131,
+        "ci_hi": 0.0259
+      },
+      "national_minus_university": {
+        "meandiff": -0.0248,
+        "p_adj": 0.0,
+        "ci_low": -0.0333,
+        "ci_hi": -0.0163
+      },
+      "national_minus_provincial": {
+        "meandiff": -0.0053,
+        "p_adj": 0.3117,
+        "ci_low": -0.0138,
+        "ci_hi": 0.0032
+      }
+    }
+  }
+}
