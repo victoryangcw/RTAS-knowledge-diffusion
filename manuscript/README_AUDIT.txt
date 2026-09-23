@@ -1,3 +1,7 @@
+HISTORICAL V7 REFERENCE-AUDIT RECORD — retained for provenance only.
+This 25-page V7 audit predates the v1.1 post-audit manuscript snapshot and is not a current build report.
+See ../README.md and preview/ for the current repository status.
+
 RTAS Scientometrics Teacher Final V7 - Reference Audit Pass 1
 
 Basis:
