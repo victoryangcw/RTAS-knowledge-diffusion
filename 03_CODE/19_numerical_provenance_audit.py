@@ -252,17 +252,17 @@ def audit_validation():
     ref50 = df.set_index("pair_id")["annotator1_score"]
     merged = rA.merge(rB, on="pair_id", suffixes=("_A", "_B"))
     ref = merged["pair_id"].map(ref50).astype(float).values
-    a_ = merged["score"].astype(float).values          # Huang Qi (Rater A)
-    b_ = merged["rating"].astype(float).values         # Fanrui (Rater B)
+    a_ = merged["score"].astype(float).values          # Rater A
+    b_ = merged["rating"].astype(float).values         # Rater B
     qwk_a = cohen_kappa_score(ref, a_, weights="quadratic", labels=[1,2,3,4])
     qwk_b = cohen_kappa_score(ref, b_, weights="quadratic", labels=[1,2,3,4])
     qwk_ab = cohen_kappa_score(a_, b_, weights="quadratic", labels=[1,2,3,4])
     rho_ab, _ = spearmanr(a_, b_)
-    record("Rater A (Huang Qi) QWK", 0.465, round(qwk_a, 4), close(qwk_a, 0.46483, 0.001),
+    record("Rater A QWK", 0.465, round(qwk_a, 4), close(qwk_a, 0.46483, 0.001),
            "second_rater_50pairs_filled vs annotator1 (50)", "quadratic-weighted kappa")
     record("Rater A exact agreement", "72%", f"{100*(ref==a_).mean():.0f}%",
            (ref == a_).mean() == 0.72, "same 50 pairs", "share identical")
-    record("Rater B (Fanrui) QWK", 0.606, round(qwk_b, 4), close(qwk_b, 0.60545, 0.001),
+    record("Rater B QWK", 0.606, round(qwk_b, 4), close(qwk_b, 0.60545, 0.001),
            "second_rater_50pairs_fanrui vs annotator1", "quadratic-weighted kappa")
     record("Rater B exact agreement", "78%", f"{100*(ref==b_).mean():.0f}%",
            (ref == b_).mean() == 0.78, "same", "share identical")
@@ -299,7 +299,7 @@ def audit_validation():
                 "< 1e-18; MS now says p = 1.7x10^-18.")
     record("LLM exact agreement", "93.3%", f"{100*(y==lm).mean():.1f}%",
            abs((y == lm).mean() - 0.9333) < 1e-3, "same", "share identical")
-    # triangulation: cos_mini vs Fanrui on the 50 pairs
+    # triangulation: cos_mini vs Rater B on the 50 pairs
     cb = cosbge.sort_values("pair_id")
     fan50 = rB.set_index("pair_id")["rating"]
     cm50 = cb.set_index("pair_id")["cos_mini"].reindex(rB["pair_id"]).values
@@ -308,10 +308,10 @@ def audit_validation():
     frpos = fr50 >= 2
     o = np.argsort(cm50); rk = np.empty(len(fr50)); rk[o] = np.arange(1, len(fr50) + 1)
     auc_fr = (rk[frpos].sum() - frpos.sum() * (frpos.sum() + 1) / 2) / (frpos.sum() * (~frpos).sum())
-    record("Triangulation cos vs Fanrui rho", 0.621, round(rho_fr, 3),
-           close(rho_fr, 0.62097, 0.002), "50-pair subset", "spearman cos_mini~Fanrui")
-    record("Triangulation cos vs Fanrui AUC", 0.932, round(auc_fr, 3),
-           close(auc_fr, 0.93240, 0.002), "50-pair subset", "AUC Fanrui >=2 vs 1")
+    record("Triangulation cos vs Rater B rho", 0.621, round(rho_fr, 3),
+           close(rho_fr, 0.62097, 0.002), "50-pair subset", "spearman cos_mini~Rater B")
+    record("Triangulation cos vs Rater B AUC", 0.932, round(auc_fr, 3),
+           close(auc_fr, 0.93240, 0.002), "50-pair subset", "AUC Rater B >=2 vs 1")
 
     # ---- lexical baselines (verbatim algorithm of 13_baseline_validity.py) ----
     d150 = df.merge(cosmini[["pair_id", "cos_mini"]], on="pair_id")

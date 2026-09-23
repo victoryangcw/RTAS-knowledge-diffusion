@@ -5,6 +5,32 @@ config, data, or code that could affect downstream numbers.
 
 ---
 
+## [v1.1-postaudit-repo] — 2026-09-23 — TWENTY-SEVENTH ROUND: REPOSITORY ALIGNED TO THE FINAL MANUSCRIPT
+
+- Root README and governance README rewritten around the adopted manuscript title
+  ("Linking Undergraduate Innovation and Entrepreneurship Training Projects to
+  Institutional Publication Portfolios: A Cross-Lingual Measure of Research–Training
+  Alignment") and the frozen key numbers (Gini 0.746, top-5% share 31.0%, persistence
+  OR 2.06/2.45, ICC 0.7376, quadrant counts 5/173/10/698); the superseded
+  v1.0-cand.5 results block (Gini 0.767, OR 6.085) is removed.
+- Final compiled paper snapshot added: `manuscript/preview/RTAS_final_package_2026-09-23.pdf`.
+- `manuscript/data_verification.tex` is now tracked. It holds the ready-to-insert
+  verification blocks (Methods subsection "Data verification and numerical provenance"
+  + supplement "Numerical provenance and reconciliation" with Tables S3–S4). The
+  2026-09-23 compiled snapshot does NOT yet include these blocks; they will be inserted
+  into the Overleaf master before submission.
+- CHECKSUMS.md: v1.1-postaudit addendum — MD5 of the 12 submission figures, the compiled
+  snapshot, and the provenance ledger.
+- Rater pseudonymization (working tree): provenance-ledger metric labels and audit-script
+  comments now use "Rater A"/"Rater B" instead of personal names, matching the manuscript.
+  Known remaining pre-publication task before the repository goes public: rater names also
+  persist in historical CHANGELOG/archive entries, in validation file names
+  (`second_rater_50pairs_fanrui.csv`, `inter_rater_stats_rater2_fanrui.csv` row keys), and
+  in git history; a dedicated scrub (plus possible history rewrite) is required at the
+  v1.0 public flip.
+
+---
+
 ## [v1.1-postaudit] — 2026-09-23 — TWENTY-SIXTH ROUND: EXCLUDE-2022 SENSITIVITY + UIETP TERMINOLOGY + FINAL FIGURE CLEANUP + HISTORY RELOCATION
 
 ### New sensitivity: exclude the entire 2022 cohort (`03_CODE/22_exclude_2022_sensitivity.py`)

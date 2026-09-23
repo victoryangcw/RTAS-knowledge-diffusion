@@ -193,7 +193,7 @@ def fig2_roadmap():
     BW2, BH2 = 2.4, 1.15        # standard box size
     boxes = [
         # Row 1 (y=5.4): the two corpora
-        (0.60, 5.40, 5.20, 1.15, 'Main RTAS corpus\n3,714 UIETP projects (CN; innovation + entrepreneurship tracks)  +  56,901 OpenAlex papers (EN), 2020-2024\nRTAS reference portfolios: 33,312 college-assigned papers (58.5%)', COLORS['blue']),
+        (0.60, 5.40, 5.20, 1.15, 'Main RTAS corpus\n3,714 UIETP projects (predominantly Chinese titles;\ninnovation + entrepreneurship tracks)  +  56,901 OpenAlex papers, 2020-2024\nRTAS reference portfolios: 33,312 academic-unit-assigned papers (58.5%)', COLORS['blue']),
         (6.30, 5.40, 4.60, 1.15, 'Auxiliary advisor-history corpus\n22,438 OpenAlex papers, 2017-2019\n-> pre-project covariate windows [t-3, t-1]', None),
         # Row 2 (y=3.45): method pipeline
         (0.60, 3.45, BW2, BH2, 'Embedding\nMultilingual MiniLM\nL12-v2 (384-dim)\nPairwise semantic validity\n$\\rho_s$ = .405 (n=150, p=2.6e-7)', COLORS['teal']),
@@ -206,7 +206,7 @@ def fig2_roadmap():
         (3.40, 1.50, BW2, BH2, 'Heterogeneity (RQ1)\nF(2,3711)=35.7\neta2=1.89%\nd=0.352', COLORS['blue']),
         (0.60, 1.50, BW2, BH2, 'BERTopic (RQ2)\nUMAP+HDBSCAN\nK=886 topics\n4-quadrant', COLORS['orange']),
         (6.30, 1.50, BW2, BH2, 'Concentration &\npersistence (RQ4)\nGini=0.746\nTop5%=31.0%\nlag-OR=2.06***', COLORS['red']),
-        (9.10, 1.50, BW2, BH2, 'HLM (RQ3)\nMixedLM RE\nICC=0.738, 39 colleges\nclean prior supervision', COLORS['purple']),
+        (9.10, 1.50, BW2, BH2, 'HLM (RQ3)\nMixedLM RE\nICC=0.738, 39 academic units\nclean prior supervision', COLORS['purple']),
         # Row 4 (y=0.05): downstream
         (3.40, 0.05, BW2, 1.00, 'Diffusion Lag (RQ2)\n29/886 defined\nHRLT median +0.5 yr', COLORS['gray']),
     ]
@@ -452,7 +452,7 @@ def fig4_project_level():
     ax.set_ylim(allmin - yrange * 0.06, y0 + 5.3 * bracket_h)
     ax.set_xticks(x); ax.set_xticklabels(order, fontsize=11.5)
     ax.set_ylabel('RTAS (per project, 3,714 observations)', fontweight='bold', fontsize=10.5)
-    ax.set_xlabel('Project Level', fontweight='bold', fontsize=10.5)
+    ax.set_xlabel('Administrative project tier', fontweight='bold', fontsize=10.5)
     # v1.1: in-figure suptitle removed; the LaTeX caption carries the title.
 
     savefig(fig, 'Figure4_Distribution')
@@ -486,7 +486,7 @@ def fig5_college_caterpillar():
               for _, r in re_df.iterrows()]
     ax.set_yticks(range(n_all))
     ax.set_yticklabels(labels, fontsize=8)
-    ax.set_xlabel('College random intercept (BLUP; 95% CI)',
+    ax.set_xlabel('Academic-unit random intercept (BLUP; 95% CI)',
                   fontweight='bold', fontsize=9.5)
     # v1.1: in-figure title removed entirely; the LaTeX caption carries it.
     ax.grid(axis='x', alpha=0.25, linewidth=0.5)
@@ -508,7 +508,7 @@ def fig6_hlm_forest():
         'is_provincial': 'Provincial (vs. University)',
         'is_national': 'National (vs. University)',
         'year_centered': 'Year (per year, centered at 2022)',
-        'log_prior3y': 'Advisor pre-project 3y works  log(1+x)',
+        'log_prior3y': 'Advisor pre-project publications (3 y)  log(1+x)',
         'log_prior_supervision': 'Advisor prior supervised projects  log(1+x)',
         'log_supervision': 'Advisor prior supervised projects  log(1+x)',
         'advisor_count': 'Advisor count',
@@ -663,13 +663,14 @@ def fig8_diffusion_lag_patterns():
     box_colors = [QUADRANT_COLORS[q] for q in quadrants_order]
 
     fig, axB = plt.subplots(figsize=(6.9, 5.9))   # taller canvas (v1.0-cand.6 user review)
+    # v1.1: gray fliers removed — every topic value is already drawn as a
+    # jittered colored scatter point below; the fliers duplicated that information.
     bp = axB.boxplot(box_vals, positions=[0, 1], widths=0.34, patch_artist=True, showmeans=True,
+                     showfliers=False,
                      meanprops=dict(marker='D', markerfacecolor='white', markeredgecolor='#111', markersize=8),
                      medianprops=dict(color='#111', linewidth=1.8),
                      whiskerprops=dict(linewidth=1.2),
-                     capprops=dict(linewidth=1.2),
-                     flierprops=dict(marker='o', markersize=4, markeredgecolor='none',
-                                     markerfacecolor='#888', alpha=0.6))
+                     capprops=dict(linewidth=1.2))
     for patch, color in zip(bp['boxes'], box_colors):
         patch.set_facecolor(color); patch.set_alpha(0.25); patch.set_edgecolor(color); patch.set_linewidth(1.4)
 
@@ -740,14 +741,14 @@ def fig8_diffusion_lag_patterns():
     axS1.grid(axis='y', alpha=0.25, linewidth=0.5)
 
     # panel (b): defined-lag boxplots by quadrant
+    # v1.1: gray fliers removed — every topic value is already drawn as a
+    # jittered colored scatter point below; the fliers duplicated that information.
     bp_s = axS2.boxplot(box_vals, positions=[0, 1], widths=0.30, patch_artist=True,
-                        showmeans=True,
+                        showmeans=True, showfliers=False,
                         meanprops=dict(marker='D', markerfacecolor='white', markeredgecolor='#111', markersize=9),
                         medianprops=dict(color='#111', linewidth=1.8),
                         whiskerprops=dict(linewidth=1.2),
-                        capprops=dict(linewidth=1.2),
-                        flierprops=dict(marker='o', markersize=5, markeredgecolor='none',
-                                        markerfacecolor='#888', alpha=0.6))
+                        capprops=dict(linewidth=1.2))
     for patch, color in zip(bp_s['boxes'], box_colors):
         patch.set_facecolor(color); patch.set_alpha(0.25)
         patch.set_edgecolor(color); patch.set_linewidth(1.4)
@@ -837,7 +838,13 @@ def fig10_matthew_effect():
     vals_p = [pareto_data.get(f'{p}_share_pct', 0) for p in pcts]
     bars = ax2.bar(pcts, vals_p, color=[COLORS['red'], COLORS['orange'], COLORS['orange'],
                                          COLORS['blue']], alpha=0.8, width=0.6)
-    ax2.axhline(y=5, color='#999', linestyle='--', linewidth=0.8, label='Equal share line')
+    # Equal-share reference unified with panel (a)'s "Perfect equality" line
+    # (same gray, dashed, lw=1): under perfect equality the top N% of advisors
+    # hold N% of national projects (1/5/10/20), so the reference is the
+    # diagonal y = x across the four percentile positions, not a flat line at
+    # 5% (which was correct for top5 only).
+    ax2.plot(range(4), [1, 5, 10, 20], '--', color=COLORS['gray'], linewidth=1,
+             label='Equal share (top N% hold N%)')
     for bar, v in zip(bars, vals_p):
         ax2.text(bar.get_x() + bar.get_width()/2, v + 1, f'{v:.1f}%', ha='center', fontsize=8, fontweight='bold')
     ax2.set_xlabel('Top N% advisors', fontweight='bold')
@@ -926,9 +933,13 @@ def fig12_college_rtas_ranking():
     d['college_en'] = d['college'].apply(translate_college)
     n_all = len(d)
     fig, ax = plt.subplots(figsize=(9, max(10, 0.32 * n_all + 2)))
-    # Color mapped to VALUE (same normalization language as Figure 5)
+    # Color mapped to VALUE (same normalization language as Figure 5).
+    # v1.1: single-hue sequential colormap (was RdYlGn) — red-to-green invited a
+    # "bad-to-good" reading that conflicts with the "not a performance ranking"
+    # stance. Truncated Blues keeps the lightest bar visible on white.
     norm = plt.Normalize(vmin=d['rtas_mean'].min(), vmax=d['rtas_mean'].max())
-    cmap = plt.cm.RdYlGn  # red = low RTAS, green = high RTAS
+    cmap = LinearSegmentedColormap.from_list(
+        'Blues_trunc', plt.cm.Blues(np.linspace(0.30, 0.95, 256)))
     colors = cmap(norm(d['rtas_mean'].values))
     bars = ax.barh(range(n_all), d['rtas_mean'], color=colors,
                    edgecolor='white', linewidth=0.3, height=0.7)
@@ -944,7 +955,7 @@ def fig12_college_rtas_ranking():
     ax.set_xlim(0, max(d['rtas_mean']) * 1.25)
     sm = plt.cm.ScalarMappable(cmap=cmap, norm=norm)
     cbar = fig.colorbar(sm, ax=ax, shrink=0.5, pad=0.12)
-    cbar.set_label('RTAS color scale:  red = lower alignment  →  green = higher alignment', fontsize=8)
+    cbar.set_label('RTAS color scale:  lighter = lower alignment  →  darker = higher alignment', fontsize=8)
     cbar.ax.tick_params(labelsize=7)
     fig.tight_layout()
     savefig(fig, 'FigureS1_CollegeRTAS_Full40', subdir='supp')
@@ -1045,7 +1056,7 @@ def fig13_topic_dynamics():
     # ---- 13a: two-line diversification trend (standalone) ----
     fig, axA = plt.subplots(figsize=(7.4, 5.8))
     axA.plot(years, top15_share.values, 'o-', color=COLORS['blue'], linewidth=2.2, markersize=7,
-             label='Top-15 mainstream topics', zorder=4)
+             label='Top-15 topics by project-side prevalence', zorder=4)
     axA.plot(years, longtail_share.values, 's-', color=COLORS['orange'], linewidth=2.2, markersize=7,
              label='Other clustered topics (long tail, 871 topics)', zorder=4)
     for x_, y_ in zip(years, top15_share.values):
