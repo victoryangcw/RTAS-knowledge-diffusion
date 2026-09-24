@@ -1,0 +1,180 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{array}
+\usepackage{hyperref}
+
+\renewcommand{\thefigure}{S\arabic{figure}}
+\renewcommand{\thetable}{S\arabic{table}}
+\setcounter{figure}{0}
+\setcounter{table}{0}
+
+\begin{document}
+\begin{center}
+{\LARGE\bfseries Online Resource 1}\par
+\vspace{0.4em}
+{\large\bfseries Scientometrics}\par
+\vspace{0.8em}
+{\large Linking Undergraduate Innovation and Entrepreneurship Training Projects to Institutional Publication Portfolios:\\
+A Cross-Lingual Measure of Research--Training Alignment}\par
+\vspace{0.8em}
+[Author Name]\\
+School of Remote Sensing and Information Engineering, Wuhan University, Wuhan, China\\
+Corresponding author: [email to be completed]
+\end{center}
+\vspace{1em}
+
+\section*{Supplementary Figures}
+
+
+% ---------------------------------------------------------
+% Figure S1
+% ---------------------------------------------------------
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.82\linewidth]{FigS1.pdf}
+\caption{Observed supervisory-load distribution among 1,834 individual advisors after multi-advisor project fields were split using the same rules as the main analysis. Counts are based on distinct advisor--project links in the 2020--2024 registry. The 2--3-project category is the complement of the one-project and $\ge4$-project groups; mean load is 2.314 projects, median 2, and maximum 10}
+\label{fig:s1}
+\end{figure}
+
+
+% ---------------------------------------------------------
+% Figure S2
+% ---------------------------------------------------------
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.98\linewidth]{FigS2.pdf}
+\caption{Four-quadrant summary for clustered documents. Bars count documents assigned to the 886 non-outlier topics; BERTopic outliers are excluded from the quadrant counts. The prevalence thresholds used to classify topics are defined against the full article and project corpora, as specified in the main text}
+\label{fig:s2}
+\end{figure}
+
+
+% ---------------------------------------------------------
+% Figure S3
+% ---------------------------------------------------------
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.92\linewidth]{FigS3.pdf}
+\caption{Topic dynamics in UIETP projects, 2020--2024: aggregate share of the top 15 clustered topics by project-side prevalence versus all other clustered topics. Annual denominators include all projects, whereas BERTopic outliers are absent from both plotted numerators; consequently, the two lines do not sum to 100\%. This is a prevalence-share comparison, not a formal diversity index}\label{fig:s3}
+\end{figure}
+
+
+% ---------------------------------------------------------
+% Figure S4
+% ---------------------------------------------------------
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.92\linewidth]{FigS4.pdf}
+\caption{Top-15 project-side topic prevalence by year, 2020--2024}\label{fig:s4}
+\end{figure}
+
+
+% ---------------------------------------------------------
+% Figure S5
+% ---------------------------------------------------------
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[height=0.80\textheight,keepaspectratio]{FigS5.pdf}
+\caption{Descriptive RTAS means for all 40 academic units using the full project dataset. The one-way academic-unit ANOVA shown in the figure uses 39 units because the single-project academic unit cannot contribute a within-group variance estimate; this ANOVA effect size is distinct from the adjusted mixed-model ICC in the main text. Darker blue indicates higher descriptive RTAS and lighter blue lower RTAS. The ordering is descriptive and should not be interpreted as a performance ranking}
+\label{fig:s5}
+\end{figure}
+
+
+\clearpage
+\section*{Supplementary Tables}
+
+% ---------------------------------------------------------
+% Table S1
+% ---------------------------------------------------------
+
+The official 2021--2024 approval lists classify projects as innovation training or entrepreneurship training/practice. Matching on (year, normalized title) identifies 158 unique entrepreneurship projects inside the frozen 3,714-row dataset (4.3\%; 74/23/26/35 across 2021--2024; 53 university-, 64 provincial-, and 41 national-level). These projects have lower alignment than the remaining 3,556 projects: mean RTAS $=0.100$ (SD $=0.053$) versus $0.135$ (SD $=0.073$); Welch $t=-7.90$, $p<0.001$, Cohen $d=-0.49$ (pooled SD). Table~S1 re-estimates the frozen random-intercept specification (REML, clustered by academic unit, covariates taken from the frozen dataset unchanged) after excluding these 158 projects: the complete-case sample falls from 3,231 to 3,085 projects, ICC changes from 0.7376 to 0.7373, every coefficient retains its sign and significance classification, and the administrative-tier indicators remain non-significant. The 2020 cohort is retained in both fits because no type-labeled official registry exists for that year.
+
+\begin{table}[htbp]
+\centering
+\caption{Sensitivity of the primary mixed model (the primary mixed-model table in the main manuscript) to excluding the 158 officially typed entrepreneurship projects (2021--2024)}
+\label{tab:s1}
+\small
+\begin{tabular}{p{0.36\linewidth}rrrr}
+\toprule
+& \multicolumn{2}{c}{Primary ($N=3{,}231$)} & \multicolumn{2}{c}{Excl. entrepreneurship ($N=3{,}085$)}\\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}
+Predictor & $\beta$ & $p$ & $\beta$ & $p$\\
+\midrule
+Provincial vs university & 0.00062 & 0.720 & 0.00085 & 0.627\\
+National vs university & $-0.00162$ & 0.452 & $-0.00205$ & 0.357\\
+Year (per year; centered 2022) & 0.00313 & $<0.001$ & 0.00293 & $<0.001$\\
+Advisor prior 3y publications, $\log(1+x)$ & 0.00427 & $<0.001$ & 0.00480 & $<0.001$\\
+Advisor prior supervised projects, $\log(1+x)$ & $-0.00629$ & $<0.001$ & $-0.00567$ & $<0.001$\\
+\midrule
+ICC & 0.7376 & & 0.7373 & \\
+Number of academic units & 39 & & 39 & \\
+\bottomrule
+\end{tabular}
+
+\vspace{1mm}
+\footnotesize Same specification as the primary mixed-model table in the main manuscript: RTAS $\sim$ provincial $+$ national $+$ year $+$ $\log(1+\text{prior 3y publications})$ $+$ $\log(1+\text{prior supervised projects})$, random intercept by academic unit, REML. Entrepreneurship projects are identified from the official 2021--2024 project-type field; 2020 track membership is unobservable, so no 2020 project is excluded.
+\end{table}
+
+% ---------------------------------------------------------
+% Table S2
+% ---------------------------------------------------------
+
+The archived official 2022 approval list contains no university-level entries (316 provincial and 150 national projects; 435 projects from that list remain in the frozen dataset after the eight-label study-frame exclusion). To check whether the RQ1 administrative-tier comparison or the primary mixed model depends on this structurally different cohort, Table~S2 repeats both analyses after dropping all 435 projects approved in 2022. Because 2022 contributes no university-level projects, the university-tier mean is necessarily unchanged. At RQ1 ($N=3{,}279$ projects with RTAS), the overall contrast strengthens slightly ($F(2,3276)=35.80$, $p<0.001$, $\eta^2=2.14\%$); both significant Tukey contrasts against university tier remain significant, and the national--provincial contrast remains non-significant ($+0.0053$, adjusted $p=0.31$). In the mixed model, complete cases fall from 3,231 to 2,852 and the ICC is 0.7409; every coefficient retains its sign and significance classification, and the administrative-tier indicators remain non-significant.
+
+\begin{table}[htbp]
+\centering
+\caption{Sensitivity to excluding the entire 2022 cohort, whose archived official list contains no university-level records}
+\label{tab:s2}
+\footnotesize
+\begin{tabular}{lcc}
+\toprule
+\multicolumn{3}{l}{\textit{Panel A. RQ1 project-level RTAS by administrative tier}}\\
+& Primary & Excluding 2022\\
+& ($N=3{,}714$) & ($N=3{,}279$)\\
+\midrule
+University, mean (SD) & 0.1212 (0.0694) & 0.1212 (0.0694)\\
+Provincial, mean (SD) & 0.1391 (0.0728) & 0.1407 (0.0728)\\
+National, mean (SD) & 0.1460 (0.0731) & 0.1460 (0.0723)\\
+One-way ANOVA $F$ & 35.72 & 35.80\\
+ANOVA $\eta^2$ & 1.89\% & 2.14\%\\
+Tukey: provincial $-$ university & $+0.0179^{***}$ & $+0.0195^{***}$\\
+Tukey: national $-$ university & $+0.0248^{***}$ & $+0.0248^{***}$\\
+Tukey: national $-$ provincial & $+0.0070$ ($p=0.082$) & $+0.0053$ ($p=0.312$)\\
+\bottomrule
+\end{tabular}
+
+\vspace{1.5em}
+
+\begin{tabular}{lrrrr}
+\toprule
+\multicolumn{5}{l}{\textit{Panel B. Primary mixed model (random intercept by academic unit, REML)}}\\
+& \multicolumn{2}{c}{Primary ($N=3{,}231$)} & \multicolumn{2}{c}{Excluding 2022 ($N=2{,}852$)}\\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}
+Predictor & $\beta$ & $p$ & $\beta$ & $p$\\
+\midrule
+Provincial vs university & 0.00062 & 0.720 & 0.00166 & 0.351\\
+National vs university & $-0.00162$ & 0.452 & $-0.00212$ & 0.353\\
+Year (per year; centered 2022) & 0.00313 & $<0.001$ & 0.00285 & $<0.001$\\
+Advisor prior 3y publications, $\log(1+x)$ & 0.00427 & $<0.001$ & 0.00434 & $<0.001$\\
+Advisor prior supervised projects, $\log(1+x)$ & $-0.00629$ & $<0.001$ & $-0.00494$ & 0.002\\
+\midrule
+ICC & 0.7376 & & 0.7409 & \\
+Number of academic units & 39 & & 39 & \\
+\bottomrule
+\end{tabular}
+
+\vspace{1mm}
+\footnotesize $^{***}p<0.001$. Panel~A uses project-level RTAS values (one-way ANOVA, Tukey HSD); Panel~B uses the same specification as the primary mixed-model table in the main manuscript and Table~S1. The 2022 cohort is the only year with no university-level records in the archived source registry; excluding it cannot alter the university-tier mean but changes the composition of the other two tiers.
+\end{table}
+
+\end{document}
