@@ -1,0 +1,42 @@
+name: Springer LaTeX compile
+
+on:
+  push:
+    branches:
+      - springer-submission-format
+  workflow_dispatch:
+
+jobs:
+  latex:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Stage flat figure names
+        run: |
+          cd manuscript/springer_submission
+          cp ../figures/Figure1_Roadmap.pdf Fig1.pdf
+          cp ../figures/Figure2_QuadrantScatter.pdf Fig2.pdf
+          cp ../figures/Figure3_FundingLevel.pdf Fig3.pdf
+          cp ../figures/Figure4_DiffusionLag_Stacked.pdf Fig4.pdf
+          cp ../figures/Figure5_CollegeCaterpillar.pdf Fig5.pdf
+          cp ../figures/Figure6_HLM_Forest.pdf Fig6.pdf
+          cp ../figures/Figure7_MatthewEffect.pdf Fig7.pdf
+          cp ../figures/FigureS1_SupervisorLoad.pdf FigS1.pdf
+          cp ../figures/FigureS2_QuadrantSummary.pdf FigS2.pdf
+          cp ../figures/FigureS3a_TopicTrend.pdf FigS3.pdf
+          cp ../figures/FigureS3b_TopicHeatmap.pdf FigS4.pdf
+          cp ../figures/FigureS4_CollegeRTAS_Full40.pdf FigS5.pdf
+      - name: Compile manuscript and SI
+        uses: xu-cheng/latex-action@v3
+        with:
+          working_directory: manuscript/springer_submission
+          root_file: |
+            main.tex
+            ESM_1.tex
+      - name: Upload compiled PDFs
+        uses: actions/upload-artifact@v4
+        with:
+          name: scientometrics-springer-preview
+          path: |
+            manuscript/springer_submission/main.pdf
+            manuscript/springer_submission/ESM_1.pdf
