@@ -1,3 +1,4 @@
+# rerun after template-compatibility fix
 name: Springer LaTeX compile
 
 on:
