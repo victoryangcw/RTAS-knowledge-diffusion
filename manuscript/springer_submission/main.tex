@@ -1,0 +1,374 @@
+\documentclass[pdflatex,sn-apa]{sn-jnl}
+
+% =========================================================
+% Scientometrics submission-format version.
+% Scientific content/statistics are frozen; author/funding/ethics TODOs remain.
+% Reference style: Springer Nature APA-based (sn-apa / sn-apacite.bst).
+% =========================================================
+
+\usepackage{graphicx}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{booktabs}
+\usepackage{threeparttable}
+\usepackage{array}
+\usepackage{enumitem}
+
+\raggedbottom
+
+\begin{document}
+
+\title[Cross-Lingual Research--Training Alignment]{Linking Undergraduate Innovation and Entrepreneurship Training Projects to Institutional Publication Portfolios: A Cross-Lingual Measure of Research--Training Alignment}
+
+% TODO BEFORE SUBMISSION: replace placeholders with final author spelling and active correspondence e-mail.
+\author*[1]{\fnm{[Given name]} \sur{[Family name]}}\email{[corresponding email]}
+\affil*[1]{\orgdiv{School of Remote Sensing and Information Engineering}, \orgname{Wuhan University}, \orgaddress{\city{Wuhan}, \state{Hubei}, \country{China}}}
+% ORCID to enter on the title page/submission system: 0009-0006-9788-3365
+
+\abstract{Universities increasingly expect undergraduate training projects to connect with faculty research, yet this relationship is rarely measured at the project level. We introduce the Research--Training Alignment Score (RTAS), which compares each project title with the advisor-linked publication portfolio of its academic unit at Wuhan University. Because project titles are predominantly Chinese whereas nearly all indexed article titles contain no Chinese characters, we use cross-lingual sentence embeddings.
+
+We apply RTAS to 3,714 Undergraduate Innovation and Entrepreneurship Training Program projects and 56,901 OpenAlex-indexed articles from 2020--2024; 33,312 articles enter academic-unit reference portfolios. Validation against 150 human-rated title pairs supports pairwise semantic validity (Spearman's $\rho=0.405$; area under the receiver operating characteristic curve (AUC) $=0.880$), with additional checks using independent raters, test--retest scoring, lexical baselines, a large language model (LLM) rater, and a second encoder. RTAS differs descriptively across administrative project tiers (university 0.1212, provincial 0.1391, national 0.1460; $\eta^2=1.89\%$), but adjusted tier coefficients are not statistically distinguishable from zero. BERTopic identifies 173 high-research/low-project and 10 low-research/high-project topics; annual onset is definable on both sides for only 29 of 886 topics. In the mixed model, most RTAS variation lies between academic units; advisor pre-project publication activity is positively associated with alignment and prior supervisory load negatively associated. National-level project allocation is concentrated and persistent, yet top-5\% advisor exposure shows only a small RTAS difference ($d=0.083$, $p=0.065$).
+
+RTAS measures semantic alignment rather than training quality, and all estimates are observational.}
+
+\keywords{research--training alignment; undergraduate innovation and entrepreneurship training; cross-lingual sentence embeddings; OpenAlex; BERTopic; cumulative advantage}
+
+\maketitle
+
+\section{Introduction}
+
+\subsection{Motivation}
+
+Research universities often seek to connect undergraduate training with active faculty research, but a research-intensive environment does not by itself imply a close connection between research and teaching. The meta-analysis by \citet{hattie1996relationship} found little overall relationship between individual-level research productivity and teaching effectiveness, helping shift attention from whether research and teaching are generally correlated to how they are connected in particular educational settings \citep{brew2003teaching,healey2005linking,linn2015undergraduate}.
+
+One observable connection lies in the subjects students actually work on. Undergraduate project programs place students under faculty supervision and ask them to develop a specific problem, product, or line of inquiry. Yet the content of those projects is rarely compared directly with the research being produced around them. Existing studies of the research--teaching relationship have more often compared scholar- or institution-level indicators \citep{maisano2023empirical,scafetta2025rt,xiong2026nexus}. Such comparisons are informative about performance relationships, but they do not show whether a particular student project occupies the same semantic space as the research portfolio of its academic environment.
+
+This gap is also a measurement problem. Scientometrics has long represented relations among documents through citation, co-citation, bibliographic coupling, co-word analysis, and publication-level classification \citep{small1973cocitation,callon1991coword,boyack2010cocitation,yanding2012networks,waltman2012classification}. More recent work uses textual embeddings and semantic representations to capture relations that do not depend on direct citation or lexical overlap \citep{lamers2021appraisal,huang2022interdisciplinarity,motohashi2024measuring}. Recent science-of-science work likewise emphasizes the need to tie new indicators closely to the constructs they actually measure \citep{milojevic2025science}. The problem becomes especially salient when the two document sets are recorded in different languages. In our setting, project titles contain 92.3\% Chinese characters on average, whereas 56,858 of 56,901 indexed article titles (99.9\%) contain no Chinese characters. Direct lexical overlap is therefore a poor basis for project--publication comparison.
+
+At Wuhan University, the Undergraduate Innovation and Entrepreneurship Training Program (UIETP) provides a useful setting for examining this relationship. Projects are supervised by faculty and are designated at university, provincial, or national administrative tiers. The program includes innovation-training and entrepreneurship-oriented projects rather than a single homogeneous category of ``research projects.'' We therefore treat the project corpus as an undergraduate training portfolio and ask how closely its content aligns with the publication portfolios of the academic units in which the projects are situated.
+
+\subsection{This study}
+
+We introduce the Research--Training Alignment Score (RTAS), defined for each project as the mean cosine similarity between the multilingual sentence embedding of its title and the embeddings of the unique articles assigned to its academic unit through advisor--author linkage over a cumulative window. RTAS is deliberately \emph{not} a performance ranking: it measures where student-project content falls relative to an observed publication portfolio, not novelty, research quality, teaching effectiveness, or institutional performance.
+
+Throughout the paper, \emph{academic unit} is used as an umbrella term for the schools, colleges, institutes, laboratories, and other organizational units represented in the project registry. The source-data field and analysis code retain the historical label \texttt{college}.
+
+We ask four research questions about the 2020--2024 Wuhan University cohorts:
+\begin{enumerate}[label=\textbf{RQ\arabic*.}]
+\item \textbf{Heterogeneity.} Does RTAS differ across administrative project tiers, and does the difference persist after accounting for academic-unit and advisor characteristics?
+\item \textbf{Topic asymmetries and diffusion lags.} How are research-side and project-side topic prevalence distributed across quadrants, and where annual onset is identifiable on both sides, what lags are observed?
+\item \textbf{Multilevel associations.} How much RTAS variance lies between academic units, and which advisor and project characteristics are associated with alignment?
+\item \textbf{Concentration and persistence.} Is national-level project allocation concentrated and persistent across advisors over adjacent years, and does concentration coincide with higher alignment?
+\end{enumerate}
+
+The single-institution design holds the institutional setting and observation window constant while retaining substantial organizational and field variation across 40 academic units. This improves within-institution comparability but limits external validity (Sect.~\ref{sec:limitations}).
+
+\subsection{Contributions}
+
+The main contribution is methodological: RTAS provides a project-level, cross-lingual measure of semantic alignment between student projects and institutional publication portfolios constructed at the academic-unit level. We evaluate the embedding layer using human ratings, test--retest reliability, an LLM second rater, direct lexical baselines, and a post-freeze encoder benchmark, while keeping the aggregation rule fixed after development-stage selection. The measure is then used to examine four related aspects of the research--training relationship: administrative-tier differences, topic-prevalence asymmetries and limited observable lags, multilevel academic-unit and advisor associations, and the concentration and persistence of national-level project allocation. Figure~\ref{fig:roadmap} summarizes the data tiers and analytical workflow.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.98\linewidth]{Fig1.pdf}
+\caption{Analytical roadmap and data structure. The 2020--2024 primary corpus contains 3,714 UIETP projects and 56,901 OpenAlex articles. Of the article corpus, 33,312 articles (58.5\%) receive at least one academic-unit assignment through advisor--author matching and form the RTAS reference portfolios. The full 56,901-article corpus is combined with all project titles for BERTopic. The auxiliary 2017--2019 OpenAlex pool is used only for temporally prior advisor covariates}
+\label{fig:roadmap}
+\end{figure}
+
+\section{Data and Methods}
+
+\subsection{Data sources and corpus tiers}
+
+\textbf{Projects.} The analytic project corpus contains 3,714 projects approved under Wuhan University's Undergraduate Innovation and Entrepreneurship Training Program (UIETP) in 2020--2024: 1,375 university-level (37.0\%), 1,657 provincial-level (44.6\%), and 682 national-level (18.4\%). The project records were compiled from administrative records supplied by teaching administrators and consolidated into a unified study dataset. Each record contains title, administrative tier, year, academic unit, and advisor information; project titles contain 92.3\% Chinese characters on average. Multi-advisor fields were split using the same delimiter and normalization rules as the advisor-covariate construction, yielding 1,834 individual advisors and 4,244 distinct advisor--project links; 528 projects are co-supervised.
+
+The program contains both innovation-training and entrepreneurship-training/practice tracks. Archived approval lists with explicit project-type labels are available for 2021--2024 but not for 2020. Re-parsing those lists identifies 158 entrepreneurship-training/practice projects in the analytic sample (4.3\%); excluding them preserves every primary mixed-model coefficient sign and significance classification (Online Resource 1, Table~S1). The archived 2022 list used for this study contains no university-level records. This should not be interpreted as evidence that no such projects existed institution-wide that year; excluding the entire 2022 cohort leaves the RQ1 and mixed-model conclusions unchanged (Online Resource 1, Table~S2).
+
+\textbf{Study frame.} The consolidated five-year registry initially contained 3,887 rows under 48 organizational labels. RTAS requires a non-empty advisor-linked publication portfolio for the project's organizational unit. For 173 projects under eight labels, no such portfolio could be constructed from the source substrate, so RTAS was structurally undefined; the analytic frame therefore contains 3,714 projects across 40 academic units. Post-freeze registry checks confirmed that all 3,714 project identifiers are unique, that no normalized title repeats within the same year, and that the seven titles recurring across two different years correspond to separately approved continuing projects rather than duplicate records.
+
+\textbf{Articles.} A total of 56,901 OpenAlex records of type \texttt{article} were retrieved for Wuhan University (OpenAlex institution ID I37461747) for publication years 2020--2024 via cursor pagination on September 3, 2026. Of these titles, 56,858 (99.9\%) contain no Chinese characters; yearly counts were 9,970 / 10,117 / 12,002 / 11,954 / 12,858. The retrieval files did not preserve OpenAlex's language field, so this character-based statement is used rather than treating every title as verified English. OpenAlex provides an open scholarly metadata infrastructure \citep{priem2022openalex}; recent comparative work documents strong reference coverage while also identifying database-specific limitations \citep{culbert2025openalex}. An additional 22,438 articles published in 2017--2019 were retrieved on September 4, 2026 (total 79,339) and serve \emph{only} to compute advisors' pre-project publication windows; these records do not enter RTAS or topic modeling.
+
+\textbf{Advisor--article linkage.} Advisor names are converted to pinyin keys (forward and reverse) and matched against normalized OpenAlex author names with an academic-unit prior; ambiguous keys are skipped. A total of 33,312 articles (58.5\%) are assigned to at least one academic unit and enter the RTAS reference layer (mean 1.37 units per matched article). Per project, advisor-covariate status is matched (2,750), ambiguous (748), or unmatched (216), with unmatched covariates coded as missing rather than zero.
+
+\textbf{Three corpus tiers.} The retrieval corpus contains 56,901 articles and supplies the full denominator for article-side topic prevalence. The advisor-matched academic-unit portfolios contain 33,312 articles and are the only papers entering the RTAS reference sets. The joint BERTopic corpus contains 60,615 documents: 56,901 article titles and 3,714 project titles.
+
+\subsection{RTAS definition}
+
+For academic unit $u$, year $t$, and project $p$:
+\begin{equation}
+\mathrm{RTAS}(p,u,t)=
+\frac{1}{|P_{u,t}|}
+\sum_{j\in P_{u,t}}
+\cos(\mathbf e_p,\mathbf e_j),
+\end{equation}
+where $\mathbf e_p$ is the L2-normalized 384-dimensional embedding of the project title, and $P_{u,t}$ is the set of unique articles assigned to academic unit $u$ over the cumulative window $[2020,t]$ through advisor--author linkage. If an article is linked to multiple advisors within the same unit, it is counted once in that unit portfolio; if it is linked to advisors in multiple units, it is counted once per unit. Aggregation is the mean cosine.
+
+Titles are used because the project records contain no other free-text field. They are therefore the only text available in comparable form on both sides of the analysis. OpenAlex provides abstracts for some articles, but no corresponding project abstracts are available; comparing project titles with article abstracts would create a systematic difference in text length and information content. RTAS therefore operationalizes semantic alignment with the observed advisor-linked publication portfolio of the project's academic unit. It does not measure novelty, influence, teaching effectiveness, or research quality. Citation and journal-tier information do not enter the score, although pre-project publication counts are used as advisor covariates.
+
+RTAS is distinct from scholar-level research--teaching composites such as the RT-score \citep{scafetta2025rt} and from correlational studies of research and teaching indicators \citep{maisano2023empirical}: it is a project-level semantic alignment measure and is not used for performance ranking.
+
+\subsection{Embedding and aggregation choice}
+
+Embeddings use paraphrase-multilingual-MiniLM-L12-v2 (384-dimensional), a multilingual Sentence-BERT family model built on Siamese sentence embeddings and multilingual knowledge distillation \citep{reimers2019sbert,reimers2020multilingual}. The model was selected for multilingual coverage and computational efficiency on the 60,615-document corpus; embedding-level validity was evaluated separately below. Five aggregation variants (mean, top-5/10/20 mean, centroid) were evaluated on the earlier 12,000-article development pool under a pre-specified composite rule. The normalized composite weighted known-groups separation ($\eta^2$ of a project-level analysis of variance [ANOVA]) by 0.45, temporal stability by 0.30, and topic-model K-stability by 0.25; a top-K variant would be preferred to the mean only if its composite score reached at least 95\% of the best score. Mean aggregation scored 0.742, while the best top-K comparator scored 0.480, so the mean was frozen as the primary RTAS and carried unchanged into the final 56,901-article corpus. Because administrative-tier separation contributed to this development-stage choice, the tier comparisons below are treated as descriptive rather than as independent validation. Frozen final-corpus RTAS descriptives are mean 0.1337, SD 0.0723, median 0.1362, range $[-0.0575,0.3960]$, $N=3,714$. Table~\ref{tab:selection} summarizes the frozen aggregation-selection decision.
+
+\begin{table}[htbp]
+\centering
+\caption{Primary RTAS aggregation-selection summary}
+\label{tab:selection}
+\begin{threeparttable}
+\begin{tabular}{lrl}
+\toprule
+Aggregation variant & Development-stage composite & Status\\
+\midrule
+Mean & \textbf{0.742} & \textbf{Primary (selected)}\\
+Top-5 mean & 0.480 & Best top-K comparator\\
+Top-10 mean & 0.447 & Not selected\\
+Top-20 mean & 0.398 & Not selected\\
+Centroid & 0.300 & Not selected\\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}\footnotesize
+\item Composite scores are the frozen values from the earlier 12,000-article development pool and were not re-tuned after expansion to 56,901 articles. The selected mean aggregation was carried unchanged into the final corpus. The final-sample administrative-tier effect, $\eta^2=0.0189$ (1.89\%), is reported separately in Sect.~3.1 and should not be confused with development-stage selection metrics.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+\subsection{Validity program}
+
+The primary validation protocols below were specified before execution and did not alter the frozen RTAS estimates. The BGE-M3 comparison was added post-freeze as an encoder robustness benchmark and likewise did not alter the primary RTAS pipeline.
+
+\begin{itemize}
+\item \textbf{Pairwise semantic validity (C1, embedding level).} The frozen validation set contains 150 randomly paired project-title--article-title pairs scored by a reference rater on a 1--4 relatedness rubric; 134/150 received score 1, so class imbalance is reported explicitly. Embedding cosine correlates with human relatedness at $\rho=0.405$ ($p=2.6\times10^{-7}$); a 10,000-resample bootstrap (seed 42) gives a 95\% confidence interval (CI) [0.281, 0.509], with permutation $p<.001$, Kendall $\tau_b=0.327$, and leave-one-out max $|\Delta\rho|=0.018$. Binary discrimination of related ($\ge2$) versus unrelated (=1) gives an area under the receiver operating characteristic curve (AUC) of 0.880 [0.793, 0.949]. C1 is evidence of pairwise semantic validity, not a completed construct-validity certification; the related-only subset ($n=16$) spans a restricted score range and is too small for stable within-stratum correlation estimation. Its $\rho=-0.253$ is reported for transparency and is not used for inference.
+
+\item \textbf{Inter-rater reliability.} Ordinal agreement was summarized using quadratic-weighted Cohen's $\kappa$ \citep{cohen1968weighted}. Two independent human raters, blind to the reference scores and embedding values, scored a 50-pair subset: Rater A vs reference $\kappa=0.465$ (exact agreement 72\%); Rater B vs reference $\kappa=0.606$ (78\%; the reference rater's 46/50 ties at score 1 destabilize Spearman, so $\kappa$ and agreement are interpreted); A--B $\kappa=0.826$, $\rho=0.821$, agreement 90\%.
+
+\item \textbf{Test--retest.} The same reference rater scored 40 reordered pairs after an approximately 12-day washout: $\kappa=0.643$, $\rho=0.688$ ($p<.001$), agreement 95\%.
+
+\item \textbf{LLM second rater.} The API model alias \texttt{deepseek-reasoner} (temperature 0, prompt v1.1) rated all 150 pairs blind: $\kappa=0.459$, $\rho=0.638$ ($p=1.7\times10^{-18}$), agreement 93.3\%. Triangulation against Rater B yielded $\rho=0.621$ and AUC $=0.932$; these results are treated as converging evidence and do not replace the frozen C1 estimates.
+
+\item \textbf{Naive lexical baselines.} Character 3--5-gram term frequency--inverse document frequency (TF--IDF) cosine, character 3-gram Jaccard, and BM25 Okapi \citep{robertson2009bm25} were applied directly to the cross-lingual project--article title pairs (cf. \citealp{hamers1989similarity} for cosine/Jaccard similarity in scientometric research). Applied without translation alignment, these direct lexical baselines yielded $\rho=0.296$--$0.300$ and AUC $=0.637$--$0.638$ (TF--IDF: $\rho=0.300$, AUC $=0.638$; Jaccard: $\rho=0.296$, AUC $=0.637$; BM25: $\rho=0.298$, AUC $=0.637$), below MiniLM's 0.405 / 0.880. The comparison supports the use of the multilingual semantic encoder over these direct lexical-overlap baselines; it makes no claim against translation-based or stronger cross-lingual methods.
+
+\item \textbf{Post-freeze BGE-M3 benchmark.} Re-encoding the same 150 reference-rated pairs with BGE-M3 \citep{chen2024m3embedding} yielded $\rho=0.334$ and AUC $=0.811$. In 2,000 paired bootstrap resamples (seed 42), the BGE-minus-MiniLM differences were $\Delta\rho=-0.071$ (95\% CI [$-0.187$, 0.036]) and $\Delta$AUC $=-0.069$ (95\% CI [$-0.179$, 0.032]). There was no evidence that BGE-M3 improved pairwise validity relative to the frozen MiniLM encoder, so MiniLM was retained as primary.
+\end{itemize}
+
+Table~\ref{tab:validity} summarizes the embedding-level validity and reliability checks.
+
+\begin{table}[htbp]
+\centering
+\caption{Summary of RTAS embedding-level validity and reliability checks}
+\label{tab:validity}
+\begin{tabular}{p{0.27\linewidth}p{0.18\linewidth}p{0.43\linewidth}}
+\toprule
+Check & Sample & Main result\\
+\midrule
+Pairwise semantic validity & 150 pairs & Spearman $\rho=0.405$; AUC $=0.880$ [0.793, 0.949]\\
+Independent human raters & 50 pairs & Quadratic-weighted $\kappa=0.465/0.606$ vs reference; A--B $\kappa=0.826$\\
+Test--retest & 40 pairs & $\kappa=0.643$; $\rho=0.688$; 95\% agreement\\
+LLM second rater & 150 pairs & $\kappa=0.459$; $\rho=0.638$; 93.3\% agreement\\
+Naive lexical baselines (TF--IDF/Jaccard/BM25) & 150 pairs & $\rho=0.296$--0.300; AUC $=0.637$--0.638\\
+BGE-M3 robustness & 150 pairs & $\rho=0.334$; AUC $=0.811$; paired-bootstrap differences include 0\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Topic modeling}
+
+BERTopic \citep{grootendorst2022bertopic} was fit to the 60,615-document joint corpus using the same multilingual MiniLM embeddings. Frozen Uniform Manifold Approximation and Projection (UMAP) settings used 15 neighbors, 5 components, minimum distance 0.0, cosine distance, and random seed 42 \citep{mcinnes2018umap}. Hierarchical Density-Based Spatial Clustering of Applications with Noise (HDBSCAN) used a minimum cluster size of 10, minimum samples of 5, Euclidean distance in the UMAP space, and the EOM cluster-selection rule \citep{mcinnes2017hdbscan}; BERTopic used 10 top words, a 1--2 gram range, multilingual mode, and class-based term frequency--inverse document frequency (c-TF-IDF) topic representation. HDBSCAN yielded 886 non-outlier topics plus 23,318 outlier documents (38.47\%), leaving 37,297 clustered documents (61.53\%). Quadrant and lag analyses are conditional on these 886 clustered topics. Across clustering-parameter sensitivity settings (minimum cluster size/minimum samples = 15/7, 20/10, 8/3), outlier rates remained stable (0.364--0.396) and the qualitative quadrant structure remained unchanged; topic counts varied with granularity (454--1,287), as expected.
+
+\subsection{Analysis windows}
+
+Each analysis uses the window its question requires. RTAS uses the cumulative window $[2020,t]$; advisor covariates use the pre-project window $[t-3,t-1]$ with year $<t$; diffusion lags use an annual first non-trivial presence rule. On the article side, a topic must reach at least three articles and at least 0.2\% of that year's articles (approximately 20--26 articles/year over 2020--2024). On the project side, it must reach at least two projects and at least 0.2\% of that year's projects.
+
+\subsection{Statistical models}
+
+\begin{itemize}
+\item \textbf{RQ1.} One-way ANOVA with Tukey honestly significant difference (HSD) tests was used for familywise-adjusted pairwise comparisons ($\Delta=$ higher $-$ lower level). For the largest contrast (national vs university), a Welch unequal-variance $t$ test and Cohen's $d$ are reported as descriptive robustness summaries. The 95\% CI for $\eta^2$ was estimated by 10,000 bootstrap resamples (seed 42). These comparisons are descriptive, not confirmatory, because level separation contributed to aggregation selection.
+
+\item \textbf{RQ2.} Quadrant classification followed prevalence thresholds pre-specified in the analysis protocol (article side: fixed $\ge1.5\%$; project side: fixed $\ge0.500\%$). If a fixed cutoff yielded fewer than two high-prevalence topics, the pre-specified fallback classified the top 20\% of topics on that side as high-prevalence. Under the frozen 886-topic solution, no topic reached the article-side 1.5\% cutoff (equivalent to approximately 854 of 56,901 articles), so the fallback was triggered. The resulting effective article-side cutoff was 0.0879\%, exactly 50 articles; because eight topics were tied at this cutoff (ranks 171--178), the inclusive $\ge$ rule classified 178 topics as high research-side prevalence. The project-side 0.500\% cutoff remained feasible, with 15 topics meeting the threshold, and was therefore retained. Article-side sensitivity was assessed using top-15\%, top-20\%, and top-25\% prevalence cutoffs. Diffusion lags are computed only for topics meeting the annual rule on both sides.
+
+\item \textbf{RQ3.} Following standard multilevel modeling practice \citep{snijders2012multilevel}, a two-level random-intercept mixed model was estimated by restricted maximum likelihood (REML) in \texttt{statsmodels MixedLM} \citep{seabold2010statsmodels}, with projects nested within academic units (primary complete cases $n=3,231$, 39 units; high-confidence-match sensitivity $n=2,750$). Year was entered as a continuous variable centered at 2022. Fixed effects included provincial- and national-level indicators, log-transformed advisor pre-project three-year publication counts within the institution-linked OpenAlex corpus, and log-transformed prior supervisory load, defined as cumulative supervised projects in the observed registry with year $<$ the focal year (mean across co-advisors). Because the registry begins in 2020, this supervision-history covariate is left-censored at 2020. An unconditional means model gives the null intraclass correlation coefficient (ICC). Model fit is summarized using marginal $R^2$ (variance explained by the fixed effects) and conditional $R^2$ (variance explained jointly by fixed and random effects), following \citet{nakagawa2017r2}. For descriptive context, a separate one-way academic-unit ANOVA was calculated across the 39 academic units with at least two projects; the single-project academic unit was retained only in descriptive summaries. As a post-freeze sensitivity, RTAS was recomputed after removing from each project's academic-unit reference portfolio all articles authored by any focal advisor, and the same mixed-model specification was re-estimated. Advisor-level dependence was examined separately on single-advisor projects: after complete-case restriction, academic-unit fixed effects were combined with advisor-clustered standard errors, and the clustering was repeated using academic-unit $\times$ normalized-advisor-name identifiers as a homonym guard. A crossed academic-unit--advisor random-intercept model was also examined diagnostically but converged to a boundary solution and was not used for substantive inference.
+
+\item \textbf{RQ4.} Multi-advisor project fields were split using the same delimiter and normalization rules as the advisor-covariate construction, yielding 4,244 distinct advisor--project links across 1,834 individual advisors. National-project concentration is summarized using Gini and Pareto measures at this individual-advisor level. An advisor-year lagged logistic model estimates $P(\mathrm{nat}_t)$ from $\mathrm{nat}_{t-1}$, $\log(1+\mathrm{load}_{t-1})$, and categorical year fixed effects (2021 as the reference year because the $t-1$ lag makes 2021 the earliest outcome year), with standard errors clustered by advisor. The primary risk set requires advisors to be active in both $t-1$ and $t$ (979 advisor-years / 627 advisors); the expanded robustness risk set includes advisors active at $t-1$ and codes no project activity at $t$ as no national project (2,469 / 1,560). This lagged design avoids the circularity of a cross-sectional top-5\% regression in which top-5\% membership is itself defined from cumulative national-project counts. Separately, each project was classified once as top-5\% exposed if at least one focal advisor belonged to the top 5\% of individual advisors ranked by cumulative national-project count; these projects were compared descriptively with the remainder using a Welch unequal-variance $t$ test and Cohen's $d$. This comparison is not treated as an independent causal or confirmatory test.
+\end{itemize}
+
+All reported statistics were generated from frozen analysis outputs; values are rounded for presentation. A post-freeze numerical provenance audit independently recomputed 115 reported quantities from the frozen analysis outputs, and all matched the reported values; the machine-readable verification ledger is available in the public repository. Seed 42 was used wherever stochastic procedures required a random seed. Analyses were conducted in Python 3.13; package dependencies are archived with the analysis code.
+
+During manuscript preparation, OpenAI ChatGPT was used to assist with language editing and structural revision. All analyses, numerical results, references, interpretations, and final text were reviewed and verified by the author.
+
+\section{Results}
+
+\subsection{Administrative project tier and alignment (RQ1)}
+
+Mean RTAS increases descriptively across the three administrative tiers: university 0.1212, provincial 0.1391, national 0.1460. ANOVA $F(2,3711)=35.72$, $p=4.3\times10^{-16}$, $\eta^2=1.89\%$ (95\% bootstrap CI [1.14\%, 2.86\%]). Tukey HSD: P--U $+0.0179$ ($p<0.001$), N--U $+0.0248$ ($p<0.001$), N--P $+0.0070$ ($p_{\mathrm{adj}}=0.082$, ns); the largest pairwise gap (N--U) has Welch $t=7.375$, $p=2.9\times10^{-13}$, $d=+0.352$. The mean ordering is University $<$ Provincial $<$ National, although the provincial--national contrast is not statistically significant. Figure~\ref{fig:funding} shows the project-level distributions and Tukey HSD comparisons. In the hierarchical model, however, provincial ($\beta=+0.0006$) and national ($\beta=-0.0016$) indicators are indistinguishable from zero (95\% CIs cross 0): the raw level differences are attenuated to near zero after accounting for academic-unit and advisor context; the adjusted administrative-tier coefficients are not statistically distinguishable from zero in this model.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.94\linewidth]{Fig3.pdf}
+\caption{Project-level RTAS distributions by administrative project tier. Boxes show the interquartile range with median lines, jittered points show individual projects, and diamonds show group means. Brackets report Tukey HSD familywise comparisons; *** denotes $p<.001$ and ns denotes not significant}
+\label{fig:funding}
+\end{figure}
+
+\subsection{Static prevalence quadrants (RQ2, classification)}
+
+Classifying the 886 clustered topics by cumulative prevalence yields Table~\ref{tab:quadrants}. HRLT dominates the high-research region: 173 topics have high article-side but low project-side prevalence, forming the largest prevalence-asymmetry block. LRHT comprises only 10 topics. Threshold sensitivity (article-side top-15\%/20\%/25\%) leaves the qualitative pattern stable: HRLT 128/173/224, LRHT 10/10/8, HRHT 5/5/7, and all 29 lag-definable topics remain in HRLT/HRHT. Quadrant labels carry no temporal meaning; temporal interpretation is restricted to topics whose lags are defined. Figure~\ref{fig:quadrants} maps the frozen quadrant classification; additional count summaries and descriptive project-side topic dynamics are provided in the Supplementary Material (Online Resource 1).
+
+\begin{table}[htbp]
+\centering
+\caption{Static topic-prevalence quadrants (pooled 2020--2024 prevalence)}
+\label{tab:quadrants}
+\begin{tabular}{lrrrl}
+\toprule
+Quadrant & Topics & Articles & Projects & Meaning\\
+\midrule
+HRHT & 5 & 2,090 & 308 & high research, high project\\
+HRLT & 173 & 18,141 & 399 & high research, low project\\
+LRHT & 10 & 219 & 278 & low research, high project\\
+LRLT & 698 & 15,097 & 765 & low on both sides\\
+\midrule
+Total & 886 & 35,547 & 1,750 & clustered documents only\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.98\linewidth]{Fig2.pdf}
+\caption{Static research--training topic prevalence across 886 non-outlier BERTopic topics. The horizontal axis shows article-side prevalence and the vertical axis project-side prevalence. Dashed lines indicate the frozen high/low thresholds. Bubble size reflects topic document count; the inset magnifies the dense low-prevalence region. Quadrant labels describe pooled prevalence only and carry no temporal interpretation}
+\label{fig:quadrants}
+\end{figure}
+
+\subsection{Diffusion lags where definable (RQ2, temporal)}
+
+Under the annual first non-trivial presence rule, only 29 of 886 topics (3.27\%) are definable on both sides---24 in HRLT and five in HRHT. Overall median lag is 0 years (mean $+0.59$). In HRLT, the median lag is $+0.5$ years (mean $+0.79$): 50.0\% (12/24) of these topics show research-side presence first, 37.5\% show same-year first non-trivial presence, and 12.5\% show project-side presence first. LRHT (0/10) and LRLT (0/698) never reach the article-side annual threshold in any single year, so their lags are \emph{undefined in this corpus} rather than treated as missing. Consequently, statements that training content ``trails research'' cannot be made for these strata here; a curriculum-syllabus audit would provide a more appropriate source of evidence. Figure~\ref{fig:lags} displays the overall defined-lag distribution and the HRLT/HRHT comparison.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[height=0.78\textheight,keepaspectratio]{Fig4.pdf}
+\caption{Diffusion-lag patterns for topics whose first non-trivial annual presence is definable on both sides. Panel (a) shows the overall distribution of defined lags. Panel (b) compares HRLT and HRHT topics; white diamonds mark group means. Positive lag indicates research-side first non-trivial presence before the project side; zero indicates same-year first non-trivial presence; negative values indicate project-side first presence before the research side}
+\label{fig:lags}
+\end{figure}
+
+\subsection{Academic-unit context and advisor associations (RQ3)}
+
+The unconditional means model gives ICC $=0.7523$; the full random-intercept model yields ICC $=0.7376$---about three quarters of RTAS variance lies between academic units. The marginal $R^2$ was 0.0075, whereas the conditional $R^2$ was 0.7395 \citep{nakagawa2017r2}, indicating that the observed fixed effects explained relatively little variance compared with the substantial between-unit component. A separate descriptive one-way academic-unit ANOVA across the 39 academic units with at least two projects yielded $F(38,3674)=195.45$, $p<.001$, $\eta^2=66.90\%$; this fixed-group effect-size estimate is a different estimand from the mixed-model ICC because the sample and adjustment structure differ. Raw means for all 40 academic units, including the single-project academic unit excluded from the ANOVA, are provided in the Supplementary Material (Online Resource 1).
+
+Among the observed project-level covariates, the advisor measures show the clearest associations. Advisors' \textbf{pre-project 3-year publication count within the institution-linked OpenAlex corpus} is positively associated with alignment ($\beta=+0.0043$, $p=3.3\times10^{-9}$); moving from 0 to 10 such publications corresponds to approximately $+0.010$ RTAS (approximately 0.14 SD). \textbf{Prior supervisory load} is negatively associated ($\beta=-0.0063$, $p=1.9\times10^{-5}$), a pattern compatible with a capacity-dilution interpretation. \textbf{Year}, entered continuously and centered at 2022, is positively associated with RTAS ($\beta=+0.00313$ per year, $p<0.001$); administrative-tier indicators are not statistically distinguishable from zero. Because RTAS uses cumulative $[2020,t]$ reference portfolios, later cohorts are compared against progressively larger and compositionally changing portfolios; the year coefficient therefore represents a temporal association under a changing reference set rather than independent temporal improvement.
+
+\textbf{Leave-advisor-out sensitivity.} Because focal advisors' own publications enter their academic unit's reference portfolio, the advisor-publication coefficient could be partly mechanical. RTAS was therefore recomputed after removing all articles authored by any focal advisor of each project, and the same mixed-model specification was re-estimated on the same 3,231 complete cases. The advisor-publication coefficient attenuated by approximately 10.5\% (from $\beta=+0.00427$ to $\beta=+0.00382$) but remained positive and statistically significant ($p=5.3\times10^{-7}$; 95\% CI [0.00233, 0.00531]). ICC (0.738) and conditional $R^2$ (0.739) were virtually unchanged. Of the 3,714 projects, 2,081 (56\%) had at least one advisor-authored article removed (mean 7.97 articles removed; mean portfolio reduction 4.1\%); no project's portfolio became empty. This attenuation is consistent with some contribution from mechanical self-overlap, but most of the observed association persisted under the leave-advisor-out construction.
+
+\textbf{Advisor-dependence sensitivity.} The primary model accounts for project clustering within academic units but does not include a separate advisor random effect, although advisors can supervise repeated projects and 528 projects are co-supervised. To examine within-advisor dependence without duplicating co-supervised projects, the sensitivity was restricted to the 3,186 single-advisor projects (2,716 complete cases; 1,221 advisors, 680 with at least two projects). A crossed random-intercept model, $(1|\mathrm{unit})+(1|\mathrm{advisor})$, converged to a boundary solution with academic-unit variance estimated at zero and was not used for substantive inference. The conservative alternative---academic-unit fixed effects with standard errors clustered by advisor---left the substantive conclusions unchanged: pre-project publications $\beta=+0.0043$ ($p=1.5\times10^{-5}$; 95\% CI [0.0023, 0.0062]), prior supervisory load $\beta=-0.0053$ ($p=0.004$; 95\% CI [$-0.0088$, $-0.0017$]), year $\beta=+0.0026$ ($p=0.001$), and administrative-tier coefficients not statistically distinguishable from zero. A homonym guard using academic-unit $\times$ normalized-advisor-name clusters yielded 1,333 clusters rather than 1,221 raw-name clusters and produced virtually identical standard errors and the same inferential conclusions. The substantive fixed-effect conclusions were therefore robust to advisor-clustered inference in the single-advisor subset.
+
+All estimates are observational associations, not causal identification. The high-confidence-match sensitivity sample preserves every coefficient sign and significance classification. Table~\ref{tab:hlm} reports the primary fixed-effect estimates; Figure~\ref{fig:college} shows the model-adjusted academic-unit random effects, and Figure~\ref{fig:hlm} summarizes the fixed effects graphically. Because RTAS also responds to disciplinary specialization, portfolio breadth, and title-language conventions, academic-unit results are not interpreted as performance rankings.
+
+\begin{table}[htbp]
+\centering
+\caption{Two-level random-intercept mixed model predicting RTAS}
+\label{tab:hlm}
+\begin{tabular}{lrrr}
+\toprule
+Predictor & $\beta$ & 95\% CI & $p$\\
+\midrule
+Provincial vs university & 0.00062 & [$-0.00275$, 0.00398] & 0.720\\
+National vs university & $-0.00162$ & [$-0.00585$, 0.00261] & 0.452\\
+Year (per year; centered 2022) & 0.00313 & [0.00187, 0.00439] & $<0.001$\\
+Advisor prior 3y publications, $\log(1+x)$ & 0.00427 & [0.00285, 0.00568] & $<0.001$\\
+Advisor prior supervised projects, $\log(1+x)$ & $-0.00629$ & [$-0.00917$, $-0.00341$] & $<0.001$\\
+\bottomrule
+\end{tabular}
+
+\vspace{1mm}
+\footnotesize Primary complete-case sample: $N=3{,}231$ projects in 39 of the 40 frame units; REML; random intercept by academic unit; ICC $=0.7376$. The remaining unit (the School of International Education) contributes a single project whose advisor pre-project publication covariate is missing, so it supplies no complete case.
+\end{table}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[height=0.84\textheight,keepaspectratio]{Fig5.pdf}
+\caption{Model-adjusted academic-unit random effects from the primary mixed model (ICC $=0.7376$). Points are unit-level best linear unbiased predictions (BLUPs) and horizontal bars are approximate 95\% conditional intervals. The full analytic frame contains 40 academic units; the primary complete-case MixedLM contains 39 ($N=3{,}231$ projects) because the single project in the School of International Education has a missing advisor pre-project covariate. Units are ordered by their BLUP estimates from highest to lowest. The intervals are descriptive and are not simultaneous or multiple-comparison-adjusted tests; they should not be interpreted as performance rankings}
+\label{fig:college}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.96\linewidth]{Fig6.pdf}
+\caption{Fixed-effect estimates from the primary mixed model. Points show coefficients and horizontal bars show 95\% confidence intervals. Year is continuous and centered at 2022. Provincial- and national-level confidence intervals cross zero; pre-project publication activity is positively associated with alignment, while prior supervisory load is negatively associated. In the figure, *** denotes $p<.001$ and ns denotes not significant}
+\label{fig:hlm}
+\end{figure}
+
+\subsection{Concentration and lagged persistence (RQ4)}
+
+National project allocation is highly unequal across the 1,834 individual advisors: national-project Gini $=0.746$ and total-project Gini $=0.368$. The top 5\% (92 advisors) hold 31.0\% of national projects, and the top 20\% (366 advisors) hold 71.9\%. Observed supervisory activity is also uneven: 818 advisors (44.6\%) supervise one project, whereas 345 (18.8\%) supervise four or more (mean load 2.314, median 2, maximum 10). Allocation shows year-to-year persistence: in the primary continuous-activity risk set, a national project at $t-1$ is associated with higher odds of another at $t$ (OR $=2.06$, 95\% CI [1.53, 2.76], $p=1.5\times10^{-6}$; 979 advisor-years / 627 advisors). The expanded prior-active risk set gives OR $=2.45$ [1.91, 3.16], $p=3.2\times10^{-12}$ (2,469 advisor-years / 1,560 advisors). At the project level, 560 projects have at least one top-5\% advisor. The mean RTAS difference relative to the remaining projects is small ($d=0.083$, Welch $p=0.065$) and does not provide clear evidence of an alignment advantage. Figure~\ref{fig:matthew} combines the concentration and lagged-persistence results.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.99\linewidth]{Fig7.pdf}
+\caption{Concentration and lagged persistence in national-level project allocation using individual-advisor units. Panel (a) shows the Lorenz curve for national-project counts (Gini $=0.746$), panel (b) shows the shares of national projects held by the top 1\%, 5\%, 10\%, and 20\% of advisors, and panel (c) shows lagged-logit odds ratios for the primary and expanded risk sets. The vertical reference line in panel (c) is OR $=1$}
+\label{fig:matthew}
+\end{figure}
+
+\section{Discussion}
+
+The clearest empirical pattern is the scale of between-unit variation. About three quarters of RTAS variance lies between academic units, whereas the raw gradient across university-, provincial-, and national-level projects becomes very small after academic-unit and advisor characteristics are included in the mixed model. Administrative tier therefore appears to be a weak marker of semantic alignment once institutional context is taken into account. This does not make the raw differences uninformative, but it changes their interpretation: higher-tier projects are observed in different organizational and supervisory environments, and tier itself contributes little additional differentiation after adjustment.
+
+Advisor characteristics point to a related organizational pattern. Projects supervised by advisors with greater recent publication activity in the institution-linked OpenAlex corpus tend to show higher alignment, whereas greater prior supervisory load is associated with lower alignment. The leave-advisor-out analysis indicates that the publication association is not explained solely by the focal advisor's own papers appearing in the reference portfolio, although some attenuation remains. The negative load coefficient is compatible with a capacity constraint, but the observational design cannot establish such a mechanism. This interpretation is broadly consistent with mentoring research showing that advisor inputs can matter for trainee outcomes, although \citet{paglis2006adviser} studied doctoral rather than undergraduate training. At the same time, national-level project allocation is highly concentrated and shows adjacent-year persistence, yet projects linked to top-5\% advisors do not show a clear alignment advantage. Concentration in opportunity and semantic alignment therefore should not be treated as interchangeable outcomes. The concentration pattern is consistent with the broader cumulative-advantage tradition in the sociology of science \citep{merton1968matthew,merton1988matthewii,allison1982cumulative,diprete2006cumulative}, but the present analysis identifies persistence rather than a causal cumulative-advantage mechanism.
+
+The topic results make a different distinction. Static prevalence asymmetry is common: 173 topics are high on the research side but low on the project side, compared with only 10 in the reverse category. Yet annual onset is definable on both sides for only 29 of 886 topics. The data therefore support a strong claim about pooled prevalence asymmetry but only a much narrower claim about temporal lag. In particular, low project-side prevalence should not automatically be read as evidence that training is ``behind'' research; for most topics, the annual threshold rule does not identify a comparable onset on both sides.
+
+RTAS is useful precisely because it keeps this empirical question narrower than research or teaching quality. Human ratings, test--retest scoring, the LLM second rater, direct lexical baselines, and the BGE-M3 benchmark provide converging evidence about the embedding layer, while aggregation and topic-threshold sensitivities make the main design choices explicit. At the same time, RTAS remains sensitive to title sparsity, portfolio breadth, organizational composition, and linkage coverage. This bounded interpretation is consistent with responsible-metrics arguments against treating bibliometric indicators as direct measures of multidimensional research quality \citep{hicks2015leiden,aksnes2019citations}. For scientometrics, the broader contribution is methodological: cross-lingual sentence embeddings make it possible to compare student-project content with institutional publication portfolios even when the two record systems are linguistically and administratively different. The same logic can be adapted to other settings in which project records and publication metadata coexist.
+
+\section{Limitations}
+\label{sec:limitations}
+
+\begin{enumerate}
+\item \textbf{Observational design.} All associations, including the capacity-dilution interpretation, are non-causal. Stronger directional inference would require non-overlapping longitudinal waves and a design that separates within-unit from between-unit variation.
+
+\item \textbf{Shared bibliographic construction.} For projects after 2020, some papers counted in an advisor's pre-project publication history within the institution-linked corpus can also contribute to the advisor-linked academic-unit reference portfolio used to compute RTAS. A leave-advisor-out sensitivity that removed focal-advisor articles attenuated the publication coefficient by approximately 10.5\% while leaving it positive and statistically significant, reducing but not eliminating concern about shared construction. The advisor-output coefficient remains an observational association, not an independent causal effect. Because RTAS reference portfolios accumulate over $[2020,t]$, both the year coefficient and advisor publication coefficient are also estimated against reference sets that grow and change in composition over time; the leave-advisor-out analysis addresses direct self-overlap but does not fully separate cohort differences from changing portfolio composition.
+
+\item \textbf{Titles-only sparsity.} Titles are the only symmetric cross-lingual unit, but they compress semantics; alignment is measured on title distributions, not full texts.
+
+\item \textbf{Linkage coverage.} 58.5\% of articles are advisor-matched to academic units; unmatched articles, including cases with missing affiliations or pinyin ambiguity, are excluded from academic-unit reference portfolios. Rule-based name linkage can generate both false-positive and false-negative assignments, so the direction of any resulting bias is uncertain. Author-level identity resolution (e.g., OpenAlex author IDs) remains future work. At the project level, complete-case estimation of the mixed model uses 3,231 of 3,714 projects, and the 483 excluded cases are not evenly distributed across academic units: exclusion rates are highest in humanities and social-science units with lower linkage coverage (51\% in the School of Marxism; 41\% in the School of History), and excluded projects have lower mean RTAS (0.099 vs 0.139). Complete-case exclusion may therefore underrepresent precisely those units, although the high-confidence-match sample and the other sensitivity analyses preserve all substantive conclusions. The study frame itself is linkage-defined: 173 projects under eight other organizational labels in the consolidated 48-unit registry had no advisor-linked publications and were excluded before RTAS analysis, so inference pertains to the 40 units with constructable portfolios rather than to every labeled unit in the registry.
+
+\item \textbf{Single institution.} Holding one institutional setting fixed aids within-institution comparison but limits external validity; replication at universities with different disciplinary layouts is required before generalization.
+
+\item \textbf{Prior-supervision history.} The project registry begins in 2020, so prior supervisory load is left-censored at that year; the covariate captures previously observed projects, not an advisor's full pre-2020 supervision history.
+
+\item \textbf{Registry coverage and program tracks.} Official project-type labels exist only for 2021--2024; the 2020 cohort's track (innovation vs entrepreneurship) cannot be classified from the available administrative archive, and the archived 2022 official list contains no university-level entries. The analytic sample consequently pools both tracks (158 identifiable entrepreneurship projects, 4.3\%, which have lower RTAS on average: 0.100 vs 0.135, Cohen $d=-0.49$). Excluding these projects from the mixed model preserves every coefficient sign and significance classification (Table~S1), but a fully track-stratified treatment of the 2020 cohort is not possible from the available records. Whether the missing 2022 university-level records reflect the institutional arrangement that year or source-file coverage alone cannot be determined; a sensitivity that drops the entire 2022 cohort leaves the RQ1 tier contrasts and mixed-model conclusions unchanged (Table~S2).
+
+\item \textbf{Within-year ordering.} RTAS reference portfolios include articles from the focal calendar year $t$. Because the analysis is annual, it does not establish whether a same-year article preceded or followed the project's approval date; RTAS should therefore be interpreted as contemporaneous annual alignment rather than strict within-year temporal precedence.
+
+\item \textbf{Advisor-level dependence and multiple membership.} The primary mixed model accounts for clustering by academic unit but does not include a separate advisor random effect. A single-advisor sensitivity using academic-unit fixed effects and advisor-clustered standard errors preserved all substantive fixed-effect conclusions, including under the academic-unit $\times$ advisor homonym guard. However, 528 co-supervised projects have no primary-advisor designation, so a full multiple-membership model is not estimated.
+
+\item \textbf{Low lag definition rate.} Only 3.27\% of topics have definable lags; LRHT/LRLT lags are undefined in this corpus, so no ``outdated training content'' claim is possible here. A curriculum-syllabus text audit could help address this gap.
+
+\item \textbf{Measure sensitivity.} Academic-unit RTAS mixes organizational context with sensitivity to disciplinary specialization, portfolio breadth, title-language conventions, and heterogeneity; academic-unit differences should not be interpreted as performance rankings.
+
+\item \textbf{Encoder scope.} BGE-M3 was benchmarked post-freeze on the same 150-pair reference set and did not improve pairwise validity relative to MiniLM. Because the comparison was limited to the validation set rather than a full-pipeline re-estimation, MiniLM remains the frozen primary encoder and the BGE-M3 result should be interpreted as a targeted robustness check rather than an exhaustive encoder comparison.
+
+\item \textbf{Granularity.} $K=886$ is corpus-determined (HDBSCAN), not a theoretically fixed granularity; the topic count should not be interpreted substantively in isolation.
+\end{enumerate}
+
+\section{Conclusion}
+
+This study introduced RTAS as a project-level, cross-lingual measure of semantic alignment between undergraduate training projects and institutional publication portfolios. Applied to 3,714 UIETP projects and 56,901 OpenAlex-indexed articles at Wuhan University, RTAS reveals substantial between-unit variation and marked asymmetries between research-side and project-side topic prevalence. Raw differences across administrative project tiers largely disappear after adjustment for academic-unit and advisor context. Advisor pre-project publication activity is positively associated with alignment, prior supervisory load negatively associated, and national-level project allocation is highly concentrated and persistent without a clear corresponding alignment advantage. Temporal lags, by contrast, are observable for only a small subset of topics.
+
+The contribution is therefore not a ranking of projects or academic units, but a way to observe one specific dimension of the research--training relationship: whether student-project content occupies the same semantic space as the research environment around it. This is narrower than research quality or teaching quality, but it is directly measurable and portable to other multilingual institutional settings.
+
+\bmhead{Supplementary information}
+
+Online Resource 1 contains supplementary Figures S1--S5 and Tables S1--S2.
+
+\section*{Statements and Declarations}
+
+\textbf{Funding.} [TO CONFIRM BEFORE SUBMISSION.]
+
+\textbf{Conflicts of interest.} The authors declare no competing interests.
+
+\textbf{Ethics approval.} The study analyzes institutional administrative records and publicly retrievable bibliographic metadata. [TO CONFIRM BEFORE SUBMISSION: insert the applicable institutional ethics/IRB determination; do not state approval, waiver, or exemption unless formally documented.]
+
+\textbf{Data availability.} (i) \emph{Publicly retrievable layer:} OpenAlex article records are publicly retrievable through the documented institutional query (Wuhan University; institution I37461747; type=article; cursor pagination). The primary 2020--2024 corpus was retrieved on September 3, 2026; the auxiliary 2017--2019 corpus used only for prior advisor covariates was retrieved on September 4, 2026. (ii) \emph{Restricted layer:} the UIETP project records were compiled from administrative records supplied by teaching administrators and consolidated into a unified study dataset covering the 40 academic units in the analytic frame. Because the records contain personal information, including advisor names, the raw data cannot be publicly redistributed. (iii) \emph{Derived outputs:} non-identifying derived outputs and code (frozen aggregation tables, quadrant and lag summaries, model estimates, and figure scripts) are maintained in the project repository:
+\url{https://github.com/victoryangcw/RTAS-knowledge-diffusion}, which is publicly available. The repository contains non-identifying derived outputs, analysis and audit code, the numerical verification ledger, and figure-generation scripts. Complete independent reconstruction requires equivalent authorized access to the restricted institutional project records.
+
+\textbf{Code availability.} Analysis, audit, and figure-generation code are publicly available in the repository cited above. Re-running steps that depend on restricted institutional project records requires equivalent authorized access to those records.
+
+
+\textbf{Author contributions.} [TO CONFIRM BEFORE SUBMISSION.]
+
+\bibliography{references_FINAL}
+
+\end{document}
