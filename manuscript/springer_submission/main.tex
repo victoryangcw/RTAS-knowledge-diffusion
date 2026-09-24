@@ -9,9 +9,7 @@
 \usepackage{graphicx}
 \usepackage{amsmath,amssymb,amsfonts}
 \usepackage{booktabs}
-\usepackage{threeparttable}
 \usepackage{array}
-\usepackage{enumitem}
 
 \raggedbottom
 
@@ -53,11 +51,11 @@ We introduce the Research--Training Alignment Score (RTAS), defined for each pro
 Throughout the paper, \emph{academic unit} is used as an umbrella term for the schools, colleges, institutes, laboratories, and other organizational units represented in the project registry. The source-data field and analysis code retain the historical label \texttt{college}.
 
 We ask four research questions about the 2020--2024 Wuhan University cohorts:
-\begin{enumerate}[label=\textbf{RQ\arabic*.}]
-\item \textbf{Heterogeneity.} Does RTAS differ across administrative project tiers, and does the difference persist after accounting for academic-unit and advisor characteristics?
-\item \textbf{Topic asymmetries and diffusion lags.} How are research-side and project-side topic prevalence distributed across quadrants, and where annual onset is identifiable on both sides, what lags are observed?
-\item \textbf{Multilevel associations.} How much RTAS variance lies between academic units, and which advisor and project characteristics are associated with alignment?
-\item \textbf{Concentration and persistence.} Is national-level project allocation concentrated and persistent across advisors over adjacent years, and does concentration coincide with higher alignment?
+\begin{enumerate}
+\item[\textbf{RQ1.}] \textbf{Heterogeneity.} Does RTAS differ across administrative project tiers, and does the difference persist after accounting for academic-unit and advisor characteristics?
+\item[\textbf{RQ2.}] \textbf{Topic asymmetries and diffusion lags.} How are research-side and project-side topic prevalence distributed across quadrants, and where annual onset is identifiable on both sides, what lags are observed?
+\item[\textbf{RQ3.}] \textbf{Multilevel associations.} How much RTAS variance lies between academic units, and which advisor and project characteristics are associated with alignment?
+\item[\textbf{RQ4.}] \textbf{Concentration and persistence.} Is national-level project allocation concentrated and persistent across advisors over adjacent years, and does concentration coincide with higher alignment?
 \end{enumerate}
 
 The single-institution design holds the institutional setting and observation window constant while retaining substantial organizational and field variation across 40 academic units. This improves within-institution comparability but limits external validity (Sect.~\ref{sec:limitations}).
@@ -300,6 +298,7 @@ National project allocation is highly unequal across the 1,834 individual adviso
 \label{fig:matthew}
 \end{figure}
 
+\clearpage
 \section{Discussion}
 
 The clearest empirical pattern is the scale of between-unit variation. About three quarters of RTAS variance lies between academic units, whereas the raw gradient across university-, provincial-, and national-level projects becomes very small after academic-unit and advisor characteristics are included in the mixed model. Administrative tier therefore appears to be a weak marker of semantic alignment once institutional context is taken into account. This does not make the raw differences uninformative, but it changes their interpretation: higher-tier projects are observed in different organizational and supervisory environments, and tier itself contributes little additional differentiation after adjustment.
