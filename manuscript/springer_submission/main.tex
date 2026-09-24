@@ -112,7 +112,6 @@ Embeddings use paraphrase-multilingual-MiniLM-L12-v2 (384-dimensional), a multil
 \centering
 \caption{Primary RTAS aggregation-selection summary}
 \label{tab:selection}
-\begin{threeparttable}
 \begin{tabular}{lrl}
 \toprule
 Aggregation variant & Development-stage composite & Status\\
@@ -127,7 +126,6 @@ Centroid & 0.300 & Not selected\\
 \begin{tablenotes}\footnotesize
 \item Composite scores are the frozen values from the earlier 12,000-article development pool and were not re-tuned after expansion to 56,901 articles. The selected mean aggregation was carried unchanged into the final corpus. The final-sample administrative-tier effect, $\eta^2=0.0189$ (1.89\%), is reported separately in Sect.~3.1 and should not be confused with development-stage selection metrics.
 \end{tablenotes}
-\end{threeparttable}
 \end{table}
 
 \subsection{Validity program}
