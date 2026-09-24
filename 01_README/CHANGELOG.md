@@ -5,6 +5,28 @@ config, data, or code that could affect downstream numbers.
 
 ---
 
+## [v1.1-freeze-prep] — 2026-09-23 — TWENTY-EIGHTH ROUND: PRIVACY SCRUB + VALIDATION-TITLE ANONYMIZATION (PUBLIC-RELEASE PREP)
+
+- The repository is now public. Rater pseudonymization completed everywhere: the reference
+  annotator is "Rater A" and the independent second rater is "Rater B" in all file names
+  (second_rater_50pairs_raterB.csv, inter_rater_stats_rater2_raterB.csv), row keys,
+  CHANGELOG history notes, archive drafts, and the provenance ledger. Git history was
+  rewritten (git filter-repo) to purge personal names from all historical blobs, paths,
+  and commit messages.
+- Rating files anonymized: in the 150-pair, 50-pair, and 40-pair files the project-title
+  column now holds the placeholder PAIR_<pair_id>; paper titles (public OpenAlex
+  metadata), project level/college, and all ratings are retained, so the validity
+  statistics remain independently checkable. The title-to-pair mapping is kept in the
+  private data store. Historical commit blobs still contain the original title strings;
+  the current tree is fully anonymized.
+- 05_VALIDATION/README.md documents both anonymization rules.
+- PR #1 (docs-only: v0.2 protocol/config marked historical, 03_CODE portability notes,
+  figure-count and entrepreneurship-scope clarifications) merged into main.
+- Provenance-ledger checksum row refreshed in CHECKSUMS.md after the ledger source-text
+  update.
+
+---
+
 ## [v1.1-postaudit-repo] — 2026-09-23 — TWENTY-SEVENTH ROUND: REPOSITORY ALIGNED TO THE FINAL MANUSCRIPT
 
 - Root README and governance README rewritten around the adopted manuscript title
