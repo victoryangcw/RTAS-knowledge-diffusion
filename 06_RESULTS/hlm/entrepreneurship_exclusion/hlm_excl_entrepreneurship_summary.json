@@ -1,0 +1,94 @@
+{
+  "description": "A1 sensitivity: exclude 158 unique officially-typed entrepreneurship projects (2021-2024) from the frozen v2b MixedLM; 2020 types unavailable (no official registry).",
+  "n_flagged_entrepreneurship": 158,
+  "flagged_by_year": {
+    "2020": 0,
+    "2021": 74,
+    "2022": 23,
+    "2023": 26,
+    "2024": 35
+  },
+  "flagged_by_level_code": {
+    "1": 53,
+    "2": 64,
+    "3": 41
+  },
+  "rtas_entrepreneurship": {
+    "n": 158,
+    "mean": 0.10029403387150382,
+    "sd": 0.0533936109405469
+  },
+  "rtas_innovation": {
+    "n": 3556,
+    "mean": 0.1352048678925628,
+    "sd": 0.07266592346713256
+  },
+  "welch_t": -7.89998857095807,
+  "welch_p": 2.4690417126576747e-13,
+  "cohen_d_pooled": -0.48517312679252195,
+  "formula": "rtas ~ is_provincial + is_national + year_centered + log_prior3y + log_prior_supervision",
+  "model": "statsmodels MixedLM random intercept on college, REML, lbfgs",
+  "primary": {
+    "n_obs": 3231,
+    "n_colleges": 39,
+    "var_college": 0.004944320543363714,
+    "var_resid": 0.001759040359038755,
+    "icc": 0.7375882956848826,
+    "coef": {
+      "Intercept": 0.13536042754540273,
+      "is_provincial": 0.0006152701670908951,
+      "is_national": -0.0016240572384029074,
+      "year_centered": 0.00313171435450636,
+      "log_prior3y": 0.004265764907192121,
+      "log_prior_supervision": -0.00628746330798534
+    },
+    "se": {
+      "Intercept": 0.011489633254425544,
+      "is_provincial": 0.0017166749491755234,
+      "is_national": 0.00215787872378855,
+      "year_centered": 0.0006423182015779919,
+      "log_prior3y": 0.0007204558350230497,
+      "log_prior_supervision": 0.001468823784658581
+    },
+    "p": {
+      "Intercept": 4.885593143520997e-32,
+      "is_provincial": 0.7200379481579124,
+      "is_national": 0.45167981295478576,
+      "year_centered": 1.0845450068594675e-06,
+      "log_prior3y": 3.2013599787833043e-09,
+      "log_prior_supervision": 1.863808631956191e-05
+    }
+  },
+  "excl_entrepreneurship": {
+    "n_obs": 3085,
+    "n_colleges": 39,
+    "var_college": 0.004910429016273461,
+    "var_resid": 0.001749298214297266,
+    "icc": 0.7373318525318411,
+    "coef": {
+      "Intercept": 0.13471792891060264,
+      "is_provincial": 0.0008503890160150573,
+      "is_national": -0.0020457042328930826,
+      "year_centered": 0.0029294950500246123,
+      "log_prior3y": 0.004801630073352669,
+      "log_prior_supervision": -0.005667545745826681
+    },
+    "se": {
+      "Intercept": 0.011459314897114067,
+      "is_provincial": 0.001749216347033499,
+      "is_national": 0.0022190151480353474,
+      "year_centered": 0.0006552923248351773,
+      "log_prior3y": 0.0007382799394710244,
+      "log_prior_supervision": 0.001495386304204598
+    },
+    "p": {
+      "Intercept": 6.562645439458335e-32,
+      "is_provincial": 0.6268577834699778,
+      "is_national": 0.35658211020040753,
+      "year_centered": 7.80309792542865e-06,
+      "log_prior3y": 7.831247514813006e-11,
+      "log_prior_supervision": 0.0001506344479227924
+    }
+  },
+  "note": "Covariates taken from the frozen dataset unchanged; only the estimation sample changes."
+}

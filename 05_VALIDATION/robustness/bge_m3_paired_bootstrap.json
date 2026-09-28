@@ -1,0 +1,19 @@
+{
+  "n_boot": 2000,
+  "n_valid": 2000,
+  "n_degenerate": 0,
+  "seed": 42,
+  "delta_rho": {
+    "mean": -0.07088384334664047,
+    "ci95_lo": -0.18673093843340763,
+    "ci95_hi": 0.03546277223700643,
+    "p_delta_positive": 0.1
+  },
+  "delta_auc": {
+    "mean": -0.0693380500041271,
+    "ci95_lo": -0.17856731683876959,
+    "ci95_hi": 0.032294238563078045,
+    "p_delta_positive": 0.094
+  },
+  "decision": "BGE-M3 comparable to MiniLM — robustness evidence; MiniLM stays primary"
+}
