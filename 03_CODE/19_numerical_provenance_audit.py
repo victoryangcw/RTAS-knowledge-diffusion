@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 """
 19_numerical_provenance_audit.py
 ================================
@@ -21,6 +21,7 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
+from scipy.stats import rankdata
 
 ROOT = Path(__file__).resolve().parents[1]
 DATA = ROOT / "01_DATA"
@@ -333,28 +334,37 @@ def audit_validation():
                    for p, a in zip(d150["project_title"], d150["paper_title"])])
 
     def auc_rank(x):
-        o = np.argsort(x); rk = np.empty(nb); rk[o] = np.arange(1, nb + 1)
+        # Tie-aware Mann-Whitney AUC (average ranks); equals sklearn roc_auc_score.
+        # Post-audit 2026-10-04: the previous unique-rank version made the
+        # heavy-tie lexical baselines sort-order dependent.
+        rk = rankdata(x, method="average")
         n1, n0 = int(posb.sum()), nb - int(posb.sum())
         return (rk[posb].sum() - n1 * (n1 + 1) / 2) / (n1 * n0)
 
     record("Baseline TF-IDF rho", 0.300, round(spearmanr(b1, yb).statistic, 3),
            close(spearmanr(b1, yb).statistic, 0.29982, 0.002),
            "char_wb 3-5g tf-idf cosine", "150 pairs spearman")
-    record("Baseline TF-IDF AUC", 0.638, round(auc_rank(b1), 3),
-           close(auc_rank(b1), 0.63759, 0.002), "same", "rank AUC")
+    record("Baseline TF-IDF AUC", 0.586, round(auc_rank(b1), 3),
+           close(auc_rank(b1), 0.58582, 0.002), "same",
+           "tie-aware rank AUC (roc_auc_score)",
+           "CORRECTED post-audit 2026-10-04: unique-rank AUC (0.638) was tie-sensitive")
     record("Baseline Jaccard rho", 0.296, round(spearmanr(b2, yb).statistic, 3),
            close(spearmanr(b2, yb).statistic, 0.29620, 0.002),
            "char-3-gram set Jaccard", "150 pairs spearman")
-    record("Baseline Jaccard AUC", 0.637, round(auc_rank(b2), 3),
-           close(auc_rank(b2), 0.63666, 0.002), "same", "rank AUC")
-    # BM25: use frozen CSV value (rank_bm25 implementation-dependent); verify file only
+    record("Baseline Jaccard AUC", 0.585, round(auc_rank(b2), 3),
+           close(auc_rank(b2), 0.58489, 0.002), "same",
+           "tie-aware rank AUC (roc_auc_score)",
+           "CORRECTED post-audit 2026-10-04: unique-rank AUC (0.637) was tie-sensitive")
+    # BM25: use frozen CSV value (rank_bm25 0.2.2 pinned post-audit); verify file only
     base_csv = pd.read_csv(hv / "robustness" / "baseline_validity.csv")
     bm = base_csv.loc[base_csv["baseline"].str.startswith("BM25")].iloc[0]
     record("Baseline BM25 rho (frozen CSV)", 0.298, round(float(bm["spearman_rho"]), 3),
            close(float(bm["spearman_rho"]), 0.29777, 0.001),
-           "baseline_validity.csv", "rank_bm25 Okapi (impl-bound)")
-    record("Baseline BM25 AUC (frozen CSV)", 0.637, round(float(bm["auc_ge2_vs_1"]), 3),
-           close(float(bm["auc_ge2_vs_1"]), 0.63713, 0.001), "same", "rank AUC")
+           "baseline_validity.csv", "rank_bm25 0.2.2 Okapi (implementation pinned post-audit)")
+    record("Baseline BM25 AUC (frozen CSV)", 0.585, round(float(bm["auc_ge2_vs_1"]), 3),
+           close(float(bm["auc_ge2_vs_1"]), 0.58535, 0.001), "same",
+           "tie-aware rank AUC (roc_auc_score)",
+           "CORRECTED post-audit 2026-10-04: unique-rank AUC (0.637) was tie-sensitive")
 
     # ---- BGE-M3 ----
     cbge = cosbge.sort_values("pair_id")

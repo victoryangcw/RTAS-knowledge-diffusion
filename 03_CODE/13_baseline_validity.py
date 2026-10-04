@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 """13_baseline_validity.py — v1.0-cand.10 (SECONDARY robustness)
 
 Simple similarity baselines on the 150-pair reference set, compared with the
@@ -13,7 +13,7 @@ symmetrically without a tokenizer):
                              the hand-rolled fallback was removed post-audit to
                              eliminate implementation dependence)
 
-POST-AUDIT FIX (2026-10-05): AUC is now tie-aware (roc_auc_score / Mann-Whitney
+POST-AUDIT FIX (2026-10-04): AUC is now tie-aware (roc_auc_score / Mann-Whitney
 average ranks). The previous np.argsort unique-rank AUC made scores with heavy
 ties (Jaccard/BM25 zero-mass) dependent on sort order.
 

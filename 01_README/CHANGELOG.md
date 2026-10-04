@@ -1,11 +1,11 @@
-# CHANGELOG — RTAS Final Project
+﻿# CHANGELOG — RTAS Final Project
 
 Format: **Semantic versioning on milestones**. Each entry lists changes to protocol,
 config, data, or code that could affect downstream numbers.
 
 ---
 
-## [v1.1-postaudit-rerun] — 2026-10-05 — TWENTY-NINTH ROUND: FULL-CORPUS LOO RERUN + TIE-AWARE BASELINE AUC
+## [v1.1-postaudit-rerun] — 2026-10-04 — TWENTY-NINTH ROUND: FULL-CORPUS LOO RERUN + TIE-AWARE BASELINE AUC
 
 - **Leave-advisor-out sensitivity rerun on the full 56,901-article corpus.**
   `03_CODE/17_leave_advisor_out_rtas.py` previously scored against the old

@@ -1,7 +1,7 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 """17_leave_advisor_out_rtas.py — v1.0-cand.13 (SECONDARY sensitivity, CRITICAL)
 
-POST-AUDIT FIX (2026-10-05): earlier runs of this script accidentally scored
+POST-AUDIT FIX (2026-10-04): earlier runs of this script accidentally scored
 against the OLD 12,000-paper development pool (rtas_freeze/paper_emb_mini.npy).
 It now uses the frozen FULL 56,901-paper corpus:
   - paper_college_year_map_full.csv   (56,901 papers, 2020-2024)
