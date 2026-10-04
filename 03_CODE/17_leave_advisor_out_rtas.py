@@ -1,6 +1,14 @@
 # -*- coding: utf-8 -*-
 """17_leave_advisor_out_rtas.py — v1.0-cand.13 (SECONDARY sensitivity, CRITICAL)
 
+POST-AUDIT FIX (2026-10-05): earlier runs of this script accidentally scored
+against the OLD 12,000-paper development pool (rtas_freeze/paper_emb_mini.npy).
+It now uses the frozen FULL 56,901-paper corpus:
+  - paper_college_year_map_full.csv   (56,901 papers, 2020-2024)
+  - paper_emb_minilm_full.npy         (56,901 x 384)
+  - proj_emb_minilm.npy               (3,714 x 384)
+Hard sanity checks below enforce corpus identity before any HLM output.
+
 Leave-advisor-out (LOO) RTAS sensitivity:
   For each project p in college c, year t, with focal advisor set A_p:
     P^(-A_p)_{c,t} = P_{c,t} \\ { articles authored by any advisor in A_p }
@@ -24,8 +32,9 @@ CONSTRAINTS (frozen, per user spec):
     do NOT silently switch denominator
 
 PROVENANCE:
-  paper_college_year_map.csv + raw papers (authors) + table5_project_dataset_n3714_full.csv
-  + proj_emb_mini.npy + paper_emb_mini.npy
+  paper_college_year_map_full.csv (56,901-paper full corpus)
+  + raw papers (authors) + table5_project_dataset_n3714_full.csv
+  + proj_emb_minilm.npy (3,714) + paper_emb_minilm_full.npy (56,901)
     --(this script)-->
   03_FINAL_ANALYSIS/hlm/rtas_loo/rtas_loo_per_project.csv
   03_FINAL_ANALYSIS/hlm/rtas_loo/hlm_loo_vs_primary_comparison.csv
@@ -40,8 +49,8 @@ import pandas as pd
 from scipy.stats import spearmanr, pearsonr
 import statsmodels.formula.api as smf
 
-BASE = Path(r'D:/dachuang_outputs/SCI_最终投稿图表包/mytask/rtas_freeze')
 PROJ = Path(r'D:/vc-task/RTAS_FINAL_PROJECT')
+MSL = PROJ / '02_RTAS_MODEL_SELECTION'   # full-corpus model-selection artifacts
 RAW = PROJ / '01_DATA' / 'raw_private'
 OUT = PROJ / '03_FINAL_ANALYSIS' / 'hlm' / 'rtas_loo'
 OUT.mkdir(parents=True, exist_ok=True)
@@ -54,8 +63,8 @@ print('[1] Loading inputs...')
 t5 = pd.read_csv(PROJ / '01_DATA' / 'final_analysis' / 'table5_project_dataset_n3714_full.csv')
 print(f'  table5: {len(t5)} projects')
 
-MAP = pd.read_csv(BASE / 'paper_college_year_map.csv')
-print(f'  paper map: {len(MAP)} papers')
+MAP = pd.read_csv(MSL / 'paper_college_year_map_full.csv')
+print(f'  paper map (FULL corpus): {len(MAP)} papers')
 
 # Join authors from raw papers
 raw20 = pd.read_csv(RAW / 'whu_openalex_papers_2020_2024_full.csv',
@@ -71,11 +80,20 @@ print(f'  raw papers (with authors): {len(allp)}')
 MAP = MAP.merge(allp[['work_id', 'authors']], on='work_id', how='left')
 print(f'  merged map: {len(MAP)} (authors non-null: {MAP["authors"].notna().sum()})')
 
-emb_paper = np.load(BASE / 'paper_emb_mini.npy')   # (12000, 384)
-emb_proj = np.load(BASE / 'proj_emb_mini.npy')     # (3714, 384)
+emb_paper = np.load(MSL / 'embeddings' / 'minilm' / 'paper_emb_minilm_full.npy')  # (56901, 384)
+emb_proj = np.load(MSL / 'embeddings' / 'minilm' / 'proj_emb_minilm.npy')          # (3714, 384)
 print(f'  paper_emb: {emb_paper.shape}, proj_emb: {emb_proj.shape}')
-assert len(emb_paper) == len(MAP)
-assert len(emb_proj) == len(t5)
+
+# ---- SANITY CHECKS: full-corpus provenance (post-audit P0 fix) ----
+assert len(MAP) == 56901, f'paper map must be the 56,901-paper FULL corpus, got {len(MAP)}'
+assert len(t5) == 3714, f'expected 3,714 projects, got {len(t5)}'
+assert emb_paper.shape == (56901, 384), f'paper_emb must be (56901, 384), got {emb_paper.shape}'
+assert emb_proj.shape == (3714, 384), f'proj_emb must be (3714, 384), got {emb_proj.shape}'
+# Row-order alignment: MAP row i must equal raw-file row i (embedding rows follow raw order)
+assert MAP['work_id'].tolist() == raw20['work_id'].tolist(), \
+    'MAP row order != raw paper order -> embedding misalignment risk'
+assert MAP['year'].between(2020, 2024).all(), 'full corpus must cover 2020-2024 only'
+print('  [sanity] full-corpus identity + row alignment: PASS')
 
 # ============================================================
 # 2. Build advisor pinyin index (same as _advisor_covariate_audit.py)
@@ -426,6 +444,20 @@ summary = {
         co_l.loc[co_l.term == 'log_prior3y', 'coef'].iloc[0] -
         co_p.loc[co_p.term == 'log_prior3y', 'coef'].iloc[0]),
 }
+
+# ---- SECOND SANITY: RTAS_orig statistics against frozen full-corpus values ----
+orig_mean = summary['rtas_orig']['mean']
+orig_sd   = summary['rtas_orig']['sd']
+assert abs(orig_mean - 0.1337) < 0.001, f'RTAS_orig mean {orig_mean} deviates from frozen ~0.1337'
+assert abs(orig_sd   - 0.0723) < 0.001, f'RTAS_orig SD {orig_sd} deviates from frozen ~0.0723'
+# One project (International Education College, 2024, rtas=0.0 in frozen table5)
+# is known to have an empty advisor-matched portfolio; it is excluded from the
+# MixedLM complete-case set (n=3231). Any additional empty portfolio is a bug.
+assert n_empty_orig == 1, f'{n_empty_orig} empty original portfolios (expected exactly 1: IntlEd 2024)'
+assert n_empty_loo == 0, f'{n_empty_loo} projects have empty LOO portfolio -> denominator mismatch'
+print(f'  [sanity] RTAS_orig mean={orig_mean:.4f} SD={orig_sd:.4f} '
+      f'empty-orig={n_empty_orig} (IntlEd, expected): PASS')
+
 SUM_PATH = OUT / 'hlm_loo_summary.json'
 with open(SUM_PATH, 'w', encoding='utf-8') as f:
     json.dump(summary, f, indent=2, ensure_ascii=False)

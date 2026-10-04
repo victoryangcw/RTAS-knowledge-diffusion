@@ -9,7 +9,13 @@ Baselines (all on title text only; char n-grams so Chinese+English are handled
 symmetrically without a tokenizer):
   B1 TF-IDF cosine          (sklearn TfidfVectorizer, char_wb 3-5 grams)
   B2 Jaccard                (char 3-gram set overlap)
-  B3 BM25 Okapi             (rank_bm25 on char 3-grams if available, else hand-rolled)
+  B3 BM25 Okapi             (rank_bm25 on char 3-grams; rank_bm25 is REQUIRED —
+                             the hand-rolled fallback was removed post-audit to
+                             eliminate implementation dependence)
+
+POST-AUDIT FIX (2026-10-05): AUC is now tie-aware (roc_auc_score / Mann-Whitney
+average ranks). The previous np.argsort unique-rank AUC made scores with heavy
+ties (Jaccard/BM25 zero-mass) dependent on sort order.
 
 For each baseline, report:
   - Spearman rho vs human score (1-4)        [compare with frozen MiniLM +0.405]
@@ -30,8 +36,14 @@ from sklearn.metrics.pairwise import cosine_similarity
 try:
     from rank_bm25 import BM25Okapi
     HAS_BM25 = True
-except Exception:
-    HAS_BM25 = False
+except Exception as exc:
+    raise ImportError(
+        'rank_bm25 is REQUIRED for the frozen BM25 baseline; install it to '
+        'avoid implementation-dependent fallback formulas.'
+    ) from exc
+
+from scipy.stats import rankdata
+from sklearn.metrics import roc_auc_score
 
 SEED = 42
 BASE = r'D:/dachuang_outputs/SCI_最终投稿图表包'
@@ -72,33 +84,14 @@ b1 = np.array([cosine_similarity(Xp[i], Xa[i])[0, 0] for i in range(n)])
 # ---- B2 Jaccard ----
 b2 = np.array([jaccard(df['project_title'].iloc[i], df['paper_title'].iloc[i]) for i in range(n)])
 
-# ---- B3 BM25 ----
+# ---- B3 BM25 (fixed implementation: rank_bm25 BM25Okapi on char 3-grams) ----
 def bm25_scores():
     docs = [list(char_ngrams(t)) for t in df['paper_title']]
-    if HAS_BM25:
-        bm = BM25Okapi(docs)
-        return np.array([bm.get_score(list(char_ngrams(df['project_title'].iloc[i])), i) for i in range(n)])
-    # hand-rolled Okapi BM25
-    N = len(docs)
-    k1, b = 1.5, 0.75
-    df_ = Counter()
-    for d in docs:
-        for w in set(d):
-            df_[w] += 1
-    avgdl = np.mean([len(d) for d in docs]) or 1.0
-    idf = {w: math.log(1 + (N - f + 0.5) / (f + 0.5)) for w, f in df_.items()}
+    bm = BM25Okapi(docs)
     out = np.zeros(n)
     for i in range(n):
-        q = Counter(char_ngrams(df['project_title'].iloc[i]))
-        d = docs[i]
-        dl = len(d) or 1
-        tf = Counter(d)
-        s = 0.0
-        for w, qf in q.items():
-            if w not in tf:
-                continue
-            s += idf.get(w, 0) * (tf[w] * (k1 + 1)) / (tf[w] + k1 * (1 - b + b * dl / avgdl))
-        out[i] = s
+        q = list(char_ngrams(df['project_title'].iloc[i]))
+        out[i] = bm.get_scores(q)[i]
     return out
 
 b3 = bm25_scores()
@@ -106,11 +99,8 @@ b3 = bm25_scores()
 
 def metrics(name, x):
     rho, p = spearmanr(x, y)
-    # AUC: pos vs neg (higher x => relevant)
-    order = np.argsort(x)
-    ranks = np.empty(n); ranks[order] = np.arange(1, n + 1)
-    n_pos = int(pos.sum()); n_neg = n - n_pos
-    auc = (ranks[pos].sum() - n_pos * (n_pos + 1) / 2) / (n_pos * n_neg) if n_pos and n_neg else np.nan
+    # Tie-aware AUC (Mann-Whitney U with average ranks) == roc_auc_score
+    auc = float(roc_auc_score(pos.astype(int), x))
     r_pb = float(np.corrcoef(x, pos.astype(float))[0, 1])
     return {'baseline': name, 'spearman_rho': rho, 'spearman_p': p,
             'auc_ge2_vs_1': auc, 'pointbiserial_r': r_pb, 'n': n}

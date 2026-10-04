@@ -85,8 +85,8 @@ Human similarity validation & $\rho=0.405$; AUC 0.88 & 150 project--paper pairs;
 Independent rater reliability & QWK 0.465 and 0.606 & raters A and B vs.\ first rater on 50 pairs (72\% / 78\% exact agreement); A vs.\ B: QWK 0.826, $\rho=0.821$, 90\% exact\\
 Test--retest reliability & QWK 0.643 & 40 re-rated pairs; $\rho=0.688$; 95\% exact agreement\\
 LLM second rater & QWK 0.459; $\rho=0.638$ & 150 pairs; $p=1.7\times10^{-18}$; 93.3\% exact agreement\\
-Lexical and encoder baselines & $\rho=0.296$--0.334 & TF-IDF 0.300 (AUC 0.638); character Jaccard 0.296 (0.637); BM25 0.298 (0.637); BGE-M3 0.334 (AUC 0.811)\\
-BGE-M3 paired bootstrap & $\Delta\rho=-0.074$ $[-0.190,0.043]$ & $\Delta\mathrm{AUC}=-0.069$ $[-0.179,0.032]$; $B=2{,}000$ paired resamples; independently seeded recomputations agree within 0.004\\
+Lexical and encoder baselines & $\rho=0.296$--0.334 & TF-IDF 0.300 (AUC 0.586); character Jaccard 0.296 (0.585); BM25 0.298 (0.585); BGE-M3 0.334 (AUC 0.811); baseline AUCs are tie-aware (average ranks)\\
+BGE-M3 paired bootstrap & $\Delta\rho=-0.071$ $[-0.187,0.036]$ & $\Delta\mathrm{AUC}=-0.069$ $[-0.179,0.032]$; $B=2{,}000$ paired resamples; independently seeded recomputations reproduce the point estimates within 0.004 and interval endpoints within 0.01\\
 Topics and defined diffusion lags & 886 clustered topics; 29 lag-definable & 29/886 = 3.27\%; 24 high-research-low-training and 5 high-research-high-training; per-topic lags rebuild identically to the frozen file\\
 \bottomrule
 \end{tabular}
@@ -118,9 +118,10 @@ Mixed-model complete cases & 3,231 projects; 39 units & complete cases on all pr
 Mixed-model variance components & ICC 0.7376 & unconditional-model ICC 0.7523; marginal $R^2=0.0075$; conditional $R^2=0.7395$; REML refit from frozen covariates\\
 Mixed-model fixed effects & tier coefficients non-significant & provincial $+0.00062$ ($p=0.720$); national $-0.00162$ ($p=0.452$); year $+0.00313$; prior 3-year works $+0.00427$ ($p\approx3\times10^{-9}$; exact recomputation $3.2\times10^{-9}$ vs.\ $3.3\times10^{-9}$ as printed, a rounding-level difference); prior supervision $-0.00629$\\
 Advisor-output effect size & $+0.010$ from 0 to 10 works & $0.00427\times[\log(11)-\log(1)]$ on the $\log(1+x)$ scale, about 0.14 project-level SD\\
+Leave-advisor-out sensitivity & attenuation 16.4\% & recomputed on the full 56,901-article corpus: $\beta$ $+0.00427\to+0.00357$ ($p=6.7\times10^{-7}$; 95\% CI $[0.00216,0.00497]$); ICC 0.727; conditional $R^2$ 0.729; 2,437 of 3,714 projects with removals (mean 23.6 articles; mean portfolio reduction 3.3\%); no empty portfolios\\
 Advisor-load concentration & Gini 0.746 / 0.368 & national projects per advisor (1,236 of 1,834 advisors hold zero national projects, retained in the denominator) vs.\ all distinct projects per advisor\\
 Advisor-load distribution & 818 (44.6\%) / 345 (18.8\%) & advisors with exactly one project / with four or more; mean load 2.314, median 2, maximum 10\\
-Top-advisor shares & 31.0\% / 71.9\% & top 5\% = 92 advisors ($\lceil 0.05\times1{,}834\rceil$) hold 31.0\% of national projects; top 20\% = 366 advisors ($\lfloor 0.20\times1{,}834\rfloor$) hold 71.9\% of all projects\\
+Top-advisor shares & 31.0\% / 71.9\% & top 5\% = 92 advisors ($\lceil 0.05\times1{,}834\rceil$) hold 31.0\% of national projects; top 20\% = 366 advisors ($\lfloor 0.20\times1{,}834\rfloor$) hold 71.9\% of national projects\\
 Top-advisor project exposure & 560 of 3,714 projects & projects with at least one top-5\% advisor; mean difference vs.\ other projects: Cohen $d=0.083$, Welch $p=0.065$\\
 Persistence in national awards & OR 2.06 $[1.53,2.76]$ & consecutive active advisor--year risk set: 979 cells, 627 advisors; advisor-clustered logit with year fixed effects\\
 Persistence, full-grid specification & OR 2.45 $[1.91,3.16]$ & full prior-active advisor--year grid: 2,469 cells, 1,560 advisors; alternative risk set, not a competing estimate\\

@@ -5,6 +5,42 @@ config, data, or code that could affect downstream numbers.
 
 ---
 
+## [v1.1-postaudit-rerun] — 2026-10-05 — TWENTY-NINTH ROUND: FULL-CORPUS LOO RERUN + TIE-AWARE BASELINE AUC
+
+- **Leave-advisor-out sensitivity rerun on the full 56,901-article corpus.**
+  `03_CODE/17_leave_advisor_out_rtas.py` previously scored against the old
+  12,000-paper development pool (`rtas_freeze/paper_emb_mini.npy`); it now loads
+  `paper_college_year_map_full.csv` + `paper_emb_minilm_full.npy` +
+  `proj_emb_minilm.npy` and hard-asserts corpus identity (56,901 papers / 3,714
+  projects / embedding shapes / raw-row alignment) and frozen RTAS statistics
+  (mean 0.1337, SD 0.0723). Numbers updated in `main.tex` (RQ3 paragraph and
+  Limitations) and in `06_RESULTS/hlm/rtas_loo/`: advisor-publication
+  coefficient attenuated ~16.4% (β +0.00427 -> +0.00357; p = 6.7e-7; 95% CI
+  [0.00216, 0.00497]); LOO ICC 0.727, conditional R2 0.729; 2,437 of 3,714
+  projects had at least one advisor-authored article removed (mean 23.6
+  articles; mean portfolio reduction 3.3%); no empty portfolios. The primary
+  model refit on the frozen covariates reproduces v2b exactly. The substantive
+  conclusion is unchanged: the coefficient remains positive and significant
+  after removing focal-advisor articles.
+- **Tie-aware baseline AUCs.** `03_CODE/13_baseline_validity.py` now computes
+  AUC with `roc_auc_score` (Mann-Whitney average ranks) instead of unique-rank
+  `np.argsort`, and pins BM25 to `rank_bm25` 0.2.2 (hand-rolled fallback
+  removed). Lexical-baseline AUCs corrected: TF-IDF 0.638 -> 0.586, Jaccard
+  0.637 -> 0.585, BM25 0.637 -> 0.585; Spearman rhos unchanged
+  (0.300/0.296/0.298); MiniLM reference values unchanged (rho 0.405, AUC 0.880).
+  Updated in `main.tex` Table 1, `data_verification.tex` Table S3,
+  `05_VALIDATION/robustness/baseline_validity.csv`, and the provenance ledger
+  (both copies).
+- `manuscript/data_verification.tex`: top-20% advisor share denominator
+  corrected to "71.9% of national projects"; BGE-M3 bootstrap canonical value
+  restored to -0.071 [-0.187, 0.036] with independent-rerun tolerance stated as
+  0.004 (point estimates) / 0.01 (interval endpoints); a leave-advisor-out
+  provenance row added to Table S4 Panel C.
+- Old 12K-pool LOO outputs retained privately under
+  `03_FINAL_ANALYSIS/hlm/rtas_loo_12k_legacy/` (working archive only).
+
+---
+
 ## [v1.1-freeze-prep] — 2026-09-23 — TWENTY-EIGHTH ROUND: PRIVACY SCRUB + VALIDATION-TITLE ANONYMIZATION (PUBLIC-RELEASE PREP)
 
 - The repository is now public. Rater pseudonymization completed everywhere: the reference
