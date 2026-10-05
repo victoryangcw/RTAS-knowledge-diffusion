@@ -46,6 +46,27 @@ finding is downgraded to a composition-sensitive descriptive finding.
 
 ---
 
+## [v1.1-postaudit-6] — 2026-10-05 — THIRTY-FOURTH ROUND: ADVISOR TITLE/ABSTRACT REVISION + FIGURE 4 LAYOUT (merged with round 33)
+
+NOTE: this set of edits arrived on the remote in parallel with round 33 and
+was merged on top of it. Its title/abstract framing ("Topic Asymmetries and
+the Limited Role of Administrative Tier", BERTopic 173-vs-10 abstract line)
+is SUPERSEDED by round 33's composition-sensitive reframing; the merge keeps
+round 33's title and abstract wording. The retained, non-conflicting
+contributions of this round are:
+
+- A first-mention UIETP footnote clarifying that the primary sample includes
+  both innovation-training and entrepreneurship-training/practice projects;
+  the 158-project entrepreneurship exclusion remains a sensitivity analysis
+  rather than a primary-sample restriction.
+- The revised title synced to `ESM_1.tex` and the root `README.md` (with the
+  title text then updated again to the round-33 form).
+- Layout-only adjustment: Figure 4 reduced from 0.78 to 0.58 text height and
+  float placement relaxed (`!htbp`), keeping the diffusion-lag figure closer
+  to RQ2 and removing the sparse spill page. No computational change.
+
+---
+
 ## [v1.1-postaudit-4] — 2026-10-05 — THIRTY-SECOND ROUND: README DIRECTORY-TABLE WORDING
 
 - Root `README.md`: `03_CODE/` described as "Reproducible analysis scripts

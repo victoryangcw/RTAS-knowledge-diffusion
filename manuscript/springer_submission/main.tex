@@ -15,16 +15,16 @@
 
 \begin{document}
 
-\title[Cross-Lingual Research--Training Alignment]{Linking Undergraduate Innovation and Entrepreneurship Training Projects to Advisor-Linked Academic-Unit Publication Portfolios: Cross-Lingual Alignment and the Limited Role of Administrative Tier}
+\title[Undergraduate Research--Training Alignment]{Linking Undergraduate Innovation and Entrepreneurship Training Projects to Advisor-Linked Academic-Unit Publication Portfolios: Cross-Lingual Alignment and the Limited Role of Administrative Tier}
 
 % TODO BEFORE SUBMISSION: replace placeholders with final author spelling and active correspondence e-mail.
 \author*[1]{\fnm{[Given name]} \sur{[Family name]}}\email{[corresponding email]}
 \affil*[1]{\orgdiv{School of Remote Sensing and Information Engineering}, \orgname{Wuhan University}, \orgaddress{\city{Wuhan}, \state{Hubei}, \country{China}}}
 % ORCID to enter on the title page/submission system: 0009-0006-9788-3365
 
-\abstract{Universities increasingly expect undergraduate training projects to connect with faculty research, yet this relationship is rarely measured at the project level. We introduce the Research--Training Alignment Score (RTAS), which compares each project title with the advisor-linked publication portfolio of its academic unit at Wuhan University. Because project titles are predominantly Chinese whereas nearly all indexed article titles contain no Chinese characters, we use cross-lingual sentence embeddings.
+\abstract{Universities increasingly expect faculty research to inform undergraduate training, yet the extent to which student projects engage with research conducted in their academic environment is rarely measured directly. We propose the Research--Training Alignment Score (RTAS), defined as the mean cosine similarity between a student project-title embedding and unique OpenAlex-indexed articles assigned to the same academic unit through advisor--author linkage. Because project titles are predominantly Chinese whereas nearly all indexed article titles contain no Chinese characters, RTAS uses cross-lingual sentence embeddings.
 
-We apply RTAS to 3,714 Undergraduate Innovation and Entrepreneurship Training Program projects and 56,901 OpenAlex-indexed articles from 2020--2024; 33,312 articles enter academic-unit reference portfolios. Validation against 150 human-rated title pairs supports pairwise semantic validity (Spearman's $\rho=0.405$; area under the receiver operating characteristic curve (AUC) $=0.880$), with additional checks using independent raters, test--retest scoring, lexical baselines, a large language model (LLM) rater, and a second encoder. RTAS differs descriptively across administrative project tiers (university 0.1212, provincial 0.1391, national 0.1460; $\eta^2=1.89\%$), but adjusted tier coefficients are not statistically distinguishable from zero. Joint topic modeling revealed composition-sensitive differences in research- and project-side prevalence, while annual onset was definable on both sides for only 29 of 886 topics. In the mixed model, most RTAS variation lies between academic units; advisor pre-project publication activity is positively associated with alignment and prior supervisory load negatively associated. National-level project allocation is concentrated and persistent, yet top-5\% advisor exposure shows only a small RTAS difference ($d=0.083$, $p=0.065$).
+We apply RTAS to 3,714 undergraduate innovation and entrepreneurship training projects from 2020--2024 and 56,901 OpenAlex-indexed articles at Wuhan University, of which 33,312 (58.5\%) enter academic-unit reference portfolios. Validation against 150 human-rated title pairs supports pairwise semantic validity (Spearman's $\rho=0.405$; area under the receiver operating characteristic curve (AUC) $=0.880$); additional checks include independent raters, an LLM second rater, lexical baselines, and a second encoder. Alignment varies substantially across academic units. Joint topic modeling reveals composition-sensitive differences in research- and project-side prevalence, while annual onset is definable on both sides for only 29 of 886 topics. In the mixed model, advisor pre-project publication activity is positively associated with RTAS and prior supervisory load negatively associated. Administrative-tier differences are small ($\eta^2=1.89\%$), and adjusted tier coefficients are not statistically distinguishable from zero. National-project allocation is highly concentrated (Gini $=0.746$) and persistent (OR $=2.06$, 95\% CI [1.53, 2.76]), whereas exposure to top-5\% advisors shows only a small, non-significant RTAS difference ($d=0.083$, $p=0.065$).
 
 RTAS measures semantic alignment rather than training quality, and all estimates are observational.}
 
@@ -42,7 +42,7 @@ One observable connection lies in the subjects students actually work on. Underg
 
 This gap is also a measurement problem. Scientometrics has long represented relations among documents through citation, co-citation, bibliographic coupling, co-word analysis, and publication-level classification \citep{small1973cocitation,callon1991coword,boyack2010cocitation,yanding2012networks,waltman2012classification}. More recent work uses textual embeddings and semantic representations to capture relations that do not depend on direct citation or lexical overlap \citep{lamers2021appraisal,huang2022interdisciplinarity,motohashi2024measuring}. Recent science-of-science work likewise emphasizes the need to tie new indicators closely to the constructs they actually measure \citep{milojevic2025science}. The problem becomes especially salient when the two document sets are recorded in different languages. In our setting, project titles contain 92.3\% Chinese characters on average, whereas 56,858 of 56,901 indexed article titles (99.9\%) contain no Chinese characters. Direct lexical overlap is therefore a poor basis for project--publication comparison.
 
-At Wuhan University, the Undergraduate Innovation and Entrepreneurship Training Program (UIETP) provides a useful setting for examining this relationship. Projects are supervised by faculty and are designated at university, provincial, or national administrative tiers. The program includes innovation-training and entrepreneurship-oriented projects rather than a single homogeneous category of ``research projects.'' We therefore treat the project corpus as an undergraduate training portfolio and ask how closely its content aligns with the publication portfolios of the academic units in which the projects are situated.
+At Wuhan University, the Undergraduate Innovation and Entrepreneurship Training Program (UIETP)\footnote{The UIETP is a Chinese undergraduate project scheme. The primary analysis includes both innovation-training and entrepreneurship-training/practice projects; official 2021--2024 type labels identify 158 entrepreneurship-track projects, and excluding them in a sensitivity analysis leaves the substantive conclusions unchanged. Type labels are unavailable for 2020.} provides a useful setting for examining this relationship. Projects are supervised by faculty and are designated at university, provincial, or national administrative tiers. The program includes innovation-training and entrepreneurship-oriented projects rather than a single homogeneous category of ``research projects.'' We therefore treat the project corpus as an undergraduate training portfolio and ask how closely its content aligns with the publication portfolios of the academic units in which the projects are situated.
 
 \subsection{This study}
 
@@ -234,9 +234,9 @@ Total & 886 & 35,547 & 1,750 & clustered documents only\\
 
 Under the annual first non-trivial presence rule, only 29 of 886 topics (3.27\%) are definable on both sides---24 in HRLT and five in HRHT. Overall median lag is 0 years (mean $+0.59$). In HRLT, the median lag is $+0.5$ years (mean $+0.79$): 50.0\% (12/24) of these topics show research-side presence first, 37.5\% show same-year first non-trivial presence, and 12.5\% show project-side presence first. LRHT (0/10) and LRLT (0/698) never reach the article-side annual threshold in any single year, so their lags are \emph{undefined in this corpus} rather than treated as missing. Consequently, statements that training content ``trails research'' cannot be made for these strata here; a curriculum-syllabus audit would provide a more appropriate source of evidence. Figure~\ref{fig:lags} displays the overall defined-lag distribution and the HRLT/HRHT comparison.
 
-\begin{figure}[htbp]
+\begin{figure}[!htbp]
 \centering
-\includegraphics[height=0.78\textheight,keepaspectratio]{Fig4.pdf}
+\includegraphics[height=0.58\textheight,keepaspectratio]{Fig4.pdf}
 \caption{Diffusion-lag patterns for topics whose first non-trivial annual presence is definable on both sides. Panel (a) shows the overall distribution of defined lags. Panel (b) compares HRLT and HRHT topics; white diamonds mark group means. Positive lag indicates research-side first non-trivial presence before the project side; zero indicates same-year first non-trivial presence; negative values indicate project-side first presence before the research side}
 \label{fig:lags}
 \end{figure}
@@ -288,6 +288,8 @@ Advisor prior supervised projects, $\log(1+x)$ & $-0.00629$ & [$-0.00917$, $-0.0
 \caption{Fixed-effect estimates from the primary mixed model. Points show coefficients and horizontal bars show 95\% confidence intervals. Year is continuous and centered at 2022. Provincial- and national-level confidence intervals cross zero; pre-project publication activity is positively associated with alignment, while prior supervisory load is negatively associated. In the figure, *** denotes $p<.001$ and ns denotes not significant}
 \label{fig:hlm}
 \end{figure}
+
+\enlargethispage{2\baselineskip}
 
 \subsection{Concentration and lagged persistence (RQ4)}
 

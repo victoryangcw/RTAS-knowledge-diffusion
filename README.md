@@ -2,9 +2,7 @@
 
 Public reproducibility repository for the study:
 
-> **Linking Undergraduate Innovation and Entrepreneurship Training Projects to
-> Academic-Unit Publication Portfolios: A Cross-Lingual Measure of
-> Research–Training Alignment**
+> **Linking Undergraduate Innovation and Entrepreneurship Training Projects to Advisor-Linked Academic-Unit Publication Portfolios: Cross-Lingual Alignment and the Limited Role of Administrative Tier**
 
 RTAS is the mean cosine similarity between a student project-title embedding and
 the unique OpenAlex articles assigned to the same academic unit through
