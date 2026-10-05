@@ -16,6 +16,9 @@ config, data, or code that could affect downstream numbers.
 - `05_VALIDATION/README.md` now documents the public anonymized hard-pair
   ratings and the recomputation script, including the challenge-set (not
   population-validity) interpretation.
+- Supplement table numbering now preserves the intended sequence S3, S3b,
+  S4 (the post-freeze challenge-set table does not shift canonical S4 to S5),
+  and `ESM_1.tex` loads `float` for the canonical `[H]` provenance tables.
 - No computational change and no change to the 118-check frozen provenance
   ledger.
 
