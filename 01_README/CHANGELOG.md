@@ -5,6 +5,36 @@ config, data, or code that could affect downstream numbers.
 
 ---
 
+## [v1.1-postaudit-10] — 2026-10-05 — THIRTY-EIGHTH ROUND: ONLINE-RESOURCE PROVENANCE BLOCK EXACT-SYNC CORRECTION
+
+- Replaced the inserted Numerical provenance section in `ESM_1.tex` with the
+  exact current block from `manuscript/data_verification.tex`. The first
+  integration pass had truncated the latter part of Table S4 and included an
+  incorrect shorthand description for the 31.0% / 71.9% top-advisor shares.
+  The Online Resource now reproduces the canonical S3, post-freeze validation
+  table, and full S4 verbatim.
+- `05_VALIDATION/README.md` now documents the public anonymized hard-pair
+  ratings and the recomputation script, including the challenge-set (not
+  population-validity) interpretation.
+- No computational change and no change to the 118-check frozen provenance
+  ledger.
+
+---
+
+## [v1.1-postaudit-9] — 2026-10-05 — THIRTY-SEVENTH ROUND: ONLINE-RESOURCE PROVENANCE TABLES + PUBLIC HARD-PAIR ARTEFACTS
+
+- `ESM_1.tex`: added the provenance/reconciliation section with S3,
+  post-freeze hard-pair validation table, and S4 so these materials appear in
+  the compiled Online Resource rather than only in the insertion fragment.
+- `05_VALIDATION/robustness/`: added
+  `hard_pair_ratings_anonymized.csv` (174 anonymized pairs) and
+  `compute_hardpair_stats.py`, which reproduces the published inter-rater
+  agreement, Spearman correlation, AUC, stratum summaries, and high-similarity
+  bootstrap interval.
+- No change to frozen RTAS estimates or primary conclusions.
+
+---
+
 ## [v1.1-postaudit-8] — 2026-10-05 — THIRTY-SIXTH ROUND: HARD-PAIR HUMAN VALIDATION ADDED
 
 Added a post-freeze hard-pair validation set (174 pairs) to address the
