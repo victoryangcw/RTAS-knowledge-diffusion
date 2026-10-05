@@ -1,7 +1,56 @@
-﻿# CHANGELOG — RTAS Final Project
+﻿﻿# CHANGELOG — RTAS Final Project
 
 Format: **Semantic versioning on milestones**. Each entry lists changes to protocol,
 config, data, or code that could affect downstream numbers.
+
+---
+
+## [v1.1-postaudit-2] — 2026-10-05 — THIRTIETH ROUND: ROW-LEVEL RTAS RECONSTRUCTION + EXACT BOOTSTRAP REPLICATION + REGISTRY-ASSERTION FIX
+
+- **Row-level RTAS reconstruction added to the provenance audit (115 -> 118 checks).**
+  `19_numerical_provenance_audit.py` now rebuilds every project's RTAS from
+  `paper_emb_minilm_full.npy` (56,901 x 384) and `proj_emb_minilm.npy`
+  (3,714 x 384) using the exact `recompute_full.py` aggregation, and compares
+  one-to-one with the frozen `rtas` column. Result: max |delta| = 3.46e-08
+  (mean 5.3e-09) across all 3,713 non-empty portfolios -- float32 storage
+  precision; embedding row order verified against `table5` (project_id/year/
+  college) and the raw paper CSV (work_id); the single empty-portfolio project
+  (project_id 3832) confirmed stored as 0.0 by convention. In trees without the
+  private embedding files the three new checks record SKIP (public run prints
+  "115 PASS, 0 FAIL, 3 SKIP").
+- **BGE paired bootstrap now an exact replication of `16_bge_m3_benchmark.py`.**
+  The audit previously drew resamples from `np.random.default_rng(42).integers`
+  and computed AUC with unique ranks; the canonical script uses
+  `np.random.RandomState(42).randint`, drops degenerate single-class resamples,
+  and `rankdata` average ranks (ties are guaranteed under with-replacement
+  sampling). After aligning the protocol, the audit reproduces the frozen
+  intervals exactly: delta-rho -0.071 [-0.187, +0.035] and delta-AUC
+  -0.069 [-0.179, +0.032]; tolerances tightened from 0.012/0.02 to 0.001.
+- **RQ1 eta-squared bootstrap aligned to the frozen D3 protocol** (whole-row
+  resampling of the ANOVA frame with a fresh `default_rng(42)` stream, not
+  within-group resampling): the audit now reproduces the frozen CI
+  [1.14%, 2.86%] exactly.
+- **`20_raw_registry_audit.py` entrepreneurship assertions reversed.** The old
+  `== 0` assertions (a pre-audit belief that the program held innovation
+  projects only) contradicted the verified data (158 unique entrepreneurship
+  projects; 160 registry rows; two duplicated 2024 titles). The script now
+  asserts n_unique == 158 in the frozen table and a superset relationship in
+  the merged table; it runs 15 checks, 0 FAIL.
+- `21_entrepreneurship_exclusion_sensitivity.py`: docstring "160 flagged
+  projects" corrected to 158 (computation unchanged, `assert n_ent == 158`).
+- `manuscript/data_verification.tex`: ledger count 115 -> 118 with a row-level
+  reconstruction sentence; "independently seeded ... within 0.004/0.01"
+  replaced by exact-replication statements; BGE delta-rho upper endpoint
+  corrected 0.036 -> 0.035 (frozen JSON value 0.03546277). `main.tex`
+  Methods: 115 -> 118 recomputed quantities.
+- Private-only (no paper change): a worst-case quantification of the
+  surname+first-syllable pinyin short-key linkage exposure -- 208 OpenAlex
+  author strings reachable only through single-candidate short keys (429 of
+  33,312 matched papers, 1.29%); removing all of them shifts the advisor-
+  publication coefficient by -2.78% (+0.004266 -> +0.004147, p = 1.5e-08) with
+  sign and significance class preserved.
+- Provenance ledger regenerated (118 rows, all PASS) and both copies
+  (`06_CODE/` working + `06_RESULTS/` shipped) verified byte-identical.
 
 ---
 

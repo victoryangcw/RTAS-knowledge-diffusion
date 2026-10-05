@@ -29,6 +29,9 @@
 2 aggregation/RTAS,RTAS min,-0.0575,-0.0575,PASS,"final full-corpus rtas (56,901 substrate)",describe(),
 2 aggregation/RTAS,RTAS max,0.396,0.396,PASS,"final full-corpus rtas (56,901 substrate)",describe(),
 2 aggregation/RTAS,0->10 pubs RTAS effect,+0.010 (~0.14 SD),0.01023 / 0.142 SD,PASS,beta_log_prior3y=0.004266 x [log(11)-log(1)],"linear shift on log(1+x) scale, divided by SD .0723",
+2 aggregation/RTAS,RTAS embedding row alignment,project & paper rows aligned,"proj(project_id/year/college)=True; paper(work_id)=True; shapes paper=(56901, 384) proj=(3714, 384)",PASS,embedding npy rows vs table5 / paper-college-map / raw paper csv,exact ordered identity on keys,
+2 aggregation/RTAS,RTAS row-level reconstruction max|delta|,"<1e-6 across 3,713 projects",max=3.46e-08; mean|d|=5.32e-09; n within 1e-6 = 3713/3713,PASS,"independent rebuild: mean cos over cumulative [2020,t] matched portfolio",float32 storage ULP ~3e-8; identical aggregation to recompute_full.py,
+2 aggregation/RTAS,RTAS empty-portfolio convention,1 project (id 3832) stored as 0.0,empty rows=[3673] project_ids=[3832] frozen values=[0.0],PASS,project table rtas column,empty portfolio -> 0.0 (excluded from HLM n=3231),
 3 validation,C1 reference == cos-file human_score,100%,100.0%,PASS,150pairs annotations vs cos file,column equality,
 3 validation,C1 Spearman rho,0.405,0.4055,PASS,annotator1_score vs cos_mini (n=150),scipy spearmanr,
 3 validation,C1 Spearman p,2.64e-7,2.641e-07,PASS,same,asymptotic p,
@@ -62,8 +65,8 @@
 3 validation,Baseline BM25 AUC (frozen CSV),0.585,0.585,PASS,same,tie-aware rank AUC (roc_auc_score),CORRECTED post-audit 2026-10-04: unique-rank AUC (0.637) was tie-sensitive
 3 validation,BGE-M3 rho,0.334,0.334,PASS,150pairs cos_bge_m3 vs annotator1,spearman,
 3 validation,BGE-M3 AUC,0.811,0.811,PASS,same,rank AUC,
-3 validation,"BGE paired bootstrap d_rho [-0.074 (-0.190,0.043)]","-0.071 [-0.187,+0.036]","-0.074 [-0.190,0.043]",PASS,"paired resampling of 150 pairs, seed42 B=2000",rho_bge-rho_mini percentile CI (RNG order may differ slightly),"frozen json: mean -0.0709, CI [-0.1867,+0.0355]"
-3 validation,BGE paired bootstrap d_AUC,"-0.069 [-0.179,+0.032]","-0.072 [-0.186,0.042]",PASS,same bootstrap,auc_bge-auc_mini,"frozen json: mean -0.0693, CI [-0.1786,+0.0323]"
+3 validation,"BGE paired bootstrap d_rho [-0.071 (-0.187,0.035)]","-0.071 [-0.187,+0.035]","-0.071 [-0.187,0.035]",PASS,"paired resampling of 150 pairs, seed42 B=2000","exact protocol replication of 16_bge_m3_benchmark.py (RandomState(42).randint, degenerate resamples dropped)","frozen json: mean -0.0709, CI [-0.1867,+0.0355]"
+3 validation,BGE paired bootstrap d_AUC,"-0.069 [-0.179,+0.032]","-0.069 [-0.179,0.032]",PASS,same bootstrap,auc_bge-auc_mini (average ranks),"frozen json: mean -0.0693, CI [-0.1786,+0.0323]"
 4 topic/lag,Defined-lag topics,29,29,PASS,topic_yearly_prevalence_for_diffusion_lag.csv,"first year paper>=3&>=0.2%, project>=2&>=0.2%",
 4 topic/lag,Defined-lag share,3.27%,3.27%,PASS,29/886,percent,
 4 topic/lag,Defined lag HRLT/HRHT,24/5,24/5,PASS,quadrant join,counts,
@@ -84,7 +87,7 @@
 5 RQ1,RQ1 Welch N-U t,7.375,7.375,PASS,scipy ttest_ind equal_var=False,Welch t,
 5 RQ1,RQ1 Welch N-U p,2.9e-13,2.92e-13,PASS,same,Welch p,
 5 RQ1,RQ1 Cohen d N-U,0.352,0.352,PASS,(meanN-meanU)/pooled SD,pooled-variance Cohen d,
-5 RQ1,RQ1 eta2 bootstrap 95% CI,"[1.14%, 2.86%]","[1.17%, 2.90%]",PASS,within-group bootstrap seed42 B=10000,percentile CI of SSb/SSt,RNG order may differ slightly from the frozen run
+5 RQ1,RQ1 eta2 bootstrap 95% CI,"[1.14%, 2.86%]","[1.14%, 2.86%]",PASS,whole-row within-frame bootstrap seed42 B=10000 (exact D3 replication),percentile CI of SSb/SSt,
 6 RQ3 HLM,RQ3 prior-supervision col rebuilt == frozen,identical,identical,PASS,table5 advisor_prior_supervised_projects,mean over advisor atoms of #projects with year < focal year,
 6 RQ3 HLM,RQ3 complete-case n / colleges,3231 / 39,3231 / 39,PASS,complete cases on all predictors + college,dropna count,
 6 RQ3 HLM,RQ3 null var college / resid,.005438 / .001791,0.005438 / 0.001791,PASS,in-memory REML null MixedLM refit,"cov_re, scale",

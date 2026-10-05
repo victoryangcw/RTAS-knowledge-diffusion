@@ -22,8 +22,9 @@ WHAT THIS SCRIPT DOES
        rtas ~ is_provincial + is_national + year_centered
               + log_prior3y + log_prior_supervision
      groups=college, REML — once on the full complete-case sample (reproduces
-     the frozen n=3,231 / ICC=0.7376 primary) and once after excluding the 160
-     flagged projects. Covariates are taken from the frozen dataset unchanged
+     the frozen n=3,231 / ICC=0.7376 primary) and once after excluding the 158
+     flagged projects (the official registry lists 160 matching rows, but two
+     2024 titles are duplicated there and the frozen frame holds each once). Covariates are taken from the frozen dataset unchanged
      (only the estimation sample changes).
   4. Writes coefficient comparison CSV + an aggregate JSON (no names/titles).
 

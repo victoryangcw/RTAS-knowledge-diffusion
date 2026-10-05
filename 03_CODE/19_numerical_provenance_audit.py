@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 """
 19_numerical_provenance_audit.py
 ================================
@@ -28,16 +28,20 @@ DATA = ROOT / "01_DATA"
 SEL = ROOT / "02_RTAS_MODEL_SELECTION"
 FIN = ROOT / "03_FINAL_ANALYSIS"
 
-PASS, FAIL = "OK  ", "XX  "
+PASS, FAIL, SKIP = "OK  ", "XX  ", "SKIP"
 results = []
 current_section = ""
 
 
-def record(module, reported, recomputed, ok, source, formula, note=""):
+def record(module, reported, recomputed, ok, source, formula, note="", status=None):
+    if status is not None:
+        match = status
+    else:
+        match = "PASS" if ok else "FAIL"
     results.append(dict(section=current_section, module=module, reported=str(reported),
-                        recomputed=str(recomputed), match="PASS" if ok else "FAIL",
+                        recomputed=str(recomputed), match=match,
                         source=source, formula=formula, note=note))
-    tag = PASS if ok else FAIL
+    tag = PASS if match == "PASS" else (SKIP if match == "SKIP" else FAIL)
     print(f"[{tag}] {module}: reported={reported} | recomputed={recomputed}")
     if note:
         print(f"        note: {note}")
@@ -375,34 +379,48 @@ def audit_validation():
            "150pairs cos_bge_m3 vs annotator1", "spearman")
     record("BGE-M3 AUC", 0.811, round(auc_b, 3), close(auc_b, 0.81063, 0.001),
            "same", "rank AUC")
-    # paired bootstrap (seed 42, B=2000)
-    rng = np.random.default_rng(42)
+    # paired bootstrap — EXACT replication of 16_bge_m3_benchmark.py
+    # NOTE 2026-10-04: two protocol details made the earlier independent rerun
+    # a different statistic: (a) the canonical script draws from
+    # np.random.RandomState(42).randint, NOT np.random.default_rng(42), so the
+    # resample streams were entirely different (visible even on tie-free
+    # d_rho); (b) degenerate single-class resamples are NaN-dropped. AUC also
+    # uses average ranks here: resampling with replacement guarantees tied
+    # scores, so unique-rank AUC would be biased relative to canonical.
+    def auc_ties(scores, labels):
+        rk = rankdata(scores, method="average")
+        n1, n0 = int(labels.sum()), int((~labels).sum())
+        return (rk[labels].sum() - n1 * (n1 + 1) / 2) / (n1 * n0) if n1 and n0 else np.nan
+
+    rng = np.random.RandomState(42)
     dr, da = [], []
     cmini = cbge["cos_mini"].values
     for _ in range(2000):
-        ix = rng.integers(0, n, n)
-        dr.append(spearmanr(cb[ix], y[ix]).statistic - spearmanr(cmini[ix], y[ix]).statistic)
-        o1 = np.argsort(cb[ix]); r1 = np.empty(n); r1[o1] = np.arange(1, n + 1)
-        o2 = np.argsort(cmini[ix]); r2 = np.empty(n); r2[o2] = np.arange(1, n + 1)
+        ix = rng.randint(0, n, size=n)
         pi = pos[ix]
-        a1 = (r1[pi].sum() - pi.sum() * (pi.sum() + 1) / 2) / (pi.sum() * (~pi).sum())
-        a2 = (r2[pi].sum() - pi.sum() * (pi.sum() + 1) / 2) / (pi.sum() * (~pi).sum())
-        da.append(a1 - a2)
+        if pi.sum() == 0 or pi.sum() == n:
+            dr.append(np.nan); da.append(np.nan); continue
+        dr.append(spearmanr(cb[ix], y[ix]).statistic - spearmanr(cmini[ix], y[ix]).statistic)
+        da.append(auc_ties(cb[ix], pi) - auc_ties(cmini[ix], pi))
     dr, da = np.array(dr), np.array(da)
+    dr, da = dr[~np.isnan(dr)], da[~np.isnan(da)]
     frozen_dr = (-0.07088, -0.18673, 0.03546)
     frozen_da = (-0.06934, -0.17857, 0.03229)
-    ok_r = close(dr.mean(), frozen_dr[0], 0.012) and close(np.percentile(dr, 2.5), frozen_dr[1], 0.02)
+    ok_r = close(dr.mean(), frozen_dr[0], 0.001) and close(np.percentile(dr, 2.5), frozen_dr[1], 0.001) \
+        and close(np.percentile(dr, 97.5), frozen_dr[2], 0.001)
     record("BGE paired bootstrap d_rho [%.3f (%.3f,%.3f)]" % (dr.mean(), np.percentile(dr, 2.5), np.percentile(dr, 97.5)),
-           "-0.071 [-0.187,+0.036]",
+           "-0.071 [-0.187,+0.035]",
            f"{dr.mean():.3f} [{np.percentile(dr,2.5):.3f},{np.percentile(dr,97.5):.3f}]",
            ok_r, "paired resampling of 150 pairs, seed42 B=2000",
-           "rho_bge-rho_mini percentile CI (RNG order may differ slightly)",
+           "exact protocol replication of 16_bge_m3_benchmark.py "
+           "(RandomState(42).randint, degenerate resamples dropped)",
            note="frozen json: mean -0.0709, CI [-0.1867,+0.0355]")
-    ok_a = close(da.mean(), frozen_da[0], 0.012)
+    ok_a = close(da.mean(), frozen_da[0], 0.001) and close(np.percentile(da, 2.5), frozen_da[1], 0.001) \
+        and close(np.percentile(da, 97.5), frozen_da[2], 0.001)
     record("BGE paired bootstrap d_AUC",
            "-0.069 [-0.179,+0.032]",
            f"{da.mean():.3f} [{np.percentile(da,2.5):.3f},{np.percentile(da,97.5):.3f}]",
-           ok_a, "same bootstrap", "auc_bge-auc_mini",
+           ok_a, "same bootstrap", "auc_bge-auc_mini (average ranks)",
            note="frozen json: mean -0.0693, CI [-0.1786,+0.0323]")
 
 
@@ -454,6 +472,69 @@ def audit_rtas():
            close(0.004266 * np.log(11), 0.01024, 0.0003),
            "beta_log_prior3y=0.004266 x [log(11)-log(1)]",
            "linear shift on log(1+x) scale, divided by SD .0723")
+
+    # ---- ROW-LEVEL RTAS RECONSTRUCTION (post-audit 2026-10-04) ----
+    # Rebuild every project's RTAS from the 56,901-paper and 3,714-project
+    # embeddings and compare one-by-one with the frozen rtas column.
+    emb_paper_path = SEL / "embeddings" / "minilm" / "paper_emb_minilm_full.npy"
+    emb_proj_path = SEL / "embeddings" / "minilm" / "proj_emb_minilm.npy"
+    map_full_path = SEL / "paper_college_year_map_full.csv"
+    if not (emb_paper_path.exists() and emb_proj_path.exists()):
+        for what in ["RTAS embedding row alignment",
+                     "RTAS row-level reconstruction max|delta|",
+                     "RTAS empty-portfolio convention"]:
+            record(what, "n/a (private embeddings)", "embedding files absent in this tree",
+                   True, "02_RTAS_MODEL_SELECTION/embeddings (private, not distributed)",
+                   "row-level rebuild", status="SKIP")
+        return
+    ep = np.load(emb_paper_path).astype(np.float64)
+    ex = np.load(emb_proj_path).astype(np.float64)
+    mp = pd.read_csv(map_full_path)
+    base = pd.read_csv(DATA / "final_analysis" / "table5_project_dataset_n3714.csv")
+    raw_ids = pd.read_csv(DATA / "raw_private" / "whu_openalex_papers_2020_2024_full.csv",
+                          usecols=["work_id"])["work_id"].tolist()
+    align_proj = all(p[c].astype(str).tolist() == base[c].astype(str).tolist()
+                     for c in ["project_id", "year", "college"])
+    align_paper = mp["work_id"].tolist() == raw_ids
+    record("RTAS embedding row alignment", "project & paper rows aligned",
+           f"proj(project_id/year/college)={align_proj}; paper(work_id)={align_paper}; "
+           f"shapes paper={ep.shape} proj={ex.shape}",
+           bool(align_proj and align_paper and ep.shape == (56901, 384)
+                and ex.shape == (3714, 384)),
+           "embedding npy rows vs table5 / paper-college-map / raw paper csv",
+           "exact ordered identity on keys")
+
+    cyp = {}
+    for i, rr in mp.iterrows():
+        if not rr["has_matched"]:
+            continue
+        for c in str(rr["colleges"]).split(" | "):
+            if c:
+                cyp.setdefault((c, int(rr["year"])), []).append(i)
+    rebuilt = np.zeros(len(p))
+    empty = []
+    for idx, rr in p.iterrows():
+        pidx = []
+        for yr in range(2020, int(rr["year"]) + 1):
+            pidx.extend(cyp.get((rr["college"], yr), []))
+        if not pidx:
+            empty.append(idx)
+            continue
+        rebuilt[idx] = float((ep[list(set(pidx))] @ ex[idx]).mean())
+    fr = r.values.astype(np.float64)
+    ne = np.array([i for i in range(len(p)) if i not in empty])
+    d = rebuilt[ne] - fr[ne]
+    maxd, meand = float(np.abs(d).max()), float(np.abs(d).mean())
+    record("RTAS row-level reconstruction max|delta|", "<1e-6 across 3,713 projects",
+           f"max={maxd:.2e}; mean|d|={meand:.2e}; n within 1e-6 = {int((np.abs(d)<1e-6).sum())}/3713",
+           maxd < 1e-6,
+           "independent rebuild: mean cos over cumulative [2020,t] matched portfolio",
+           "float32 storage ULP ~3e-8; identical aggregation to recompute_full.py")
+    pid_empty = [int(p.iloc[i]["project_id"]) for i in empty]
+    record("RTAS empty-portfolio convention", "1 project (id 3832) stored as 0.0",
+           f"empty rows={empty} project_ids={pid_empty} frozen values={fr[empty].tolist()}",
+           pid_empty == [3832] and fr[empty].tolist() == [0.0],
+           "project table rtas column", "empty portfolio -> 0.0 (excluded from HLM n=3231)")
 
 
 # ----------------------------------------------------------------------
@@ -516,24 +597,32 @@ def audit_rq1():
     d = (a.mean() - b.mean()) / sp
     record("RQ1 Cohen d N-U", 0.352, round(d, 3), close(d, 0.351676, 0.002),
            "(meanN-meanU)/pooled SD", "pooled-variance Cohen d")
-    # bootstrap CI for eta2 (seed 42, B=10000, resample within groups)
+    # bootstrap CI for eta2 — exact protocol replication of 15_hlm_diagnostics.py D3
+    # (fresh default_rng(42), whole-row resampling of the ANOVA frame, one
+    # integers(0,n,n) draw per iteration, nanpercentile CI). The earlier audit
+    # used within-group resampling, a different estimand-protocol pair.
     rng = np.random.default_rng(42)
+    anova_df = p[["rtas", "level_code"]].dropna().copy()
+    anova_df["level_code"] = anova_df["level_code"].astype(int)
+
+    def eta_sq(data):
+        grand = data["rtas"].mean()
+        ss_total = ((data["rtas"] - grand) ** 2).sum()
+        ss_between = sum(len(g) * (g["rtas"].mean() - grand) ** 2
+                         for _, g in data.groupby("level_code"))
+        return ss_between / ss_total if ss_total > 0 else np.nan
+
     B = 10000
-    boots = np.empty(B)
-    arrs = list(grp.values())
+    bo = np.empty(B)
     for i in range(B):
-        sam = [v[rng.integers(0, len(v), len(v))] for v in arrs]
-        allx = np.concatenate(sam); gm = allx.mean()
-        sb = sum(len(s) * (s.mean() - gm) ** 2 for s in sam)
-        st = ((allx - gm) ** 2).sum()
-        boots[i] = sb / st
-    lo, hi = np.percentile(boots, [2.5, 97.5])
+        idx = rng.integers(0, len(anova_df), len(anova_df))
+        bo[i] = eta_sq(anova_df.iloc[idx])
+    lo, hi = np.nanpercentile(bo, [2.5, 97.5])
     record("RQ1 eta2 bootstrap 95% CI", "[1.14%, 2.86%]",
            f"[{100*lo:.2f}%, {100*hi:.2f}%]",
-           close(100 * lo, 1.14, 0.15) and close(100 * hi, 2.86, 0.15),
-           "within-group bootstrap seed42 B=10000",
-           "percentile CI of SSb/SSt",
-           note="RNG order may differ slightly from the frozen run")
+           close(100 * lo, 1.14, 0.005) and close(100 * hi, 2.86, 0.005),
+           "whole-row within-frame bootstrap seed42 B=10000 (exact D3 replication)",
+           "percentile CI of SSb/SSt")
 
 
 # ----------------------------------------------------------------------
@@ -865,8 +954,9 @@ if __name__ == "__main__":
         current_section = label
         fn()
     print("\n%d checks recorded." % len(results))
-    bad = [r for r in results if r["match"] != "PASS"]
-    print("%d PASS, %d FAIL" % (len(results) - len(bad), len(bad)))
+    n_fail = sum(1 for r in results if r["match"] == "FAIL")
+    n_skip = sum(1 for r in results if r["match"] == "SKIP")
+    print("%d PASS, %d FAIL, %d SKIP" % (len(results) - n_fail - n_skip, n_fail, n_skip))
 
     # ---- provenance ledger deliverable ----
     led = pd.DataFrame(results)[["section", "module", "reported", "recomputed",

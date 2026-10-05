@@ -183,12 +183,20 @@ def main():
     not_in_frozen = ent[~ent['_in_frozen']]
     print(f'Entrepreneurship rows NOT in frozen ({len(not_in_frozen)}):')
     print(not_in_frozen[['year', 'type', 'level', 'title', 'college']].to_string(index=False))
-    check('A1 entrepreneurship projects inside MERGED 3,887 table',
-          n_ent_merged == 0, f'{n_ent_merged} of {len(ent)} (year-keyed)')
+    # POST-AUDIT 2026-10-04: entrepreneurship projects are EXPECTED in both
+    # tables (158 unique projects, 4.25% of frozen). The old assertions
+    # required == 0, which reflected the pre-audit belief that the program
+    # contained innovation projects only and made this script report FAIL
+    # against the verified data. 160 matched registry rows = 158 unique
+    # projects because two 2024 titles are duplicated in the official list.
+    check('A1 entrepreneurship projects present in MERGED 3,887 table',
+          n_ent_merged >= n_ent_frozen,
+          f'{n_ent_merged} of {len(ent)} (year-keyed; merged is a superset of frozen)')
     check('A1 entrepreneurship projects inside FROZEN 3,714 dataset',
-          n_ent_frozen == 0,
+          n_ent_frozen_unique == 158,
           f'{n_ent_frozen} registry rows = {n_ent_frozen_unique} unique '
-          f'projects ({n_ent_frozen_unique/len(fr):.1%} of frozen)')
+          f'projects ({n_ent_frozen_unique/len(fr):.1%} of frozen); '
+          f'expected 158 unique (74/23/26/35 by year 2021-24)')
 
     # how many official 2021-24 rows overall are captured by merged/frozen (year-keyed)
     reg['_in_merged'] = [(int(y), t) in mkeys for y, t in zip(reg['year'], reg['ntitle'])]
