@@ -17,3 +17,13 @@ Two anonymization rules were applied before the repository was made public:
 
 Historical commits may still contain the original title strings; the current
 tree is fully anonymized.
+
+## Hard-pair challenge-set robustness
+
+The post-freeze hard-pair validation is published in `robustness/` as:
+
+- `hard_pair_ratings_anonymized.csv`: 174 anonymized project--article pairs with sampling stratum, MiniLM cosine, two human ratings, consensus score, and absolute rater difference.
+- `compute_hardpair_stats.py`: recomputes inter-rater agreement, Spearman correlation, overall AUC, stratum-specific summaries, and the high-similarity-stratum bootstrap AUC interval.
+
+The challenge set is deliberately enriched using MiniLM cosine strata and is therefore a robustness/challenge-set assessment rather than a population-validity sample. Project titles remain anonymized; no private title-to-pair mapping is distributed.
+
