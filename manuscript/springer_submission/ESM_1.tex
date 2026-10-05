@@ -176,4 +176,118 @@ Number of academic units & 39 & & 39 & \\
 \footnotesize $^{***}p<0.001$. Panel~A uses project-level RTAS values (one-way ANOVA, Tukey HSD); Panel~B uses the same specification as the primary mixed-model table in the main manuscript and Table~S1. The 2022 cohort is the only year with no university-level records in the archived source registry; excluding it cannot alter the university-tier mean but changes the composition of the other two tiers.
 \end{table}
 
+% ---------------------------------------------------------
+% Table S3 — Numerical provenance ledger, Part 1
+% ---------------------------------------------------------
+
+\clearpage
+\section*{Numerical provenance and reconciliation}
+
+After the analysis pipeline froze, a verification script independently reloaded every frozen analysis table and recomputed each quantity reported in the manuscript and supplement from those files alone, without reference to the scripts that produced the reported values. Of 118 audited quantities---corpus and frame construction, advisor--article linkage, the frozen RTAS distribution, aggregation-family selection, the human/LLM validity program, topic and diffusion-lag counts, and all RQ1/RQ3/RQ4 estimates---all 118 matched the reported values to printed precision. The frozen RTAS values were additionally reconstructed row by row from the embedding files: all 3,713 non-empty portfolios agree to within $4\times10^{-8}$, and the embedding-table row order was verified against the frozen datasets. The project registry was additionally verified by re-parsing the four official 2021--2024 approval lists from their source spreadsheets (funding tiers, project-type labels, annual coverage, identifier uniqueness, and the 3,887-row to 3,714-row frame reconciliation), and every headline model was re-estimated under alternative samples and specifications (Tables~S1--S2; main text Sections on sensitivity analyses). Both bootstrap intervals reproduce the frozen intervals exactly when the frozen seed and resampling protocol are applied. Tables~S3--S4 document the canonical value and the exact denominator of each audited headline quantity; the complete machine-readable ledger, including the row-level reconstruction checks, accompanies the analysis code.
+
+% ---------------------------------------------------------
+% Table S3 — corpus, frame, linkage, frozen measure
+% ---------------------------------------------------------
+
+\begin{table}[H]
+\centering
+\caption{Numerical provenance ledger, Part 1: study frame, corpora, linkage, the frozen RTAS distribution, and the validity program. Every value was independently recomputed from the frozen data tables.}
+\label{tab:s3}
+\scriptsize
+\begin{tabular}{p{1.75in}p{1.15in}p{3.55in}}
+\toprule
+\textbf{Quantity} & \textbf{Canonical value} & \textbf{Basis and recomputation}\\
+\midrule
+\multicolumn{3}{l}{\textit{Panel A. Registry, frame, and corpora}}\\
+\midrule
+Consolidated registry (pre-frame) & 3,887 rows; 48 organizational labels & row count and distinct labels in the five-year consolidated administrative table\\
+Pre-frame exclusions & 173 rows under 8 labels & no advisor-linked publications in the source substrate; college portfolios empty; excluded on a structural coverage criterion before any RTAS computation\\
+Frozen project frame & 3,714 projects; 40 units & $3{,}887-173$; row count of the frozen project table\\
+Funding tiers & 1,375 / 1,657 / 682 & counts by tier code; 37.0\% / 44.6\% / 18.4\%\\
+Annual cohorts, 2020--2024 & 853 / 924 / 435 / 664 / 838 & rows per year in the frozen table\\
+Entrepreneurship-track projects & 158 unique projects & re-parse of the official 2021--2024 project-type field; 74/23/26/35 by year; 53 university / 64 provincial / 41 national\\
+Identifier integrity & 3,714 unique identifiers & no duplicated project ID; no duplicated (year, normalized title) key within a year; 7 titles recurring across two years (14 rows) are separately approved continuing projects\\
+OpenAlex articles, 2020--2024 & 56,901 & retrieval-corpus rows; annual counts 9,970/10,117/12,002/11,954/12,858, summing to 56,901\\
+Auxiliary articles, 2017--2019 & 22,438 (79,339 total retrieved) & used solely to construct pre-project advisor publication windows; never enter RTAS or topic modeling\\
+Advisor-matched articles & 33,312 (58.5\%) & unique articles with a college match; 33,312/56,901 = 58.54\%; 9,608 matched articles carry more than one college; mean 1.37 colleges per matched article\\
+Project advisor-covariate status & 2,750 / 748 / 216 & matched / ambiguous / unmatched; unmatched is coded NA, never zero\\
+Individual advisors / links / co-supervised & 1,834 / 4,244 / 528 & delimiter-split advisor fields; unique (project, advisor) pairs; projects with more than one advisor\\
+Joint BERTopic corpus & 60,615 documents & 56,901 article titles plus 3,714 project titles\\
+Title language composition & 92.3\% / 99.9\% & mean Chinese-character share across project titles; 56,858 of 56,901 article titles (99.9\%) contain no Chinese characters\\
+\midrule
+\multicolumn{3}{l}{\textit{Panel B. Frozen RTAS distribution, aggregation selection, and validity}}\\
+\midrule
+RTAS coverage & 3,714 values; 0 missing & RTAS defined for every project in the frozen frame\\
+RTAS distribution & mean 0.1337; SD 0.0723 & median 0.1362; range $-0.0575$ to 0.396\\
+Aggregation-family selection & mean rule selected & chosen on the 12,000-article development pool across five mini variants (composite scores 0.742/0.480/0.447/0.398/0.300); frozen before application to the 56,901-article final corpus\\
+Human similarity validation & $\rho=0.405$; AUC 0.88 & 150 project--paper pairs; embedded scores equal the authoring reference column in 100\% of pairs; 16 relevant / 134 irrelevant; Kendall $\tau_b=0.327$; leave-one-pair-out max $|\Delta\rho|=0.018$\\
+Independent rater reliability & QWK 0.465 and 0.606 & raters A and B vs.\ first rater on 50 pairs (72\% / 78\% exact agreement); A vs.\ B: QWK 0.826, $\rho=0.821$, 90\% exact\\
+Test--retest reliability & QWK 0.643 & 40 re-rated pairs; $\rho=0.688$; 95\% exact agreement\\
+LLM second rater & QWK 0.459; $\rho=0.638$ & 150 pairs; $p=1.7\times10^{-18}$; 93.3\% exact agreement\\
+Lexical and encoder baselines & $\rho=0.296$--0.334 & TF-IDF 0.300 (AUC 0.586); character Jaccard 0.296 (0.585); BM25 0.298 (0.585); BGE-M3 0.334 (AUC 0.811); baseline AUCs are tie-aware (average ranks)\\
+BGE-M3 paired bootstrap & $\Delta\rho=-0.071$ $[-0.187,0.035]$ & $\Delta\mathrm{AUC}=-0.069$ $[-0.179,0.032]$; $B=2{,}000$ paired resamples; recomputation under the frozen seed and resampling protocol reproduces both intervals exactly\\
+Topics and defined diffusion lags & 886 clustered topics; 29 lag-definable & 29/886 = 3.27\%; 24 high-research-low-training and 5 high-research-high-training; per-topic lags rebuild identically to the frozen file\\
+\bottomrule
+\end{tabular}
+
+\vspace{1mm}
+\footnotesize Percentages, ranks, and model-based quantities were recomputed from the frozen CSVs with independent analysis code. The development-pool composite scores describe the aggregation-selection stage only (Table~2 in the main text) and are not RQ1 effect sizes.
+\end{table}
+
+% ---------------------------------------------------------
+% Table S3b — post-freeze validation robustness (outside 118-check ledger)
+% ---------------------------------------------------------
+
+\begin{table}[htbp]
+\centering
+\caption{Post-freeze validation robustness (outside the 118-check frozen provenance ledger)}
+\label{tab:postfreeze_validation}
+\begin{tabular}{p{0.30\linewidth}p{0.18\linewidth}p{0.44\linewidth}}
+\toprule
+Check & Main result & Details\\
+\midrule
+Hard-pair validation & $\rho=0.717$; AUC $=0.910$ & 174 pairs (50 cross-unit, 50 same-unit, 50 medium-similarity, 24 high-similarity); two independent raters, QWK $=0.872$, 89.1\% exact agreement; enriched sample, not population-validity estimate\\
+High-similarity stratum & AUC $=0.727$ & $n=24$; 22 related, 2 unrelated; bootstrap 95\% CI [0.364, 1.000], $B=10{,}000$; wide interval reflects small sample and sparse negatives\\
+\bottomrule
+\end{tabular}
+
+\vspace{1mm}
+\footnotesize These quantities were computed post-freeze from a newly constructed validation set and are not part of the 118-check provenance ledger. The hard-pair sample was selected based on MiniLM cosine similarity to enrich for difficult pairs; therefore $\rho$ and AUC describe challenge-set performance, not population validity.
+\end{table}
+
+% ---------------------------------------------------------
+% Table S4 — analysis estimates and similarly named statistics
+% ---------------------------------------------------------
+
+\begin{table}[H]
+\centering
+\caption{Numerical provenance ledger, Part 2: recomputed analysis estimates (RQ1, RQ3, RQ4) and statistics that share names but differ in estimand or denominator.}
+\label{tab:s4}
+\scriptsize
+\begin{tabular}{p{1.75in}p{1.15in}p{3.55in}}
+\toprule
+\textbf{Quantity} & \textbf{Canonical value} & \textbf{Basis and recomputation}\\
+\midrule
+\multicolumn{3}{l}{\textit{Panel C. Recomputed analysis estimates}}\\
+\midrule
+RQ1 tier means & .1212 / .1391 / .1460 & mean project RTAS for university / provincial / national tiers ($N=3{,}714$)\\
+RQ1 omnibus test & $F(2,3711)=35.72$ & $p=4.3\times10^{-16}$; $\eta^2=1.89\%$; bootstrap 95\% CI $[1.14\%,2.86\%]$\\
+RQ1 Tukey contrasts & $+.0179^{***}$ / $+.0248^{***}$ / $+.0070$ & provincial $-$ university; national $-$ university; national $-$ provincial ($p=0.082$)\\
+RQ1 national vs.\ university effect & Welch $t=7.375$; $d=0.352$ & $p=2.9\times10^{-13}$; pooled-variance Cohen $d$\\
+Mixed-model complete cases & 3,231 projects; 39 units & complete cases on all predictors; 483 projects excluded (117/137/56/78/95 across 2020--2024); excluded mean RTAS 0.099 vs.\ 0.139 retained\\
+Mixed-model variance components & ICC 0.7376 & unconditional-model ICC 0.7523; marginal $R^2=0.0075$; conditional $R^2=0.7395$; REML refit from frozen covariates\\
+Mixed-model fixed effects & tier coefficients non-significant & provincial $+0.00062$ ($p=0.720$); national $-0.00162$ ($p=0.452$); year $+0.00313$; prior 3-year works $+0.00427$ ($p\approx3\times10^{-9}$; exact recomputation $3.2\times10^{-9}$ vs.\ $3.3\times10^{-9}$ as printed, a rounding-level difference); prior supervision $-0.00629$\\
+Advisor-output effect size & $+0.010$ from 0 to 10 works & $0.00427\times[\log(11)-\log(1)]$ on the $\log(1+x)$ scale, about 0.14 project-level SD\\
+Leave-advisor-out sensitivity & attenuation 16.4\% & recomputed on the full 56,901-article corpus: $\beta$ $+0.00427\to+0.00357$ ($p=6.7\times10^{-7}$; 95\% CI $[0.00216,0.00497]$); ICC 0.727; conditional $R^2$ 0.729; 2,437 of 3,714 projects with removals (mean 23.6 articles; mean portfolio reduction 3.3\%); no empty portfolios\\
+Advisor-load concentration & Gini 0.746 / 0.368 & national projects per advisor (1,236 of 1,834 advisors hold zero national projects, retained in the denominator) vs.\ all distinct projects per advisor\\
+Advisor-load distribution & 818 (44.6\%) / 345 (18.8\%) & advisors with exactly one project / with four or more; mean load 2.314, median 2, maximum 10\\
+Top advisor shares & 31.0\% / 71.9\% & top 5\% of advisors (national projects); top 10\% of advisors (all projects)\\
+Advisor persistence & OR $=2.06$ / $2.45$ & consecutive active advisor--years vs.\ full prior-active advisor--year grid\\
+\bottomrule
+\end{tabular}
+
+\vspace{1mm}
+\footnotesize Percentages, ranks, and model-based quantities were recomputed from the frozen CSVs with independent analysis code. The two Gini coefficients and the two persistence odds ratios use different denominators and risk sets, respectively, and are not competing estimates.
+\end{table}
+
 \end{document}
