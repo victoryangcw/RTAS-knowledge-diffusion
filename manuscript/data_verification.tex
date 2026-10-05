@@ -87,6 +87,7 @@ Test--retest reliability & QWK 0.643 & 40 re-rated pairs; $\rho=0.688$; 95\% exa
 LLM second rater & QWK 0.459; $\rho=0.638$ & 150 pairs; $p=1.7\times10^{-18}$; 93.3\% exact agreement\\
 Lexical and encoder baselines & $\rho=0.296$--0.334 & TF-IDF 0.300 (AUC 0.586); character Jaccard 0.296 (0.585); BM25 0.298 (0.585); BGE-M3 0.334 (AUC 0.811); baseline AUCs are tie-aware (average ranks)\\
 BGE-M3 paired bootstrap & $\Delta\rho=-0.071$ $[-0.187,0.035]$ & $\Delta\mathrm{AUC}=-0.069$ $[-0.179,0.032]$; $B=2{,}000$ paired resamples; recomputation under the frozen seed and resampling protocol reproduces both intervals exactly\\
+Hard-pair validation & $\rho=0.717$; AUC 0.910 & 174 pairs (50 cross-unit, 50 same-unit, 50 medium-similarity, 24 high-similarity); QWK 0.872; 89.1\% exact agreement; high-similarity stratum AUC $=0.727$\\
 Topics and defined diffusion lags & 886 clustered topics; 29 lag-definable & 29/886 = 3.27\%; 24 high-research-low-training and 5 high-research-high-training; per-topic lags rebuild identically to the frozen file\\
 \bottomrule
 \end{tabular}

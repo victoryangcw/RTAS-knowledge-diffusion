@@ -5,6 +5,23 @@ config, data, or code that could affect downstream numbers.
 
 ---
 
+## [v1.1-postaudit-8] — 2026-10-05 — THIRTY-SIXTH ROUND: HARD-PAIR HUMAN VALIDATION ADDED
+
+Added a post-freeze hard-pair validation set (174 pairs) to address the
+class-imbalance concern in the original 150-pair C1 validation (134/150
+score 1). The new set samples from four strata (50 cross-unit, 50 same-unit,
+50 medium-similarity, 24 high-similarity) and was rated by two independent
+human raters (quadratic-weighted $\kappa=0.872$, exact agreement 89.1%).
+Embedding cosine correlated with consensus human relatedness at $\rho=0.717$
+($p<0.001$); binary discrimination yielded AUC $=0.910$. Performance remained
+robust in the hardest stratum (high-similarity pairs, AUC $=0.727$),
+confirming that the original C1 estimates were not driven by easy negative
+pairs. No change to frozen RTAS estimates or primary conclusions.
+
+- main.tex Methods Validity program: added hard-pair validation item.
+- main.tex Table 1: added hard-pair validation row.
+- data_verification.tex Table S3: added hard-pair validation row.
+
 ## [v1.1-postaudit-7] — 2026-10-05 — THIRTY-FIFTH ROUND: SEMANTIC CONSISTENCY SWEEP AFTER ROUND-33 ROBUSTNESS
 
 Round 33 added two new robustness checks (within-unit-year calibration;
