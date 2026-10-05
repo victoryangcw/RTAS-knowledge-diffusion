@@ -5,6 +5,16 @@ config, data, or code that could affect downstream numbers.
 
 ---
 
+## [v1.1-postaudit-4] — 2026-10-05 — THIRTY-SECOND ROUND: README DIRECTORY-TABLE WORDING
+
+- Root `README.md`: `03_CODE/` described as "Reproducible analysis scripts
+  01–22" -> "Analysis, sensitivity, and provenance scripts 01–22 ...; some
+  early numbered scripts are historical scaffolds", consistent with
+  `03_CODE/README.md` ("provenance and reproducibility record, not a turnkey
+  end-to-end package"). No computational or manuscript change.
+
+---
+
 ## [v1.1-postaudit-3] — 2026-10-05 — THIRTY-FIRST ROUND: PUBLIC-SURFACE SYNC (README COUNTS, MANUSCRIPT ROUNDING, ENCODING-PROTOCOL DOC)
 
 - `main.tex`: BGE delta-rho CI upper endpoint 0.036 -> 0.035 in the validity

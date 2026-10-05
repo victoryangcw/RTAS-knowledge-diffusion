@@ -22,7 +22,7 @@ The current Springer/Scientometrics LaTeX source is in `manuscript/springer_subm
 |--------|---------|
 | `01_README/` | Governance/history: original v0.2 protocol/config (retained for provenance), changelog, checksums |
 | `02_FIGURES/` | Full engineering figure set — 9 main (incl. standalone 8a/8b panels) + 5 supplementary, PDF + PNG, engineering file names |
-| `03_CODE/` | Reproducible analysis scripts 01–22 (09 in R), incl. the figure generator `10_generate_figures.py` |
+| `03_CODE/` | Analysis, sensitivity, and provenance scripts 01–22 (09 in R), incl. the figure generator `10_generate_figures.py`; some early numbered scripts are historical scaffolds — see `03_CODE/README.md` |
 | `05_VALIDATION/` | Validity-program artefacts: 150-pair rating files, rater-agreement statistics, lexical baselines, BGE-M3 benchmark |
 | `06_RESULTS/` | Frozen aggregate outputs (counts and coefficients only) + the 118-check numerical provenance ledger |
 | `manuscript/figures/` | Submission artwork: 7 main figures + 5 supplementary files/panels (S1, S2, S3a, S3b, S4), PDF + PNG |
