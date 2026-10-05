@@ -5,6 +5,21 @@ config, data, or code that could affect downstream numbers.
 
 ---
 
+## [v1.1-postaudit-5] — 2026-10-05 — THIRTY-THIRD ROUND: ADVISOR TITLE/ABSTRACT REVISION + FIGURE 4 LAYOUT
+
+- `main.tex`: revised the title and abstract following advisor feedback while retaining
+  the frozen construct definition and all audited numerical results. The new framing
+  emphasizes topic asymmetries and the limited additional role of administrative tier.
+- Added a first-mention UIETP footnote clarifying that the primary sample includes both
+  innovation-training and entrepreneurship-training/practice projects; the 158-project
+  entrepreneurship exclusion remains a sensitivity analysis rather than a primary-sample
+  restriction.
+- Synced the revised title to `ESM_1.tex` and the root `README.md`.
+- Layout-only adjustment: reduced Figure 4 from 0.78 to 0.58 text height and relaxed
+  float placement (`!htbp`), keeping the diffusion-lag figure closer to RQ2 and removing
+  the sparse spill page. No computational or statistical change.
+
+---
 ## [v1.1-postaudit-4] — 2026-10-05 — THIRTY-SECOND ROUND: README DIRECTORY-TABLE WORDING
 
 - Root `README.md`: `03_CODE/` described as "Reproducible analysis scripts
