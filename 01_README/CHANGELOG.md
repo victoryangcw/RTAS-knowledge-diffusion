@@ -5,6 +5,32 @@ config, data, or code that could affect downstream numbers.
 
 ---
 
+## [v1.1-postaudit-3] — 2026-10-05 — THIRTY-FIRST ROUND: PUBLIC-SURFACE SYNC (README COUNTS, MANUSCRIPT ROUNDING, ENCODING-PROTOCOL DOC)
+
+- `main.tex`: BGE delta-rho CI upper endpoint 0.036 -> 0.035 in the validity
+  bullet (matches frozen JSON 0.03546277, `data_verification.tex`, ledger);
+  stale unique-rank lexical-baseline AUCs 0.637-0.638 -> tie-aware
+  0.585-0.586 in the robustness bullet (round-29 correction had reached
+  Table 1 and Table S3 but not this paragraph); reproducibility claim
+  "package dependencies are archived with the analysis code" -> "required
+  Python packages are listed in the repository README" (no env file is
+  shipped; the README Quick start lists them unpinned).
+- `README.md`: 115-check/115/115 PASS -> 118/118 PASS (three places);
+  embedding bullet no longer claims in-repo regeneration ("regenerable via
+  03_embedding_models.py") — now states the canonical protocol is documented
+  there and regeneration requires the private corpus; interim CSVs likewise
+  "regenerable only with the private raw data"; milestone row
+  v1.1-postaudit-2 added.
+- `03_CODE/03_embedding_models.py`: rewritten from a stale placeholder (old
+  12K paths, pointer to a non-distributed script) into an accurate protocol
+  document — canonical encoder `paraphrase-multilingual-MiniLM-L12-v2`,
+  batch 128, L2-normalized float32, private inputs, vector row orders, and
+  the audit's row-level verification result; explicitly marked not runnable
+  in this repo.
+- No computational change; ledger unchanged (118 PASS / 0 FAIL).
+
+---
+
 ## [v1.1-postaudit-2] — 2026-10-05 — THIRTIETH ROUND: ROW-LEVEL RTAS RECONSTRUCTION + EXACT BOOTSTRAP REPLICATION + REGISTRY-ASSERTION FIX
 
 - **Row-level RTAS reconstruction added to the provenance audit (115 -> 118 checks).**

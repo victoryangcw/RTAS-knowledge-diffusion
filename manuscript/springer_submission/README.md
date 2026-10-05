@@ -9,7 +9,7 @@ This directory is an **alternate submission-format layer**. It does not replace 
 - Existing scientific results/statistics are frozen; only template/formatting changes were made.
 - The author name and correspondence e-mail remain placeholders by design.
 - ORCID to add at submission: `0009-0006-9788-3365`.
-- The 115-check numerical-provenance statement remains concise in Methods; the full ledger stays in the repository.
+- The 118-check numerical-provenance statement remains concise in Methods; the full ledger stays in the repository.
 - The AI-use disclosure is placed in Methods, following current Scientometrics guidance.
 - The build script copies the tracked vector-PDF figures to flat `Fig*.pdf` names before compilation.
 

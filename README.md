@@ -24,7 +24,7 @@ The current Springer/Scientometrics LaTeX source is in `manuscript/springer_subm
 | `02_FIGURES/` | Full engineering figure set — 9 main (incl. standalone 8a/8b panels) + 5 supplementary, PDF + PNG, engineering file names |
 | `03_CODE/` | Reproducible analysis scripts 01–22 (09 in R), incl. the figure generator `10_generate_figures.py` |
 | `05_VALIDATION/` | Validity-program artefacts: 150-pair rating files, rater-agreement statistics, lexical baselines, BGE-M3 benchmark |
-| `06_RESULTS/` | Frozen aggregate outputs (counts and coefficients only) + the 115-check numerical provenance ledger |
+| `06_RESULTS/` | Frozen aggregate outputs (counts and coefficients only) + the 118-check numerical provenance ledger |
 | `manuscript/figures/` | Submission artwork: 7 main figures + 5 supplementary files/panels (S1, S2, S3a, S3b, S4), PDF + PNG |
 | `manuscript/springer_submission/` | Current Springer Nature `sn-jnl` manuscript source, bibliography, and Online Resource 1 source |
 | `manuscript/preview/` | Historical compiled snapshots only; not canonical |
@@ -45,10 +45,10 @@ source of truth.
 ## What this repo does NOT contain
 
 - **Raw data** (56,901 OpenAlex records, the 3,714-project registry, the author-to-college lookup with personal information) — stored privately
-- **Embedding vectors** (`.npy`, 80–90 MB each; regenerable via `03_CODE/03_embedding_models.py`)
-- **Interim CSVs** — regenerable from `03_CODE/`
+- **Embedding vectors** (`.npy`, 80–90 MB each; canonical protocol documented in `03_CODE/03_embedding_models.py`, regeneration requires the private corpus)
+- **Interim CSVs** — regenerable only with the private raw data
 
-## Key numbers (post-freeze; independently verified, 115/115 PASS)
+## Key numbers (post-freeze; independently verified, 118/118 PASS)
 
 | Number | What it is |
 |--------|------------|
@@ -85,7 +85,8 @@ python 03_CODE/10_generate_figures.py
 | v0.1–v0.2 | MiniLM variant experiments; RTAS frozen (model / data / window / aggregation) — done |
 | v0.9 | Downstream analyses + manuscript + figures — done |
 | v1.0-cand.5–7 | Figure-freeze iterations; manuscript text freeze — done |
-| v1.1-postaudit | Numerical provenance audit (115/115 PASS), registry re-verification, exclude-2022 sensitivity (Table S2), final figure labels synced to manuscript terminology, monochrome S1, manuscript master on Overleaf — done |
+| v1.1-postaudit | Numerical provenance audit, registry re-verification, exclude-2022 sensitivity (Table S2), final figure labels synced to manuscript terminology, monochrome S1, manuscript master on Overleaf — done |
+| v1.1-postaudit-2 | Row-level RTAS reconstruction added to the audit (118/118 PASS; max \|ΔRTAS\| 3.5e-08), bootstrap intervals reproduced exactly, registry assertions fixed — done |
 | v1.2-final-sync | Springer submission-format source and public repository synchronized; administrative author/funding/ethics fields still pending |
 
 ## License
