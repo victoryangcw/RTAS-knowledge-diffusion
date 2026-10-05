@@ -32,7 +32,9 @@ without changing any frozen primary estimate.
   sequential table numbering S3 (frozen provenance Part 1), S4 (post-freeze
   challenge-set robustness), and S5 (frozen provenance Part 2). This
   supersedes the temporary S3b display-number convention while retaining the
-  `float` package required by the canonical `[H]` provenance tables.
+  `float` package required by the canonical `[H]` provenance tables. S5 is
+  split into a continued second panel so no rows are clipped, and the fixed
+  provenance-table column widths were tightened to stay inside the text area.
 - Conclusion and supplementary-information wording were aligned with the
   composition-sensitive topic result and the expanded Online Resource.
 - No computational change and no change to the 118-check frozen provenance
