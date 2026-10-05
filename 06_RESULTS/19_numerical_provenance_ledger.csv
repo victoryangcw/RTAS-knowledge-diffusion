@@ -1,4 +1,4 @@
-﻿section,module,reported,recomputed,match,source,formula,note
+﻿﻿section,module,reported,recomputed,match,source,formula,note
 1 corpus/linkage,projects N,3714,3714,PASS,table5_project_dataset_n3714_full.csv rows,len(rows),
 1 corpus/linkage,projects 1375/1657/682,1375/1657/682,1375/1657/682,PASS,project table groupby(level_code),count per code 1=校级/2=省级/3=国家级,
 1 corpus/linkage,project level pct,37.0/44.6/18.4,37.0/44.6/18.4,PASS,project table,100*n_k/3714,

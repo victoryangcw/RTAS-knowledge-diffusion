@@ -87,13 +87,33 @@ Test--retest reliability & QWK 0.643 & 40 re-rated pairs; $\rho=0.688$; 95\% exa
 LLM second rater & QWK 0.459; $\rho=0.638$ & 150 pairs; $p=1.7\times10^{-18}$; 93.3\% exact agreement\\
 Lexical and encoder baselines & $\rho=0.296$--0.334 & TF-IDF 0.300 (AUC 0.586); character Jaccard 0.296 (0.585); BM25 0.298 (0.585); BGE-M3 0.334 (AUC 0.811); baseline AUCs are tie-aware (average ranks)\\
 BGE-M3 paired bootstrap & $\Delta\rho=-0.071$ $[-0.187,0.035]$ & $\Delta\mathrm{AUC}=-0.069$ $[-0.179,0.032]$; $B=2{,}000$ paired resamples; recomputation under the frozen seed and resampling protocol reproduces both intervals exactly\\
-Hard-pair validation & $\rho=0.717$; AUC 0.910 & 174 pairs (50 cross-unit, 50 same-unit, 50 medium-similarity, 24 high-similarity); QWK 0.872; 89.1\% exact agreement; high-similarity stratum AUC $=0.727$\\
 Topics and defined diffusion lags & 886 clustered topics; 29 lag-definable & 29/886 = 3.27\%; 24 high-research-low-training and 5 high-research-high-training; per-topic lags rebuild identically to the frozen file\\
 \bottomrule
 \end{tabular}
 
 \vspace{1mm}
 \footnotesize Percentages, ranks, and model-based quantities were recomputed from the frozen CSVs with independent analysis code. The development-pool composite scores describe the aggregation-selection stage only (Table~2 in the main text) and are not RQ1 effect sizes.
+\end{table}
+
+% ---------------------------------------------------------
+% Table S3b — post-freeze validation robustness (outside 118-check ledger)
+% ---------------------------------------------------------
+
+\begin{table}[htbp]
+\centering
+\caption{Post-freeze validation robustness (outside the 118-check frozen provenance ledger)}
+\label{tab:postfreeze_validation}
+\begin{tabular}{p{0.30\linewidth}p{0.18\linewidth}p{0.44\linewidth}}
+\toprule
+Check & Main result & Details\\
+\midrule
+Hard-pair validation & $\rho=0.717$; AUC $=0.910$ & 174 pairs (50 cross-unit, 50 same-unit, 50 medium-similarity, 24 high-similarity); two independent raters, QWK $=0.872$, 89.1\% exact agreement; enriched sample, not population-validity estimate\\
+High-similarity stratum & AUC $=0.727$ & $n=24$; 22 related, 2 unrelated; bootstrap 95\% CI [0.364, 1.000], $B=10{,}000$; wide interval reflects small sample and sparse negatives\\
+\bottomrule
+\end{tabular}
+
+\vspace{1mm}
+\footnotesize These quantities were computed post-freeze from a newly constructed validation set and are not part of the 118-check provenance ledger. The hard-pair sample was selected based on MiniLM cosine similarity to enrich for difficult pairs; therefore $\rho$ and AUC describe challenge-set performance, not population validity.
 \end{table}
 
 % ---------------------------------------------------------

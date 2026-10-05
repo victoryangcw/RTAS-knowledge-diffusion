@@ -1,4 +1,4 @@
-﻿﻿# CHANGELOG — RTAS Final Project
+﻿﻿﻿﻿# CHANGELOG — RTAS Final Project
 
 Format: **Semantic versioning on milestones**. Each entry lists changes to protocol,
 config, data, or code that could affect downstream numbers.
@@ -13,14 +13,22 @@ score 1). The new set samples from four strata (50 cross-unit, 50 same-unit,
 50 medium-similarity, 24 high-similarity) and was rated by two independent
 human raters (quadratic-weighted $\kappa=0.872$, exact agreement 89.1%).
 Embedding cosine correlated with consensus human relatedness at $\rho=0.717$
-($p<0.001$); binary discrimination yielded AUC $=0.910$. Performance remained
-robust in the hardest stratum (high-similarity pairs, AUC $=0.727$),
-confirming that the original C1 estimates were not driven by easy negative
-pairs. No change to frozen RTAS estimates or primary conclusions.
+($p<0.001$); binary discrimination yielded AUC $=0.910$. Because the strata
+were selected based on MiniLM cosine, these values describe challenge-set
+performance rather than population validity. In the high-similarity stratum
+($n=24$; 22 related, 2 unrelated), AUC $=0.727$ with bootstrap 95\% CI
+[0.364, 1.000] ($B=10{,}000$); the wide interval reflects the small sample
+and sparse negatives, but meaningful discrimination remains even among
+deliberately enriched difficult pairs. No change to frozen RTAS estimates or
+primary conclusions.
 
-- main.tex Methods Validity program: added hard-pair validation item.
-- main.tex Table 1: added hard-pair validation row.
-- data_verification.tex Table S3: added hard-pair validation row.
+- main.tex Methods Validity program: added hard-pair validation item with
+  corrected wording (challenge-set robustness, not population validity).
+- main.tex Table 1: added hard-pair validation row (later removed to keep
+  Table 1 within the 118-check frozen scope; see Table S3b instead).
+- data_verification.tex: Table S3b created for post-freeze validation
+  robustness, explicitly marked as outside the 118-check frozen provenance
+  ledger.
 
 ## [v1.1-postaudit-7] — 2026-10-05 — THIRTY-FIFTH ROUND: SEMANTIC CONSISTENCY SWEEP AFTER ROUND-33 ROBUSTNESS
 
