@@ -237,8 +237,11 @@ Topics and defined diffusion lags & 886 clustered topics; 29 lag-definable & 29/
 
 % ---------------------------------------------------------
 % Table S3b — post-freeze validation robustness (outside 118-check ledger)
+% Preserve display number S3b without advancing the subsequent S4 number.
 % ---------------------------------------------------------
 
+\begingroup
+\renewcommand{\thetable}{S3b}
 \begin{table}[htbp]
 \centering
 \caption{Post-freeze validation robustness (outside the 118-check frozen provenance ledger)}
@@ -255,6 +258,8 @@ High-similarity stratum & AUC $=0.727$ & $n=24$; 22 related, 2 unrelated; bootst
 \vspace{1mm}
 \footnotesize These quantities were computed post-freeze from a newly constructed validation set and are not part of the 118-check provenance ledger. The hard-pair sample was selected based on MiniLM cosine similarity to enrich for difficult pairs; therefore $\rho$ and AUC describe challenge-set performance, not population validity.
 \end{table}
+\endgroup
+\addtocounter{table}{-1}
 
 % ---------------------------------------------------------
 % Table S4 — analysis estimates and similarly named statistics
