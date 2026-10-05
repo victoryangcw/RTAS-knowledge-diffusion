@@ -5,6 +5,47 @@ config, data, or code that could affect downstream numbers.
 
 ---
 
+## [v1.1-postaudit-5] — 2026-10-05 — THIRTY-THIRD ROUND: WITHIN-UNIT CALIBRATION + BALANCED BERTOPIC ROBUSTNESS + RQ2 DOWNGRADE
+
+Two new robustness checks added (mirrored as `03_CODE/23_within_unit_rtas_sensitivity.py`
+and `03_CODE/24_bertopic_balanced_sensitivity.py`); the RQ2 static quadrant
+finding is downgraded to a composition-sensitive descriptive finding.
+
+- **Within-unit-year calibration sensitivity (script 23).** RTAS re-expressed
+  as a within academic-unit x year z-score. The between-unit variance
+  component collapses to zero (ICC = 0.0000, boundary solution), confirming
+  that the high raw-RTAS ICC (0.7376) is carried almost entirely by the
+  unit-year baseline. On the standardized scale the advisor coefficients
+  remain in the same direction and significance class: pre-project
+  publications beta = +0.0938 (p = 2.2e-08), prior supervisory load beta =
+  -0.1437 (p = 2.6e-05), tier coefficients non-significant; tier ANOVA on
+  z-scored RTAS is null (F(2,3706) = 0.47, eta2 = 0.0003). Result entered in
+  main.tex (RQ3, "Within-unit-year calibration sensitivity").
+- **Balanced BERTopic composition sensitivity (script 24).** Frozen
+  UMAP+HDBSCAN protocol re-run on a 1:1 corpus (3,714 projects + 3,714
+  seed-42-sampled articles): 170 topics, outlier 35.0%. Quadrant assignment
+  under the same prevalence rules gives HRHT 9 / HRLT 26 / LRHT 32 / LRLT 103.
+  The frozen full-corpus HRLT excess (173 vs 10) does NOT persist under 1:1
+  composition and slightly reverses; the static quadrant asymmetry is
+  therefore corpus-composition dependent. The 29 lag-definable topics are
+  unaffected (all 29 lie in HRLT/HRHT in the frozen classification and none in
+  LRHT). Result entered in main.tex (RQ2 static quadrant paragraph and
+  Discussion).
+- **main.tex edits.** Title changed to "Linking Undergraduate Innovation and
+  Entrepreneurship Training Projects to Advisor-Linked Academic-Unit
+  Publication Portfolios: Cross-Lingual Alignment and the Limited Role of
+  Administrative Tier" (drops the asymmetry-forward framing and qualifies the
+  portfolio as advisor-linked). Abstract: "BERTopic identifies 173 ... and 10
+  ..." replaced with a composition-sensitive framing. RQ2 static quadrant
+  paragraph and Discussion updated to state the composition sensitivity
+  explicitly; RQ3 gained the within-unit-year calibration sensitivity
+  paragraph.
+- No change to any frozen canonical number or to the 118-check provenance
+  ledger; this round adds robustness evidence and adjusts interpretation
+  wording only.
+
+---
+
 ## [v1.1-postaudit-4] — 2026-10-05 — THIRTY-SECOND ROUND: README DIRECTORY-TABLE WORDING
 
 - Root `README.md`: `03_CODE/` described as "Reproducible analysis scripts
