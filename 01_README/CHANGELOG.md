@@ -5,6 +5,41 @@ config, data, or code that could affect downstream numbers.
 
 ---
 
+## [v1.1-postaudit-11] — 2026-10-05 — THIRTY-NINTH ROUND: PRE-SUBMISSION CONSISTENCY CLEANUP
+
+This round resolves the final consistency issues raised in the manuscript review
+without changing any frozen primary estimate.
+
+- Clarified the within-unit-year calibration denominators: standardized RTAS is
+  defined for 3,709/3,714 projects; the tier ANOVA uses those 3,709 projects
+  ($F(2,3706)$), whereas the standardized mixed model uses 3,229 complete
+  covariate cases.
+- Reframed the zero ICC under within-unit-year standardization as expected by
+  construction rather than an independent empirical finding; the substantive
+  robustness result is persistence of the advisor publication/supervision
+  associations after removing the unit-year baseline.
+- Scoped the 118-check provenance statements to the frozen audit ledger and
+  separated later robustness additions from that count. The single
+  empty-portfolio project is explicitly distinguished from the 3,713
+  non-empty portfolios reconstructed from embeddings.
+- Main-text advisor-publication significance is reported as $p<0.001$, avoiding
+  a manuscript-facing 3.2e-9/3.3e-9 implementation-detail discrepancy.
+- The validity summary now includes the post-freeze hard-pair challenge set;
+  its consensus rule is defined explicitly, and the high-similarity
+  stratum is described as a limited descriptive check given 22 related versus
+  2 unrelated pairs and the wide bootstrap interval.
+- Online Resource 1 now includes the 1--4 human-rating rubric and uses the
+  sequential table numbering S3 (frozen provenance Part 1), S4 (post-freeze
+  challenge-set robustness), and S5 (frozen provenance Part 2). This
+  supersedes the temporary S3b display-number convention while retaining the
+  `float` package required by the canonical `[H]` provenance tables.
+- Conclusion and supplementary-information wording were aligned with the
+  composition-sensitive topic result and the expanded Online Resource.
+- No computational change and no change to the 118-check frozen provenance
+  ledger.
+
+---
+
 ## [v1.1-postaudit-10] — 2026-10-05 — THIRTY-EIGHTH ROUND: ONLINE-RESOURCE PROVENANCE BLOCK EXACT-SYNC CORRECTION
 
 - Replaced the inserted Numerical provenance section in `ESM_1.tex` with the
