@@ -54,7 +54,7 @@ source of truth.
 | 56,901 | OpenAlex articles (WHU, type=article, 2020–2024); +22,438 from 2017–2019 used only for pre-project advisor covariates |
 | 33,312 (58.5%) | Articles advisor-matched to academic units; these form the RTAS reference portfolios |
 | 60,615 | Joint BERTopic corpus (56,901 + 3,714 titles) → 886 non-outlier topics |
-| 5 / 173 / 10 / 698 | Quadrant topic counts: HRHT / HRLT / LRHT / LRLT |
+| 5 / 173 / 10 / 698 | Quadrant topic counts: HRHT / HRLT / LRHT / LRLT (full joint corpus; composition-sensitive — a 1:1 paper/project balanced re-run gives 9/26/32/103, so the HRLT excess is a corpus-composition-dependent descriptive pattern, not a stable structural asymmetry) |
 | 29 (24 HRLT + 5 HRHT) | Topics with definable diffusion lags; HRLT median lag +0.5 years |
 | 0.1212 / 0.1391 / 0.1460 | Mean RTAS by administrative project tier (university / provincial / national); F(2,3711)=35.72, η²=1.89% |
 | ICC = 0.7376 | Two-level random-intercept mixed model (3,231 complete cases, 39 units) |

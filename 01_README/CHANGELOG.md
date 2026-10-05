@@ -5,6 +5,38 @@ config, data, or code that could affect downstream numbers.
 
 ---
 
+## [v1.1-postaudit-7] — 2026-10-05 — THIRTY-FIFTH ROUND: SEMANTIC CONSISTENCY SWEEP AFTER ROUND-33 ROBUSTNESS
+
+Round 33 added two new robustness checks (within-unit-year calibration;
+balanced BERTopic composition sensitivity) and downgraded the static quadrant
+finding. This round folds those results fully into the surrounding prose so
+that Methods, Discussion, the abstract, and the public surfaces no longer
+contradict the new evidence. No computational change; the 118-check ledger is
+unchanged.
+
+- Methods RQ2: registered the balanced-corpus composition sensitivity
+  (1:1 paper/project, seed 42, same UMAP+HDBSCAN protocol).
+- Methods RQ3: registered the within-unit-year z-score calibration
+  sensitivity.
+- Discussion opening: the "three quarters of variance lies between academic
+  units" claim is reframed as a raw-RTAS unit-year baseline property that the
+  within-unit-year calibration absorbs (between-unit variance collapses to
+  zero), with the advisor associations noted to persist after that baseline
+  is removed.
+- Abstract: "Alignment varies substantially across academic units" replaced
+  with "Raw RTAS varies substantially across academic units, while
+  within-unit-year standardization removes the between-unit component without
+  eliminating the advisor associations."
+- data_verification.tex: the robustness-suite summary no longer states "no
+  conclusion changing sign or significance classification" unconditionally;
+  it now limits that claim to primary regression conclusions and states that
+  the static topic-quadrant asymmetry proved composition-sensitive and was
+  downgraded to a descriptive finding.
+- README key-numbers table: the 5/173/10/698 quadrant row now carries the
+  composition caveat (1:1 re-run = 9/26/32/103).
+
+---
+
 ## [v1.1-postaudit-5] — 2026-10-05 — THIRTY-THIRD ROUND: WITHIN-UNIT CALIBRATION + BALANCED BERTOPIC ROBUSTNESS + RQ2 DOWNGRADE
 
 Two new robustness checks added (mirrored as `03_CODE/23_within_unit_rtas_sensitivity.py`
