@@ -281,13 +281,24 @@ Advisor-output effect size & $+0.010$ from 0 to 10 works & $0.00427\times[\log(1
 Leave-advisor-out sensitivity & attenuation 16.4\% & recomputed on the full 56,901-article corpus: $\beta$ $+0.00427\to+0.00357$ ($p=6.7\times10^{-7}$; 95\% CI $[0.00216,0.00497]$); ICC 0.727; conditional $R^2$ 0.729; 2,437 of 3,714 projects with removals (mean 23.6 articles; mean portfolio reduction 3.3\%); no empty portfolios\\
 Advisor-load concentration & Gini 0.746 / 0.368 & national projects per advisor (1,236 of 1,834 advisors hold zero national projects, retained in the denominator) vs.\ all distinct projects per advisor\\
 Advisor-load distribution & 818 (44.6\%) / 345 (18.8\%) & advisors with exactly one project / with four or more; mean load 2.314, median 2, maximum 10\\
-Top advisor shares & 31.0\% / 71.9\% & top 5\% of advisors (national projects); top 10\% of advisors (all projects)\\
-Advisor persistence & OR $=2.06$ / $2.45$ & consecutive active advisor--years vs.\ full prior-active advisor--year grid\\
+Top-advisor shares & 31.0\% / 71.9\% & top 5\% = 92 advisors ($\lceil 0.05\times1{,}834\rceil$) hold 31.0\% of national projects; top 20\% = 366 advisors ($\lfloor 0.20\times1{,}834\rfloor$) hold 71.9\% of national projects\\
+Top-advisor project exposure & 560 of 3,714 projects & projects with at least one top-5\% advisor; mean difference vs.\ other projects: Cohen $d=0.083$, Welch $p=0.065$\\
+Persistence in national awards & OR 2.06 $[1.53,2.76]$ & consecutive active advisor--year risk set: 979 cells, 627 advisors; advisor-clustered logit with year fixed effects\\
+Persistence, full-grid specification & OR 2.45 $[1.91,3.16]$ & full prior-active advisor--year grid: 2,469 cells, 1,560 advisors; alternative risk set, not a competing estimate\\
+\midrule
+\multicolumn{3}{l}{\textit{Panel D. Similarly named statistics that are different estimands}}\\
+\midrule
+$\eta^2=1.89\%$ vs.\ aggregation $\eta^2$ & different populations & RQ1 project-level ANOVA ($N=3{,}714$) vs.\ the $\eta^2$ component of the development-pool aggregation composite (12,000-article pool; selection metric)\\
+ICC 0.7376 vs.\ 0.7523 vs.\ $\eta^2=66.90\%$ & three variance quantities & full conditional mixed model vs.\ unconditional means model vs.\ descriptive one-way college ANOVA\\
+Colleges: 40 vs.\ 39 vs.\ 39 & different sample rules & frame units vs.\ descriptive ANOVA units (the single-project unit supplies no within-group variance) vs.\ complete-case mixed-model units (same unit: one project, missing advisor covariate)\\
+Gini 0.746 vs.\ 0.368 & different outcomes & national-project concentration with zero-national advisors included vs.\ all-project concentration\\
+OR 2.06 vs.\ 2.45 & different risk sets & consecutive active advisor--years vs.\ full prior-active advisor--year grid\\
+56,901 / 33,312 / 60,615 / 22,438 / 79,339 & five article pools & retrieval corpus / advisor-matched portfolio corpus / joint BERTopic corpus / auxiliary 2017--2019 window / union of retrieved pools; never interchangeable\\
 \bottomrule
 \end{tabular}
 
 \vspace{1mm}
-\footnotesize Percentages, ranks, and model-based quantities were recomputed from the frozen CSVs with independent analysis code. The two Gini coefficients and the two persistence odds ratios use different denominators and risk sets, respectively, and are not competing estimates.
+\footnotesize All estimates were rebuilt from the frozen project, article, linkage, and edge tables. The two threshold headcounts follow the pre-registered rounding convention for each analysis ($\lceil\cdot\rceil$ for the top-5\% group, $\lfloor\cdot\rfloor$ for the top-20\% group). $^{***}p<0.001$.
 \end{table}
 
 \end{document}
