@@ -5,6 +5,18 @@ config, data, or code that could affect downstream numbers.
 
 ---
 
+## [v1.1-postaudit-12] — 2026-10-06 — FORTIETH ROUND: ABSTRACT LENGTH COMPLIANCE
+
+- Compressed the manuscript abstract to approximately 240 words while
+  preserving the core corpus counts, validation result, within-unit-year
+  robustness framing, composition-sensitive topic result, advisor
+  associations, administrative-tier null, and RQ4 concentration/persistence
+  result.
+- This change targets the Scientometrics 150--250-word abstract requirement
+  and does not change any analysis, estimate, or interpretation.
+
+---
+
 ## [v1.1-postaudit-11] — 2026-10-05 — THIRTY-NINTH ROUND: PRE-SUBMISSION CONSISTENCY CLEANUP
 
 This round resolves the final consistency issues raised in the manuscript review
