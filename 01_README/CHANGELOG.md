@@ -5,6 +5,16 @@ config, data, or code that could affect downstream numbers.
 
 ---
 
+## [v1.1-postaudit-13] — 2026-10-06 — FORTY-FIRST ROUND: CORRESPONDING-AUTHOR METADATA
+
+- Set Chengwu Yang as first author and Yangge Tian as corresponding author.
+- Corresponding-author e-mail: `tiandebox@whu.edu.cn`.
+- Chengwu Yang ORCID remains `0009-0006-9788-3365` for linkage in the
+  Springer submission system and is shown in Online Resource 1.
+- No scientific or analytical change.
+
+---
+
 ## [v1.1-postaudit-12] — 2026-10-06 — FORTIETH ROUND: ABSTRACT LENGTH COMPLIANCE
 
 - Compressed the manuscript abstract to approximately 240 words while
