@@ -1,0 +1,73 @@
+Leave-Advisor-Out RTAS Sensitivity Analysis
+============================================================
+
+Valid pairs: 3713
+RTAS_orig: mean=0.1338 SD=0.0723
+RTAS_LOO:  mean=0.1322 SD=0.0714
+Pearson r=0.9974, Spearman rho=0.9974
+diff (LOO-orig): mean=-0.001558 SD=0.005210
+
+Portfolio reduction:
+  projects with >=1 paper removed: 2437
+  projects with empty LOO portfolio: 0
+  mean n_removed: 23.63
+  mean pct_removed: 3.27%
+
+
+--- HLM Primary (RTAS_orig) ---
+             Mixed Linear Model Regression Results
+================================================================
+Model:               MixedLM    Dependent Variable:    rtas     
+No. Observations:    3231       Method:                REML     
+No. Groups:          39         Scale:                 0.0018   
+Min. group size:     5          Log-Likelihood:        5532.7910
+Max. group size:     291        Converged:             Yes      
+Mean group size:     82.8                                       
+----------------------------------------------------------------
+                      Coef.  Std.Err.   z    P>|z| [0.025 0.975]
+----------------------------------------------------------------
+Intercept              0.135    0.011 11.781 0.000  0.113  0.158
+is_provincial          0.001    0.002  0.358 0.720 -0.003  0.004
+is_national           -0.002    0.002 -0.753 0.452 -0.006  0.003
+year_centered          0.003    0.001  4.876 0.000  0.002  0.004
+log_prior3y            0.004    0.001  5.921 0.000  0.003  0.006
+log_prior_supervision -0.006    0.001 -4.281 0.000 -0.009 -0.003
+Group Var              0.005    0.028                           
+================================================================
+
+n=3231, ICC=0.7376, marginal R2=0.0075, conditional R2=0.7395
+
+
+--- HLM LOO (RTAS_leave_advisor_out) ---
+             Mixed Linear Model Regression Results
+================================================================
+Model:               MixedLM    Dependent Variable:    rtas_loo 
+No. Observations:    3231       Method:                REML     
+No. Groups:          39         Scale:                 0.0017   
+Min. group size:     5          Log-Likelihood:        5547.5770
+Max. group size:     291        Converged:             Yes      
+Mean group size:     82.8                                       
+----------------------------------------------------------------
+                      Coef.  Std.Err.   z    P>|z| [0.025 0.975]
+----------------------------------------------------------------
+Intercept              0.134    0.011 12.031 0.000  0.112  0.156
+is_provincial          0.000    0.002  0.290 0.772 -0.003  0.004
+is_national           -0.002    0.002 -0.891 0.373 -0.006  0.002
+year_centered          0.003    0.001  5.132 0.000  0.002  0.005
+log_prior3y            0.004    0.001  4.971 0.000  0.002  0.005
+log_prior_supervision -0.007    0.001 -4.462 0.000 -0.009 -0.004
+Group Var              0.005    0.026                           
+================================================================
+
+n=3231, ICC=0.7268, marginal R2=0.0068, conditional R2=0.7287
+
+
+--- Coefficient Comparison ---
+                 term  coef_primary  se_primary  p_primary  ci_low_primary  ci_high_primary stars_primary  coef_loo   se_loo    p_loo  ci_low_loo  ci_high_loo stars_loo  delta_coef
+            Group Var      2.810806    0.664852   0.000024        1.507720         4.113891           ***  2.660988 0.629390 0.000024    1.427406     3.894571       ***   -0.149818
+            Intercept      0.135360    0.011490   0.000000        0.112841         0.157880           ***  0.134075 0.011144 0.000000    0.112233     0.155917       ***   -0.001285
+          is_national     -0.001624    0.002158   0.451680       -0.005853         0.002605            ns -0.001915 0.002149 0.372779   -0.006126     0.002296        ns   -0.000291
+        is_provincial      0.000615    0.001717   0.720038       -0.002749         0.003980            ns  0.000496 0.001709 0.771568   -0.002854     0.003847        ns   -0.000119
+          log_prior3y      0.004266    0.000720   0.000000        0.002854         0.005678           ***  0.003566 0.000717 0.000001    0.002160     0.004972       ***   -0.000700
+log_prior_supervision     -0.006287    0.001469   0.000019       -0.009166        -0.003409           *** -0.006527 0.001463 0.000008   -0.009393    -0.003660       ***   -0.000239
+        year_centered      0.003132    0.000642   0.000001        0.001873         0.004391           ***  0.003282 0.000640 0.000000    0.002029     0.004536       ***    0.000151

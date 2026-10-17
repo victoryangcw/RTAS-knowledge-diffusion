@@ -1,0 +1,6 @@
+﻿stat,value,note
+n_pairs,40.0,"40-pair test-retest, same rater, ~12-day washout, blinded/reshuffled"
+test_retest_quadratic_weighted_kappa,0.6428571428571428,intra-rater first-round vs retest
+test_retest_spearman_rho,0.6882472016116853,intra-rater rank agreement
+test_retest_spearman_p,9.199645987039172e-07,asymptotic p-value
+test_retest_exact_agreement,0.95,share of identical 1-4 scores

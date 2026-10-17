@@ -1,0 +1,28 @@
+name: One-time Actions artifact purge
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  actions: write
+
+jobs:
+  purge:
+    if: contains(github.event.head_commit.message, '[artifact-purge]')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Delete all prior workflow runs and artifacts
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          current_run="${{ github.run_id }}"
+          gh api --paginate "/repos/${GITHUB_REPOSITORY}/actions/runs?per_page=100" --jq '.workflow_runs[].id' |
+          while IFS= read -r run_id; do
+            if [ "$run_id" != "$current_run" ]; then
+              gh api --method DELETE "/repos/${GITHUB_REPOSITORY}/actions/runs/$run_id" || true
+            fi
+          done

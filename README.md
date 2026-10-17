@@ -1,0 +1,91 @@
+# RTAS: Research–Training Alignment Score
+
+Public reproducibility repository for the study:
+
+> **Linking Undergraduate Innovation and Entrepreneurship Training Projects to Advisor-Linked Academic-Unit Publication Portfolios: Cross-Lingual Alignment and the Limited Role of Administrative Tier**
+
+RTAS is the mean cosine similarity between a student project-title embedding and
+the unique OpenAlex articles assigned to the same academic unit through
+advisor–author linkage. Project titles are predominantly Chinese whereas nearly
+all indexed article titles contain no Chinese characters, so the measure relies
+on cross-lingual sentence embeddings
+(`paraphrase-multilingual-MiniLM-L12-v2`). RTAS indexes semantic alignment, not
+training quality; all estimates are observational.
+
+The current canonical Springer/Scientometrics LaTeX source is in `manuscript/springer_submission/`. The tracked source and figures are the source of truth; generated PDFs are build artefacts.
+
+## Repository map
+
+| Folder | Content |
+|--------|---------|
+| `01_README/` | Governance and provenance: protocol/config records, changelog, checksums |
+| `02_FIGURES/` | Full engineering figure set — 9 main (incl. standalone 8a/8b panels) + 5 supplementary, PDF + PNG, engineering file names |
+| `03_CODE/` | Analysis, sensitivity, and provenance scripts 01–24 (09 in R), incl. the figure generator `10_generate_figures.py`; some early numbered scripts are historical scaffolds — see `03_CODE/README.md` |
+| `05_VALIDATION/` | Title-redacted pairwise rating/similarity tables, rater-agreement statistics, lexical-baseline and BGE-M3 results, and anonymized hard-pair challenge-set artefacts |
+| `06_RESULTS/` | Frozen aggregate outputs (counts and coefficients only) + the 118-check numerical provenance ledger |
+| `manuscript/figures/` | Submission artwork: 7 main figures + 5 supplementary files/panels (S1, S2, S3a, S3b, S4), PDF + PNG |
+| `manuscript/springer_submission/` | Current Springer Nature `sn-jnl` manuscript source, bibliography, and Online Resource 1 source |
+| `manuscript/data_verification.tex` | Canonical numerical-provenance fragment mirrored into Online Resource 1: Tables S3 and S5 are the frozen 118-check ledger, while Table S4 is post-freeze challenge-set robustness |
+
+The canonical submission-format LaTeX source is mirrored in `manuscript/springer_submission/`; the submission figure set and verification fragment are tracked in this repository. Author order and corresponding-author metadata are filled for Chengwu Yang, Yufan Zhou, Bing Lu, Jianguang Tu, Xiaolei Li, and corresponding author Yangge Tian. The applicable ethics/IRB determination and final author-contribution statements remain to be completed before journal submission; funding is already listed in the manuscript.
+
+### Current canonical sources
+
+For **current post-audit numbers**, use `06_RESULTS/19_numerical_provenance_ledger.csv`
+and `manuscript/data_verification.tex`. The files
+`01_README/FINAL_ANALYSIS_PROTOCOL.md` and `01_README/final_config.yaml` are the
+historical v0.2 freeze records. They are retained for provenance and contain
+superseded first-batch/pre-audit values; they are **not** the current numerical
+source of truth.
+
+## What this repo does NOT contain
+
+- **Raw data** (56,901 OpenAlex records, the 3,714-project registry, and the advisor-to-unit lookup containing personal information) — stored privately
+- **Original validation text pairs** — public validation files use `PAIR_###` / `ARTICLE_###` placeholders; the title-to-pair mapping remains private
+- **Embedding vectors** (`.npy`, 80–90 MB each; canonical protocol documented in `03_CODE/03_embedding_models.py`, regeneration requires the private corpus)
+- **Interim CSVs** — regenerable only with the private raw data
+
+## Key numbers (post-freeze; independently verified, 118/118 PASS)
+
+| Number | What it is |
+|--------|------------|
+| 3,714 | UIETP projects, 2020–2024 (1,375 university / 1,657 provincial / 682 national); official 2021–2024 type labels identify 158 entrepreneurship-track projects, while 2020 type labels are unavailable |
+| 56,901 | OpenAlex articles (WHU, type=article, 2020–2024); +22,438 from 2017–2019 used only for pre-project advisor covariates |
+| 33,312 (58.5%) | Articles advisor-matched to academic units; these form the RTAS reference portfolios |
+| 60,615 | Joint BERTopic corpus (56,901 + 3,714 titles) → 886 non-outlier topics |
+| 5 / 173 / 10 / 698 | Quadrant topic counts: HRHT / HRLT / LRHT / LRLT (full joint corpus; composition-sensitive — a 1:1 paper/project balanced re-run gives 9/26/32/103, so the HRLT excess is a corpus-composition-dependent descriptive pattern, not a stable structural asymmetry) |
+| 29 (24 HRLT + 5 HRHT) | Topics with definable diffusion lags; HRLT median lag +0.5 years |
+| 0.1212 / 0.1391 / 0.1460 | Mean RTAS by administrative project tier (university / provincial / national); F(2,3711)=35.72, η²=1.89% |
+| ICC = 0.7376 | Two-level random-intercept mixed model (3,231 complete cases, 39 units) |
+| +0.0043 / −0.0063 | Advisor pre-project publications (3 y) / prior supervisory load (both p < 0.001) |
+| Gini = 0.746; top-5% share = 31.0% | National-project concentration across 1,834 advisors |
+| OR = 2.06 [1.53, 2.76] | Lagged national-project persistence (2.45 [1.91, 3.16] under the full-grid risk set) |
+| ρ = 0.405; AUC = 0.880 | Embedding-level pairwise validity (150 pairs) |
+
+Note: "12,000" = superseded first-batch development pool (aggregation selection
+only); "35,721" = label-frequency sum, not a paper count.
+
+## Quick start
+
+```bash
+# Install dependencies
+pip install pandas numpy matplotlib scipy statsmodels sentence-transformers bertopic
+
+# Regenerate all figures from the frozen CSVs (requires private data access)
+python 03_CODE/10_generate_figures.py
+```
+
+## Milestones
+
+| Version | Status |
+|---------|--------|
+| v0.1–v0.2 | MiniLM variant experiments; RTAS frozen (model / data / window / aggregation) — done |
+| v0.9 | Downstream analyses + manuscript + figures — done |
+| v1.0-cand.5–7 | Figure-freeze iterations; manuscript text freeze — done |
+| v1.1-postaudit | Numerical provenance audit, registry re-verification, exclude-2022 sensitivity (Table S2), final figure labels synced to manuscript terminology, monochrome S1, manuscript master on Overleaf — done |
+| v1.1-postaudit-2 | Row-level RTAS reconstruction added to the audit (118/118 PASS; max \|ΔRTAS\| 3.5e-08), bootstrap intervals reproduced exactly, registry assertions fixed — done |
+| v1.2-final-sync | Springer submission-format source and public repository synchronized; ethics/IRB determination and final author-contribution confirmations still pending |
+
+## License
+
+CC BY-NC-SA 4.0 (code); figures/data under the project protocol (see `01_README/`).

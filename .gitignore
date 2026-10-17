@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Editor
+.vscode/
+.idea/
+
+# Credentials and local secrets
+.env
+.env.*
+!.env.example
+.openai_key
+.deepseek_key
+
+# Private study inputs / local intermediate outputs (never commit)
+/01_DATA/
+/02_RTAS_MODEL_SELECTION/
+/03_FINAL_ANALYSIS/
+/04_TOPIC_MODELING/
+/05_FINAL_FIGURES/
+*.xls
+*.xlsx
+*.npy
+*.tmp
+*.bak
+
+# Public repository should contain only reviewed code, figures,
+# manuscript sources, governance documents, and non-identifying outputs.
