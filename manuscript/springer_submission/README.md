@@ -9,7 +9,7 @@ This directory contains the **canonical current Springer Nature submission-forma
 - Existing scientific results/statistics are frozen; only template/formatting changes were made.
 - Author metadata is filled: Chengwu Yang (first author) and Yangge Tian (corresponding author, `tiandebox@whu.edu.cn`).
 - Chengwu Yang ORCID to link in the submission system: `0009-0006-9788-3365`.
-- The 118-check numerical-provenance statement remains concise in Methods; the full ledger stays in the repository.
+- The 123-check numerical-provenance statement remains concise in Methods; the full ledger stays in the repository.
 - The AI-use disclosure is placed in Methods, following current Scientometrics guidance.
 - The build script copies the tracked vector-PDF figures to flat `Fig*.pdf` names before compilation.
 

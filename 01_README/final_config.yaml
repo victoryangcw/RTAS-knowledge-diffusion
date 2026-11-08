@@ -25,9 +25,10 @@ data:
   projects_year_min: 2020
   projects_year_max: 2024
   colleges_total: 40
-  colleges_in_hlm_substrate: 40   # v0.9.1: intl college has matched papers in 57K corpus (n=1 project)
+  colleges_in_hlm_substrate: 39   # 40 registered units; one (n=1 project) has no corpus papers -> no defined RTAS
   supervisors_unique: 1940
-  supervisors_hlm_valid: 1926     # after excluding NaN-RTAS rows
+  supervisors_valid_rtas: 1939    # unique advisor strings among the 3,713 projects with a defined RTAS
+  supervisors_hlm_complete: 1701  # unique advisor strings among the 3,231 mixed-model complete cases
   openalex_papers_unique: 56901       # full unique paper corpus (all on disk)
   openalex_topic_freq_sum: 35721     # topic assignments in 12K legacy file (superseded)
   openalex_papers_matched_pct: 58.5   # % matched to >=1 college (57K corpus)
@@ -206,12 +207,12 @@ visualization:
 canonical_numbers:
   n_projects: 3714
   n_supervisors: 1940
-  n_supervisors_hlm: 1926
+  n_supervisors_hlm: 1701   # unique advisors in the 3,231 complete-case HLM sample (was 1926 pre-v2)
   n_colleges_total: 40
-  n_colleges_hlm: 40       # v0.9.1: intl college has valid RTAS in 57K corpus
-  top5pct_supervisors: 97
-  gini_coefficient: 0.767
-  top5pct_national_project_share_pct: 34.0
+  n_colleges_hlm: 39       # 40 registered units; the single-project unit has an empty reference portfolio (RTAS undefined)
+  top5pct_supervisors: 92
+  gini_coefficient: 0.745826
+  top5pct_national_project_share_pct: 31.0
   anova_df_college_between: 38
   anova_df_within: 3674    # 3713 rows (intl college n=1 excluded by n>=2 rule) - 39 groups. Same value as pre-57K by coincidence.
   rtas_primary_c1_human_spearman: 0.405
