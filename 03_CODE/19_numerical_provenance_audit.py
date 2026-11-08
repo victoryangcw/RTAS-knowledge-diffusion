@@ -17,6 +17,7 @@ Sections follow the agreed audit order:
 """
 import re
 import json
+import os
 from pathlib import Path
 
 import numpy as np
@@ -31,6 +32,14 @@ FIN = ROOT / "03_FINAL_ANALYSIS"
 PASS, FAIL, SKIP = "OK  ", "XX  ", "SKIP"
 results = []
 current_section = ""
+
+# The single empty-portfolio project is anonymized as EP-0001 in all public
+# artifacts. Its real registry id is never stored in this public file; the
+# internal audit mode (RTAS_AUDIT_INTERNAL=1 plus RTAS_EMPTY_PORTFOLIO_PID)
+# re-checks the true id and writes an internal ledger that retains it.
+INTERNAL = os.environ.get("RTAS_AUDIT_INTERNAL") == "1"
+EMPTY_PID = int(os.environ["RTAS_EMPTY_PORTFOLIO_PID"]) if INTERNAL else None
+EMPTY_LABEL = f"id {EMPTY_PID}" if INTERNAL else "EP-0001 (anonymized)"
 
 
 def record(module, reported, recomputed, ok, source, formula, note="", status=None):
@@ -457,7 +466,7 @@ def audit_rtas():
     record("RTAS defined N", 3713, int(r.notna().sum()), int(r.notna().sum()) == 3713,
            "project table rtas column (v2: empty portfolio -> NaN)", "non-null rows")
     record("RTAS undefined N", 1, int(r.isna().sum()), int(r.isna().sum()) == 1,
-           "same", "NaN count (empty_portfolio project 3832)")
+           "same", f"NaN count (empty_portfolio project {EMPTY_LABEL})")
     for name, val, got, tol in [
         ("RTAS mean", 0.1338, r.mean(), 0.00011),
         ("RTAS SD (ddof=0)", 0.0723, r.std(ddof=0), 0.00011),
@@ -540,15 +549,18 @@ def audit_rtas():
            "float32 storage ULP ~3e-8; identical aggregation to recompute_full.py")
     pid_empty = [int(p.iloc[i]["project_id"]) for i in empty]
     zero_sens_empty = p["rtas_zero_sensitivity"].values[empty].tolist()
+    pid_label = pid_empty if INTERNAL else [EMPTY_LABEL] * len(pid_empty)
+    id_ok = (pid_empty == [EMPTY_PID]) if INTERNAL else (len(pid_empty) == 1)
     record("RTAS empty-portfolio convention",
-           "1 project (id 3832): rtas=NaN; rtas_zero_sensitivity=0.0",
-           f"empty rows={empty} project_ids={pid_empty} rtas={fr[empty].tolist()} "
+           f"1 project ({EMPTY_LABEL}): rtas=NaN; rtas_zero_sensitivity=0.0",
+           f"empty rows={empty} project_ids={pid_label} rtas={fr[empty].tolist()} "
            f"zero_sens={zero_sens_empty}",
-           pid_empty == [3832] and len(fr[empty]) == 1
+           id_ok and len(fr[empty]) == 1
            and bool(np.isnan(fr[empty]).all()) and zero_sens_empty == [0.0],
            "project table rtas / rtas_zero_sensitivity columns",
            "empty portfolio -> NaN in `rtas` (excluded from HLM n=3231); "
-           "0.0 only in `rtas_zero_sensitivity` full-frame sensitivity")
+           "0.0 only in `rtas_zero_sensitivity` full-frame sensitivity; "
+           "project id shown as EP-0001 in public artifacts")
 
 
 # ----------------------------------------------------------------------
@@ -990,7 +1002,8 @@ if __name__ == "__main__":
     # ---- provenance ledger deliverable ----
     led = pd.DataFrame(results)[["section", "module", "reported", "recomputed",
                                  "match", "source", "formula", "note"]]
-    led_path = ROOT / "06_CODE" / "19_numerical_provenance_ledger.csv"
+    led_path = Path(os.environ.get("RTAS_AUDIT_LEDGER_OUT",
+                                   ROOT / "06_CODE" / "19_numerical_provenance_ledger.csv"))
     led.to_csv(led_path, index=False, encoding="utf-8-sig")
     print(f"Ledger written: {led_path}")
 

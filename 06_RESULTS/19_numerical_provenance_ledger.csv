@@ -22,7 +22,7 @@
 2 aggregation/RTAS,composite centroid,0.3,0.3,PASS,rtas_model_selection.csv (5 mini variants),0.45*norm(eta2)+0.30*norm(stability)+0.25*norm(C3),
 2 aggregation/RTAS,composite winner,mean,mean,PASS,same table,argmax composite,
 2 aggregation/RTAS,RTAS defined N,3713,3713,PASS,project table rtas column (v2: empty portfolio -> NaN),non-null rows,
-2 aggregation/RTAS,RTAS undefined N,1,1,PASS,same,NaN count (empty_portfolio project 3832),
+2 aggregation/RTAS,RTAS undefined N,1,1,PASS,same,NaN count (empty_portfolio project EP-0001 (anonymized)),
 2 aggregation/RTAS,RTAS mean,0.1338,0.1338,PASS,"final full-corpus rtas (56,901 substrate), 3,713 defined",describe() (NaN excluded),SD uses ddof=0 (frozen analysis convention)
 2 aggregation/RTAS,RTAS SD (ddof=0),0.0723,0.0723,PASS,"final full-corpus rtas (56,901 substrate), 3,713 defined",describe() (NaN excluded),SD uses ddof=0 (frozen analysis convention)
 2 aggregation/RTAS,RTAS median,0.1362,0.1362,PASS,"final full-corpus rtas (56,901 substrate), 3,713 defined",describe() (NaN excluded),SD uses ddof=0 (frozen analysis convention)
@@ -33,7 +33,7 @@
 2 aggregation/RTAS,0->10 pubs RTAS effect,+0.010 (~0.14 SD),0.01023 / 0.142 SD,PASS,beta_log_prior3y=0.004266 x [log(11)-log(1)],"linear shift on log(1+x) scale, divided by SD .0723 (ddof=0)",
 2 aggregation/RTAS,RTAS embedding row alignment,project & paper rows aligned,"proj(project_id/year/college)=True; paper(work_id)=True; shapes paper=(56901, 384) proj=(3714, 384)",PASS,embedding npy rows vs table5 / paper-college-map / raw paper csv,exact ordered identity on keys,
 2 aggregation/RTAS,RTAS row-level reconstruction max|delta|,"<1e-6 across 3,713 projects",max=3.46e-08; mean|d|=5.32e-09; n within 1e-6 = 3713/3713,PASS,"independent rebuild: mean cos over cumulative [2020,t] matched portfolio",float32 storage ULP ~3e-8; identical aggregation to recompute_full.py,
-2 aggregation/RTAS,RTAS empty-portfolio convention,1 project (id 3832): rtas=NaN; rtas_zero_sensitivity=0.0,empty rows=[3673] project_ids=[3832] rtas=[nan] zero_sens=[0.0],PASS,project table rtas / rtas_zero_sensitivity columns,empty portfolio -> NaN in `rtas` (excluded from HLM n=3231); 0.0 only in `rtas_zero_sensitivity` full-frame sensitivity,
+2 aggregation/RTAS,RTAS empty-portfolio convention,1 project (EP-0001 (anonymized)): rtas=NaN; rtas_zero_sensitivity=0.0,empty rows=[3673] project_ids=['EP-0001 (anonymized)'] rtas=[nan] zero_sens=[0.0],PASS,project table rtas / rtas_zero_sensitivity columns,empty portfolio -> NaN in `rtas` (excluded from HLM n=3231); 0.0 only in `rtas_zero_sensitivity` full-frame sensitivity; project id shown as EP-0001 in public artifacts,
 3 validation,C1 reference == cos-file human_score,100%,100.0%,PASS,150pairs annotations vs cos file,column equality,
 3 validation,C1 Spearman rho,0.405,0.4055,PASS,annotator1_score vs cos_mini (n=150),scipy spearmanr,
 3 validation,C1 Spearman p,2.64e-7,2.641e-07,PASS,same,asymptotic p,
