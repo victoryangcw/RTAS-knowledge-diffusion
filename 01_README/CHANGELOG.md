@@ -5,6 +5,25 @@ config, data, or code that could affect downstream numbers.
 
 ---
 
+## [v1.1-postaudit-19] — 2026-11-08 — RQ4 LOAD COVARIATE DEFINITION CLARIFIED
+
+Wording only; no analysis, number, table, figure, or ledger change. The RQ4
+lagged logistic model's `load_{t-1}` was previously named but not defined,
+while the RQ3 mixed model defines a same-named "prior supervisory load" as a
+cumulative count (year < t). The RQ4 covariate is the per-year count
+(`n_projects` shifted one grid year in `_build_individual.py`), not cumulative
+history.
+
+- main.tex, RQ4 methods: added the in-line definition "where `load_{t-1}` is
+  the number of registered projects supervised in year `t-1` alone (not
+  cumulative supervision history)".
+- Verified against `03_FINAL_ANALYSIS/matthew_effect/_build_individual.py`
+  (full advisor x year grid, `groupby(advisor)['n_projects'].shift(1)`,
+  missing cells zero-filled) and against the audited risk-set sizes
+  (979/627; 2,469/1,560). RQ3's cumulative definition is unchanged.
+
+---
+
 ## [v1.1-postaudit-18] — 2026-11-08 — FIGURE SYNC TO THE V2 DUAL-CONVENTION DATASET
 
 Figure-content update driven by the v2 dataset convention (empty-portfolio
