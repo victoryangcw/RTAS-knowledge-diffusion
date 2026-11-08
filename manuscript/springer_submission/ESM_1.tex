@@ -98,7 +98,7 @@ Chengwu Yang ORCID: 0009-0006-9788-3365
 % Table S1
 % ---------------------------------------------------------
 
-The official 2021--2024 approval lists classify projects as innovation training or entrepreneurship training/practice. Matching on (year, normalized title) identifies 158 unique entrepreneurship projects inside the frozen 3,714-row dataset (4.3\%; 74/23/26/35 across 2021--2024; 53 university-, 64 provincial-, and 41 national-level). These projects have lower alignment than the remaining 3,556 projects: mean RTAS $=0.100$ (SD $=0.053$) versus $0.135$ (SD $=0.073$); Welch $t=-7.90$, $p<0.001$, Cohen $d=-0.49$ (pooled SD). Table~S1 re-estimates the frozen random-intercept specification (REML, clustered by academic unit, covariates taken from the frozen dataset unchanged) after excluding these 158 projects: the complete-case sample falls from 3,231 to 3,085 projects, ICC changes from 0.7376 to 0.7373, every coefficient retains its sign and significance classification, and the administrative-tier indicators remain non-significant. The 2020 cohort is retained in both fits because no type-labeled official registry exists for that year.
+The official 2021--2024 approval lists classify projects as innovation training or entrepreneurship training/practice. Matching on (year, normalized title) identifies 158 unique entrepreneurship projects inside the frozen 3,714-row dataset (4.3\%; 74/23/26/35 across 2021--2024; 53 university-, 64 provincial-, and 41 national-level). These projects have lower alignment than the remaining 3,555 projects: mean RTAS $=0.100$ (SD $=0.053$) versus $0.135$ (SD $=0.073$); Welch $t=-7.90$, $p<0.001$, Cohen $d=-0.49$ (pooled SD). Table~S1 re-estimates the frozen random-intercept specification (REML, clustered by academic unit, covariates taken from the frozen dataset unchanged) after excluding these 158 projects: the complete-case sample falls from 3,231 to 3,085 projects, ICC changes from 0.7376 to 0.7373, every coefficient retains its sign and significance classification, and the administrative-tier indicators remain non-significant. The 2020 cohort is retained in both fits because no type-labeled official registry exists for that year.
 
 \begin{table}[htbp]
 \centering
@@ -130,7 +130,7 @@ Number of academic units & 39 & & 39 & \\
 % Table S2
 % ---------------------------------------------------------
 
-The archived official 2022 approval list contains no university-level entries (316 provincial and 150 national projects; 435 projects from that list remain in the frozen dataset after the eight-label study-frame exclusion). To check whether the RQ1 administrative-tier comparison or the primary mixed model depends on this structurally different cohort, Table~S2 repeats both analyses after dropping all 435 projects approved in 2022. Because 2022 contributes no university-level projects, the university-tier mean is necessarily unchanged. At RQ1 ($N=3{,}279$ projects with RTAS), the overall contrast strengthens slightly ($F(2,3276)=35.80$, $p<0.001$, $\eta^2=2.14\%$); both significant Tukey contrasts against university tier remain significant, and the national--provincial contrast remains non-significant ($+0.0053$, adjusted $p=0.31$). In the mixed model, complete cases fall from 3,231 to 2,852 and the ICC is 0.7409; every coefficient retains its sign and significance classification, and the administrative-tier indicators remain non-significant.
+The archived official 2022 approval list contains no university-level entries (316 provincial and 150 national projects; 435 projects from that list remain in the frozen dataset after the eight-label study-frame exclusion). To check whether the RQ1 administrative-tier comparison or the primary mixed model depends on this structurally different cohort, Table~S2 repeats both analyses after dropping all 435 projects approved in 2022. Because 2022 contributes no university-level projects, the university-tier mean is necessarily unchanged. At RQ1 ($N=3{,}278$ projects with a defined RTAS), the overall contrast strengthens slightly ($F(2,3275)=35.52$, $p<0.001$, $\eta^2=2.12\%$); both significant Tukey contrasts against university tier remain significant, and the national--provincial contrast remains non-significant ($+0.0053$, adjusted $p=0.31$). In the mixed model, complete cases fall from 3,231 to 2,852 and the ICC is 0.7409; every coefficient retains its sign and significance classification, and the administrative-tier indicators remain non-significant.
 
 \begin{table}[htbp]
 \centering
@@ -141,15 +141,15 @@ The archived official 2022 approval list contains no university-level entries (3
 \toprule
 \multicolumn{3}{l}{\textit{Panel A. RQ1 project-level RTAS by administrative tier}}\\
 & Primary & Excluding 2022\\
-& ($N=3{,}714$) & ($N=3{,}279$)\\
+& ($N=3{,}713$) & ($N=3{,}278$)\\
 \midrule
-University, mean (SD) & 0.1212 (0.0694) & 0.1212 (0.0694)\\
+University, mean (SD) & 0.1213 (0.0693) & 0.1213 (0.0693)\\
 Provincial, mean (SD) & 0.1391 (0.0728) & 0.1407 (0.0728)\\
 National, mean (SD) & 0.1460 (0.0731) & 0.1460 (0.0723)\\
-One-way ANOVA $F$ & 35.72 & 35.80\\
-ANOVA $\eta^2$ & 1.89\% & 2.14\%\\
-Tukey: provincial $-$ university & $+0.0179^{***}$ & $+0.0195^{***}$\\
-Tukey: national $-$ university & $+0.0248^{***}$ & $+0.0248^{***}$\\
+One-way ANOVA $F$ & 35.42 & 35.52\\
+ANOVA $\eta^2$ & 1.87\% & 2.12\%\\
+Tukey: provincial $-$ university & $+0.0178^{***}$ & $+0.0194^{***}$\\
+Tukey: national $-$ university & $+0.0248^{***}$ & $+0.0247^{***}$\\
 Tukey: national $-$ provincial & $+0.0070$ ($p=0.082$) & $+0.0053$ ($p=0.312$)\\
 \bottomrule
 \end{tabular}
@@ -199,7 +199,7 @@ For the two-rater hard-pair challenge set, the consensus score is the arithmetic
 \clearpage
 \section*{Numerical provenance and reconciliation}
 
-After the primary analysis pipeline froze, a verification script independently reloaded the frozen analysis tables and recomputed 118 quantities within the frozen audit scope without reference to the scripts that originally produced the reported values. These quantities span corpus construction and advisor--article linkage, the frozen RTAS distribution, aggregation-family selection, the frozen validation program, topic and diffusion-lag counts, and all RQ1/RQ3/RQ4 estimates; all 118 matched the reported frozen values to printed precision. Later robustness additions created after the 118-check ledger was frozen are reported separately and are not counted in the ledger. The frozen RTAS values were additionally reconstructed row by row from the embedding files: all 3,713 non-empty portfolios agree to within $4\times10^{-8}$, while the remaining project has an empty constructable portfolio and is stored as RTAS $=0$ by convention; together these account for all 3,714 projects. The embedding-table row order was also verified against the frozen datasets. The project registry was additionally verified by re-parsing the four official 2021--2024 approval lists from their source spreadsheets (administrative project tiers, project-type labels, annual coverage, identifier uniqueness, and the 3,887-row to 3,714-row frame reconciliation), and every headline model was re-estimated under alternative samples and specifications (Tables~S1--S2; main text Sections on sensitivity analyses). Both bootstrap intervals within the frozen audit scope reproduce exactly when the frozen seed and resampling protocol are applied. Tables~S3 and S5 document the canonical audited quantities; Table~S4 reports the post-freeze hard-pair challenge-set robustness outside the 118-check ledger. The complete machine-readable ledger, including the row-level reconstruction checks, accompanies the analysis code.
+After the primary analysis pipeline froze, a verification script independently reloaded the frozen analysis tables and recomputed 123 quantities within the frozen audit scope without reference to the scripts that originally produced the reported values. These quantities span corpus construction and advisor--article linkage, the frozen RTAS distribution, aggregation-family selection, the frozen validation program, topic and diffusion-lag counts, and all RQ1/RQ3/RQ4 estimates; all 123 matched the reported frozen values to printed precision. The initial 118-check ledger was subsequently extended by five checks verifying the revised 3,713/3,714 primary-sample conventions (defined and undefined RTAS counts, the 3,714 zero-convention mean, and the corresponding ANOVA $F$ and $\eta^2$). Later robustness additions created after the initial ledger was frozen are reported separately and are not counted in the 123-check ledger. The frozen RTAS values were additionally reconstructed row by row from the embedding files: all 3,713 non-empty portfolios agree to within $4\times10^{-8}$, while the remaining project has an empty constructable portfolio, for which RTAS is undefined and treated as missing in the primary column (a full-frame sensitivity assigns it RTAS $=0$); together these account for all 3,714 registered projects. The embedding-table row order was also verified against the frozen datasets. The project registry was additionally verified by re-parsing the four official 2021--2024 approval lists from their source spreadsheets (administrative project tiers, project-type labels, annual coverage, identifier uniqueness, and the 3,887-row to 3,714-row frame reconciliation), and every headline model was re-estimated under alternative samples and specifications (Tables~S1--S2; main text Sections on sensitivity analyses). Both bootstrap intervals within the frozen audit scope reproduce exactly when the frozen seed and resampling protocol are applied. Tables~S3 and S5 document the canonical audited quantities; Table~S4 reports the post-freeze hard-pair challenge-set robustness outside the 123-check ledger. The complete machine-readable ledger, including the row-level reconstruction checks, accompanies the analysis code.
 
 % ---------------------------------------------------------
 % Table S3 — corpus, frame, linkage, frozen measure
@@ -233,8 +233,8 @@ Title language composition & 92.3\% / 99.9\% & mean Chinese-character share acro
 \midrule
 \multicolumn{3}{l}{\textit{Panel B. Frozen RTAS distribution, aggregation selection, and validity}}\\
 \midrule
-RTAS coverage & 3,713 non-empty portfolios; one convention-coded observation (RTAS $=0$) & 3,713 projects have a defined RTAS from a non-empty advisor-linked portfolio; one observation with an empty reference portfolio is stored as RTAS $=0$ by convention for descriptive summaries and excluded from the mixed model because required covariates are unavailable\\
-RTAS distribution & mean 0.1337; SD 0.0723 & median 0.1362; range $-0.0575$ to 0.396\\
+RTAS coverage & 3,713 defined; one empty portfolio & 3,713 projects have a defined RTAS from a non-empty advisor-linked portfolio; for one project the reference portfolio is empty, so RTAS is undefined and treated as missing in the primary column. A full-frame sensitivity assigning RTAS $=0$ to this project is reported alongside the primary estimates; the project is additionally excluded from the mixed model because its advisor covariates are missing\\
+RTAS distribution & mean 0.1338; SD 0.0723 & median 0.1362; range $-0.0575$ to 0.396\\
 Aggregation-family selection & mean rule selected & chosen on the 12,000-article development pool across five mini variants (composite scores 0.742/0.480/0.447/0.398/0.300); frozen before application to the 56,901-article final corpus\\
 Human similarity validation & $\rho=0.405$; AUC 0.88 & 150 project--article pairs; the human-score column in the cosine file matches the reference-rater scores in 100\% of pairs; 16 relevant / 134 irrelevant; Kendall $\tau_b=0.327$; leave-one-pair-out max $|\Delta\rho|=0.018$\\
 Independent rater reliability & quadratic-weighted $\kappa=0.465$ and 0.606 & raters A and B vs.\ first rater on 50 pairs (72\% / 78\% exact agreement); A vs.\ B: quadratic-weighted $\kappa=0.826$, $\rho=0.821$, 90\% exact\\
@@ -251,12 +251,12 @@ Topics and defined diffusion lags & 886 clustered topics; 29 lag-definable & 29/
 \end{table}
 
 % ---------------------------------------------------------
-% Table S4 — post-freeze validation robustness (outside 118-check ledger)
+% Table S4 — post-freeze validation robustness (outside 123-check ledger)
 % ---------------------------------------------------------
 
 \begin{table}[htbp]
 \centering
-\caption{Post-freeze validation robustness (outside the 118-check frozen provenance ledger)}
+\caption{Post-freeze validation robustness (outside the 123-check frozen provenance ledger)}
 \label{tab:s4}
 \begin{tabular}{p{0.30\linewidth}p{0.18\linewidth}p{0.44\linewidth}}
 \toprule
@@ -268,7 +268,7 @@ High-similarity stratum & AUC $=0.727$ & $n=24$; 22 related, 2 unrelated; bootst
 \end{tabular}
 
 \vspace{1mm}
-\footnotesize These quantities were computed post-freeze from a newly constructed validation set and are not part of the 118-check provenance ledger. The hard-pair sample was selected based on MiniLM cosine similarity to enrich for difficult pairs; therefore $\rho$ and AUC describe challenge-set performance, not population validity. Consensus is the arithmetic mean of the two 1--4 ratings, with consensus $\ge2$ classified as related for AUC.
+\footnotesize These quantities were computed post-freeze from a newly constructed validation set and are not part of the 123-check provenance ledger. The hard-pair sample was selected based on MiniLM cosine similarity to enrich for difficult pairs; therefore $\rho$ and AUC describe challenge-set performance, not population validity. Consensus is the arithmetic mean of the two 1--4 ratings, with consensus $\ge2$ classified as related for AUC.
 \end{table}
 
 % ---------------------------------------------------------
@@ -286,19 +286,19 @@ High-similarity stratum & AUC $=0.727$ & $n=24$; 22 related, 2 unrelated; bootst
 \midrule
 \multicolumn{3}{l}{\textit{Panel C. Recomputed analysis estimates}}\\
 \midrule
-RQ1 tier means & .1212 / .1391 / .1460 & mean project RTAS for university / provincial / national tiers ($N=3{,}714$)\\
-RQ1 omnibus test & $F(2,3711)=35.72$ & $p=4.3\times10^{-16}$; $\eta^2=1.89\%$; bootstrap 95\% CI $[1.14\%,2.86\%]$\\
-RQ1 Tukey contrasts & $+.0179^{***}$ / $+.0248^{***}$ / $+.0070$ & provincial $-$ university; national $-$ university; national $-$ provincial ($p=0.082$)\\
-RQ1 national vs.\ university effect & Welch $t=7.375$; $d=0.352$ & $p=2.9\times10^{-13}$; pooled-variance Cohen $d$\\
+RQ1 tier means & .1213 / .1391 / .1460 & mean project RTAS for university / provincial / national tiers ($N=3{,}713$)\\
+RQ1 omnibus test & $F(2,3710)=35.42$ & $p=5.8\times10^{-16}$; $\eta^2=1.87\%$; bootstrap 95\% CI $[1.15\%,2.86\%]$\\
+RQ1 Tukey contrasts & $+.0178^{***}$ / $+.0248^{***}$ / $+.0070$ & provincial $-$ university; national $-$ university; national $-$ provincial ($p=0.082$)\\
+RQ1 national vs.\ university effect & Welch $t=7.350$; $d=0.351$ & $p=3.5\times10^{-13}$; pooled-variance Cohen $d$\\
 Mixed-model complete cases & 3,231 projects; 39 units & complete cases on all predictors; 483 projects excluded (117/137/56/78/95 across 2020--2024); excluded mean RTAS 0.099 vs.\ 0.139 retained\\
 Mixed-model variance components & ICC 0.7376 & unconditional-model ICC 0.7523; marginal $R^2=0.0075$; conditional $R^2=0.7395$; REML refit from frozen covariates\\
 Mixed-model fixed effects & tier coefficients non-significant & provincial $+0.00062$ ($p=0.720$); national $-0.00162$ ($p=0.452$); year $+0.00313$; prior 3-year works $+0.00427$ (main-text narrative reports $p<0.001$; exact frozen Wald recomputation $p=3.2\times10^{-9}$); prior supervision $-0.00629$\\
 Advisor-output effect size & $+0.010$ from 0 to 10 works & $0.00427\times[\log(11)-\log(1)]$ on the $\log(1+x)$ scale, about 0.14 project-level SD\\
-Leave-advisor-out sensitivity & attenuation 16.4\% & recomputed on the full 56,901-article corpus: $\beta$ $+0.00427\to+0.00357$ ($p=6.7\times10^{-7}$; 95\% CI $[0.00216,0.00497]$); ICC 0.727; conditional $R^2$ 0.729; 2,437 of 3,714 projects with removals (mean 23.6 articles; mean portfolio reduction 3.3\%); no empty portfolios\\
+Leave-advisor-out sensitivity & attenuation 16.4\% & recomputed on the full 56,901-article corpus: $\beta$ $+0.00427\to+0.00357$ ($p=6.7\times10^{-7}$; 95\% CI $[0.00216,0.00497]$); ICC 0.727; conditional $R^2$ 0.729; 2,437 of 3,713 projects with removals (mean 23.6 articles; mean portfolio reduction 3.3\%); no empty portfolios\\
 Advisor-load concentration & Gini 0.746 / 0.368 & national projects per advisor (1,236 of 1,834 advisors hold zero national projects, retained in the denominator) vs.\ all distinct projects per advisor\\
 Advisor-load distribution & 818 (44.6\%) / 345 (18.8\%) & advisors with exactly one project / with four or more; mean load 2.314, median 2, maximum 10\\
 Top-advisor shares & 31.0\% / 71.9\% & top 5\% = 92 advisors ($\lceil 0.05\times1{,}834\rceil$) hold 31.0\% of national projects; top 20\% = 366 advisors ($\lfloor 0.20\times1{,}834\rfloor$) hold 71.9\% of national projects\\
-Top-advisor project exposure & 560 of 3,714 projects & projects with at least one top-5\% advisor; mean difference vs.\ other projects: Cohen $d=0.083$, Welch $p=0.065$\\
+Top-advisor project exposure & 560 of 3,714 registered projects (560 of 3,713 with a defined RTAS) & projects with at least one top-5\% advisor; the empty-portfolio project is not top-5\%-exposed; mean difference vs.\ the remaining 3,153 projects: Cohen $d=0.083$, Welch $p=0.067$\\
 Persistence in national awards & OR 2.06 $[1.53,2.76]$ & consecutive active advisor--year risk set: 979 cells, 627 advisors; advisor-clustered logit with year fixed effects\\
 Persistence, full-grid specification & OR 2.45 $[1.91,3.16]$ & full prior-active advisor--year grid: 2,469 cells, 1,560 advisors; alternative risk set, not a competing estimate\\
 \bottomrule
@@ -316,7 +316,7 @@ Persistence, full-grid specification & OR 2.45 $[1.91,3.16]$ & full prior-active
 \midrule
 \multicolumn{3}{l}{\textit{Panel D. Similarly named statistics that are different estimands}}\\
 \midrule
-$\eta^2=1.89\%$ vs.\ aggregation $\eta^2$ & different populations & RQ1 project-level ANOVA ($N=3{,}714$) vs.\ the $\eta^2$ component of the development-pool aggregation composite (12,000-article pool; selection metric)\\
+$\eta^2=1.87\%$ vs.\ aggregation $\eta^2$ & different populations & RQ1 project-level ANOVA ($N=3{,}713$) vs.\ the $\eta^2$ component of the development-pool aggregation composite (12,000-article pool; selection metric)\\
 ICC 0.7376 vs.\ 0.7523 vs.\ $\eta^2=66.90\%$ & three variance quantities & full conditional mixed model vs.\ unconditional means model vs.\ descriptive one-way academic-unit ANOVA\\
 Academic units: 40 vs.\ 39 vs.\ 39 & different sample rules & frame units vs.\ descriptive ANOVA units (the single-project unit supplies no within-group variance) vs.\ complete-case mixed-model units (same unit: one project, missing advisor covariate)\\
 Gini 0.746 vs.\ 0.368 & different outcomes & national-project concentration with zero-national advisors included vs.\ all-project concentration\\

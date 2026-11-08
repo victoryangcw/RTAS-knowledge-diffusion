@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 """17_leave_advisor_out_rtas.py — v1.0-cand.13 (SECONDARY sensitivity, CRITICAL)
 
 POST-AUDIT FIX (2026-10-04): earlier runs of this script accidentally scored
@@ -33,7 +33,7 @@ CONSTRAINTS (frozen, per user spec):
 
 PROVENANCE:
   paper_college_year_map_full.csv (56,901-paper full corpus)
-  + raw papers (authors) + table5_project_dataset_n3714_full.csv
+  + raw papers (authors) + table5_project_dataset_n3714_full_v2_rtasfix.csv
   + proj_emb_minilm.npy (3,714) + paper_emb_minilm_full.npy (56,901)
     --(this script)-->
   03_FINAL_ANALYSIS/hlm/rtas_loo/rtas_loo_per_project.csv
@@ -60,7 +60,7 @@ OUT.mkdir(parents=True, exist_ok=True)
 # ============================================================
 print('='*60)
 print('[1] Loading inputs...')
-t5 = pd.read_csv(PROJ / '01_DATA' / 'final_analysis' / 'table5_project_dataset_n3714_full.csv')
+t5 = pd.read_csv(PROJ / '01_DATA' / 'final_analysis' / 'table5_project_dataset_n3714_full_v2_rtasfix.csv')
 print(f'  table5: {len(t5)} projects')
 
 MAP = pd.read_csv(MSL / 'paper_college_year_map_full.csv')

@@ -34,7 +34,7 @@ import statsmodels.formula.api as smf
 ROOT = Path(r'D:/vc-task/RTAS_FINAL_PROJECT')
 FIN = ROOT / '03_FINAL_ANALYSIS' / 'hlm' / 'within_unit_rtas'
 FIN.mkdir(parents=True, exist_ok=True)
-p = pd.read_csv(ROOT / '01_DATA' / 'final_analysis' / 'table5_project_dataset_n3714_full.csv')
+p = pd.read_csv(ROOT / '01_DATA' / 'final_analysis' / 'table5_project_dataset_n3714_full_v2_rtasfix.csv')
 
 # --- within-unit-year z-score (sample SD, ddof=1; cells with n<2 -> NaN) ---
 g = p.groupby(['college', 'year'])['rtas']
@@ -74,10 +74,10 @@ for term in ['is_provincial', 'is_national', 'year_centered', 'log_prior3y', 'lo
     b, se, pv = res.params[term], res.bse[term], res.pvalues[term]
     print(f'  {term:24s} beta={b:+.6f} se={se:.6f} p={pv:.3e}')
 
-# frozen reference values (raw RTAS, for the JSON comparison block)
+# frozen reference values (raw RTAS, primary 3,713 convention)
 frozen = {
-    'RQ1': {'means': {'university': 0.121186, 'provincial': 0.139055, 'national': 0.146027},
-            'F': 35.716, 'p': 4.326e-16, 'eta2': 0.018885},
+    'RQ1': {'means': {'university': 0.121275, 'provincial': 0.139055, 'national': 0.146027},
+            'F': 35.4231, 'p': 5.7675e-16, 'eta2': 0.018738},
     'RQ3': {'n': 3231, 'units': 39, 'ICC': 0.7376,
             'beta': {'is_provincial': 0.000615, 'is_national': -0.001624, 'year_centered': 0.003132,
                      'log_prior3y': 0.004266, 'log_prior_supervision': -0.006287}},

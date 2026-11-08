@@ -60,14 +60,14 @@ def close(a, b, tol=1e-9, rtol=5e-3):
 # ----------------------------------------------------------------------
 def audit_corpus():
     print("\n" + "=" * 78 + "\n(1) CORPUS / LINKAGE\n" + "=" * 78)
-    proj = pd.read_csv(DATA / "final_analysis" / "table5_project_dataset_n3714_full.csv")
+    proj = pd.read_csv(DATA / "final_analysis" / "table5_project_dataset_n3714_full_v2_rtasfix.csv")
     art = pd.read_csv(DATA / "raw_private" / "whu_openalex_papers_2020_2024_full.csv")
     pre = pd.read_csv(DATA / "raw_private" / "whu_openalex_papers_2017_2019.csv")
     pmap = pd.read_csv(SEL / "paper_college_year_map_full.csv")
 
     # --- project corpus ---
     record("projects N", 3714, len(proj), len(proj) == 3714,
-           "table5_project_dataset_n3714_full.csv rows", "len(rows)")
+           "table5_project_dataset_n3714_full_v2_rtasfix.csv rows", "len(rows)")
     vc = proj["level"].value_counts()
     # level labels: 1=校级/university, 2=省级/provincial, 3=国家级/national
     code = proj.groupby("level_code")["project_id"].count().sort_index()
@@ -452,26 +452,34 @@ def audit_rtas():
     record("composite winner", "mean", winner, winner == "mean",
            "same table", "argmax composite")
 
-    p = pd.read_csv(DATA / "final_analysis" / "table5_project_dataset_n3714_full.csv")
+    p = pd.read_csv(DATA / "final_analysis" / "table5_project_dataset_n3714_full_v2_rtasfix.csv")
     r = p["rtas"]
-    record("RTAS N", 3714, len(r), len(r) == 3714,
-           "project table rtas column", "rows")
-    record("RTAS missing", 0, int(r.isna().sum()), r.isna().sum() == 0,
-           "same", "NaN count")
+    record("RTAS defined N", 3713, int(r.notna().sum()), int(r.notna().sum()) == 3713,
+           "project table rtas column (v2: empty portfolio -> NaN)", "non-null rows")
+    record("RTAS undefined N", 1, int(r.isna().sum()), int(r.isna().sum()) == 1,
+           "same", "NaN count (empty_portfolio project 3832)")
     for name, val, got, tol in [
-        ("RTAS mean", 0.1337, r.mean(), 0.00011),
-        ("RTAS SD", 0.0723, r.std(ddof=1), 0.00011),
+        ("RTAS mean", 0.1338, r.mean(), 0.00011),
+        ("RTAS SD (ddof=0)", 0.0723, r.std(ddof=0), 0.00011),
         ("RTAS median", 0.1362, r.median(), 0.00011),
         ("RTAS min", -0.0575, r.min(), 0.00011),
         ("RTAS max", 0.3960, r.max(), 0.00011),
     ]:
         record(name, val, round(got, 4), close(got, val, tol),
-               "final full-corpus rtas (56,901 substrate)", "describe()")
+               "final full-corpus rtas (56,901 substrate), 3,713 defined",
+               "describe() (NaN excluded)", note="SD uses ddof=0 (frozen analysis convention)")
+    z = p["rtas_zero_sensitivity"]
+    record("RTAS sensitivity N (3,714 zero convention)", 3714, int(z.notna().sum()),
+           int(z.notna().sum()) == 3714,
+           "rtas_zero_sensitivity column", "non-null rows")
+    record("RTAS sensitivity mean (3,714 zero convention)", 0.1337, round(z.mean(), 4),
+           close(z.mean(), 0.1337, 0.00011),
+           "rtas_zero_sensitivity column", "mean over 3,714 rows")
     record("0->10 pubs RTAS effect", "+0.010 (~0.14 SD)",
-           f"{0.004266*(np.log(11)-np.log(1)):.5f} / {0.004266*(np.log(11)-np.log(1))/r.std():.3f} SD",
+           f"{0.004266*(np.log(11)-np.log(1)):.5f} / {0.004266*(np.log(11)-np.log(1))/r.std(ddof=0):.3f} SD",
            close(0.004266 * np.log(11), 0.01024, 0.0003),
            "beta_log_prior3y=0.004266 x [log(11)-log(1)]",
-           "linear shift on log(1+x) scale, divided by SD .0723")
+           "linear shift on log(1+x) scale, divided by SD .0723 (ddof=0)")
 
     # ---- ROW-LEVEL RTAS RECONSTRUCTION (post-audit 2026-10-04) ----
     # Rebuild every project's RTAS from the 56,901-paper and 3,714-project
@@ -530,10 +538,17 @@ def audit_rtas():
            maxd < 1e-6,
            "independent rebuild: mean cos over cumulative [2020,t] matched portfolio",
            "float32 storage ULP ~3e-8; identical aggregation to recompute_full.py")
-    record("RTAS empty-portfolio convention", "one project stored as 0.0",
-           f"empty portfolio count={len(empty)} frozen values={fr[empty].tolist()}",
-           len(empty) == 1 and fr[empty].tolist() == [0.0],
-           "project table rtas column", "empty portfolio -> 0.0 (excluded from HLM n=3231)")
+    pid_empty = [int(p.iloc[i]["project_id"]) for i in empty]
+    zero_sens_empty = p["rtas_zero_sensitivity"].values[empty].tolist()
+    record("RTAS empty-portfolio convention",
+           "1 project (id 3832): rtas=NaN; rtas_zero_sensitivity=0.0",
+           f"empty rows={empty} project_ids={pid_empty} rtas={fr[empty].tolist()} "
+           f"zero_sens={zero_sens_empty}",
+           pid_empty == [3832] and len(fr[empty]) == 1
+           and bool(np.isnan(fr[empty]).all()) and zero_sens_empty == [0.0],
+           "project table rtas / rtas_zero_sensitivity columns",
+           "empty portfolio -> NaN in `rtas` (excluded from HLM n=3231); "
+           "0.0 only in `rtas_zero_sensitivity` full-frame sensitivity")
 
 
 # ----------------------------------------------------------------------
@@ -543,28 +558,43 @@ def audit_rq1():
     print("\n" + "=" * 78 + "\n(5) RQ1 FUNDING LEVEL\n" + "=" * 78)
     from scipy.stats import f_oneway, ttest_ind
     from statsmodels.stats.multicomp import pairwise_tukeyhsd
-    p = pd.read_csv(DATA / "final_analysis" / "table5_project_dataset_n3714_full.csv")
+    p = pd.read_csv(DATA / "final_analysis" / "table5_project_dataset_n3714_full_v2_rtasfix.csv")
     lab = {1: ("university", "校级"), 2: ("provincial", "省级"), 3: ("national", "国家级")}
-    grp = {k: p.loc[p["level_code"] == k, "rtas"].values for k in lab}
+    grp = {k: p.loc[p["level_code"] == k, "rtas"].dropna().values for k in lab}
     means = {k: v.mean() for k, v in grp.items()}
-    record("RQ1 mean university", 0.1212, round(means[1], 4), close(means[1], 0.121186, 1e-4),
-           "project table rtas by level_code=1", "mean")
-    record("RQ1 mean provincial", 0.1391, round(means[2], 4), close(means[2], 0.139055, 1e-4),
+    record("RQ1 mean university", 0.1213, round(means[1], 4), close(means[1], 0.1212746, 1e-4),
+           "project table rtas by level_code=1 (3,713 defined)", "mean")
+    record("RQ1 mean provincial", 0.1391, round(means[2], 4), close(means[2], 0.1390546, 1e-4),
            "level_code=2", "mean")
-    record("RQ1 mean national", 0.1460, round(means[3], 4), close(means[3], 0.146027, 1e-4),
+    record("RQ1 mean national", 0.1460, round(means[3], 4), close(means[3], 0.1460265, 1e-4),
            "level_code=3", "mean")
     F, pF = f_oneway(*grp.values())
-    record("RQ1 ANOVA F(2,3711)", 35.72, round(F, 2), close(F, 35.716112, 0.005),
-           "scipy f_oneway", "one-way ANOVA")
-    record("RQ1 ANOVA p", "4.3e-16", f"{pF:.2e}", close(pF, 4.326e-16, 0.02),
+    record("RQ1 ANOVA F(2,3710)", 35.42, round(F, 2), close(F, 35.4231, 0.005),
+           "scipy f_oneway on 3,713 defined RTAS", "one-way ANOVA")
+    record("RQ1 ANOVA p", "5.8e-16", f"{pF:.2e}", close(pF, 5.767e-16, 0.02),
            "same", "p")
     allv = np.concatenate(list(grp.values()))
     ssb = sum(len(v) * (v.mean() - allv.mean()) ** 2 for v in grp.values())
     sst = ((allv - allv.mean()) ** 2).sum()
     eta2 = ssb / sst
-    record("RQ1 eta2", "1.89%", f"{100*eta2:.2f}%", close(eta2, 0.018885, 2e-4),
+    record("RQ1 eta2", "1.87%", f"{100*eta2:.2f}%", close(eta2, 0.018738, 2e-4),
            "SS_between / SS_total", "ANOVA eta squared")
-    tk = pairwise_tukeyhsd(p["rtas"].values, p["level"].values)
+    # full-frame 3,714 sensitivity with the zero convention
+    grpz = {k: p.loc[p["level_code"] == k, "rtas_zero_sensitivity"].values for k in lab}
+    Fz, pzF = f_oneway(*grpz.values())
+    allvz = np.concatenate(list(grpz.values()))
+    ssbz = sum(len(v) * (v.mean() - allvz.mean()) ** 2 for v in grpz.values())
+    sstz = ((allvz - allvz.mean()) ** 2).sum()
+    eta2z = ssbz / sstz
+    record("RQ1 sensitivity F(2,3711) [3,714 zero convention]", 35.72, round(Fz, 2),
+           close(Fz, 35.7161, 0.005),
+           "rtas_zero_sensitivity by level_code", "one-way ANOVA, 3,714 rows")
+    record("RQ1 sensitivity p [3,714]", "4.3e-16", f"{pzF:.2e}",
+           close(pzF, 4.326e-16, 0.02), "same", "p")
+    record("RQ1 sensitivity eta2 [3,714]", "1.89%", f"{100*eta2z:.2f}%",
+           close(eta2z, 0.018885, 2e-4), "same", "SS_between / SS_total")
+    tk = pairwise_tukeyhsd(p["rtas"].dropna().values,
+                           p.loc[p["rtas"].notna(), "level"].values)
     tdf = pd.DataFrame(data=tk._results_table.data[1:],
                        columns=tk._results_table.data[0])
     for c in ["meandiff", "p-adj", "lower", "upper"]:
@@ -576,25 +606,25 @@ def audit_rq1():
     md_pu, ppu = tkrow("省级", "校级")
     md_nu, pnu = tkrow("国家级", "校级")
     md_np, pnp = tkrow("国家级", "省级")
-    record("RQ1 Tukey P-U", "+0.0179***", f"{md_pu:+.4f}(p={ppu:.4f})",
-           close(md_pu, 0.0179, 2e-3) and ppu < 0.001,
+    record("RQ1 Tukey P-U", "+0.0178***", f"{md_pu:+.4f}(p={ppu:.4f})",
+           close(md_pu, 0.017780, 2e-3) and ppu < 0.001,
            "statsmodels pairwise_tukeyhsd", "provincial - university")
     record("RQ1 Tukey N-U", "+0.0248***", f"{md_nu:+.4f}(p={pnu:.4f})",
-           close(abs(md_nu), 0.0248, 2e-3) and pnu < 0.001,
+           close(abs(md_nu), 0.024752, 2e-3) and pnu < 0.001,
            "same", "national - university")
     record("RQ1 Tukey N-P", "+0.0070 (p=.082 ns)", f"{md_np:+.4f}(p={pnp:.3f})",
-           close(abs(md_np), 0.0070, 2e-3) and close(pnp, 0.0821, 0.005),
+           close(abs(md_np), 0.006972, 2e-3) and close(pnp, 0.0820, 0.005),
            "same", "national - provincial")
     a, b = grp[3], grp[1]
     tw, pw = ttest_ind(a, b, equal_var=False)
-    record("RQ1 Welch N-U t", 7.375, round(tw, 3), close(tw, 7.375152, 0.002),
+    record("RQ1 Welch N-U t", 7.350, round(tw, 3), close(tw, 7.3498, 0.002),
            "scipy ttest_ind equal_var=False", "Welch t")
-    record("RQ1 Welch N-U p", "2.9e-13", f"{pw:.2e}", close(pw, 2.919e-13, 0.02),
+    record("RQ1 Welch N-U p", "3.5e-13", f"{pw:.2e}", close(pw, 3.503e-13, 0.02),
            "same", "Welch p")
     sp = np.sqrt(((len(a) - 1) * a.var(ddof=1) + (len(b) - 1) * b.var(ddof=1)) /
                  (len(a) + len(b) - 2))
     d = (a.mean() - b.mean()) / sp
-    record("RQ1 Cohen d N-U", 0.352, round(d, 3), close(d, 0.351676, 0.002),
+    record("RQ1 Cohen d N-U", 0.351, round(d, 3), close(d, 0.350593, 0.002),
            "(meanN-meanU)/pooled SD", "pooled-variance Cohen d")
     # bootstrap CI for eta2 — exact protocol replication of 15_hlm_diagnostics.py D3
     # (fresh default_rng(42), whole-row resampling of the ANOVA frame, one
@@ -617,9 +647,9 @@ def audit_rq1():
         idx = rng.integers(0, len(anova_df), len(anova_df))
         bo[i] = eta_sq(anova_df.iloc[idx])
     lo, hi = np.nanpercentile(bo, [2.5, 97.5])
-    record("RQ1 eta2 bootstrap 95% CI", "[1.14%, 2.86%]",
+    record("RQ1 eta2 bootstrap 95% CI", "[1.15%, 2.86%]",
            f"[{100*lo:.2f}%, {100*hi:.2f}%]",
-           close(100 * lo, 1.14, 0.005) and close(100 * hi, 2.86, 0.005),
+           close(100 * lo, 1.1491, 0.005) and close(100 * hi, 2.8566, 0.005),
            "whole-row within-frame bootstrap seed42 B=10000 (exact D3 replication)",
            "percentile CI of SSb/SSt")
 
@@ -684,7 +714,7 @@ def audit_rq3():
     import warnings; warnings.filterwarnings("ignore")
     from collections import defaultdict
     import statsmodels.formula.api as smf
-    df = pd.read_csv(DATA / "final_analysis" / "table5_project_dataset_n3714_full.csv")
+    df = pd.read_csv(DATA / "final_analysis" / "table5_project_dataset_n3714_full_v2_rtasfix.csv")
 
     def split_advisors(s):
         if not isinstance(s, str):
@@ -778,7 +808,7 @@ def audit_rq4():
     import warnings; warnings.filterwarnings("ignore")
     import statsmodels.api as sm
     from scipy import stats as sstats
-    df = pd.read_csv(DATA / "final_analysis" / "table5_project_dataset_n3714_full.csv")
+    df = pd.read_csv(DATA / "final_analysis" / "table5_project_dataset_n3714_full_v2_rtasfix.csv")
     froz_edges = pd.read_csv(FIN / "matthew_effect" / "individual_advisor" /
                              "advisor_project_edges.csv")
 
@@ -868,18 +898,18 @@ def audit_rq4():
     dfp["t5"] = dfp["t5"].fillna(0).astype(int)
     xv = dfp.loc[dfp["t5"] == 1, "rtas"].dropna().values
     yv = dfp.loc[dfp["t5"] == 0, "rtas"].dropna().values
-    record("RQ4 exposed projects (project-level dedup)", "560 (+3154=3714)",
+    record("RQ4 exposed projects (project-level dedup)", "560 (+3153=3713)",
            f"{len(xv)} (+{len(yv)}={len(xv)+len(yv)})",
-           len(xv) == 560 and len(yv) == 3154,
-           "1 if ANY project advisor is top5%; one row per project",
-           "exposure construction (open question d)")
+           len(xv) == 560 and len(yv) == 3153,
+           "1 if ANY project advisor is top5%; one row per project with defined RTAS",
+           "exposure construction (open question d); 3,714th row is the empty-portfolio project")
     _, pw = sstats.ttest_ind(xv, yv, equal_var=False)
     sp = np.sqrt(((len(xv)-1)*xv.var(ddof=1)+(len(yv)-1)*yv.var(ddof=1)) /
                  (len(xv)+len(yv)-2))
     dv = (xv.mean()-yv.mean())/sp
-    record("RQ4 top5% vs rest Cohen d", 0.083, round(dv, 3), close(dv, 0.08313, 2e-3),
+    record("RQ4 top5% vs rest Cohen d", 0.083, round(dv, 3), close(dv, 0.082573, 2e-3),
            "Welch pooled d on project RTAS", "effect size")
-    record("RQ4 top5% vs rest Welch p", 0.065, round(pw, 3), close(pw, 0.06464, 1e-3),
+    record("RQ4 top5% vs rest Welch p", 0.067, round(pw, 3), close(pw, 0.066529, 1e-3),
            "scipy ttest_ind equal_var=False", "p")
 
     panel = edges.groupby(["individual_advisor", "year"]).agg(
