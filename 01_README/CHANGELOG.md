@@ -5,6 +5,26 @@ config, data, or code that could affect downstream numbers.
 
 ---
 
+## [v1.1-postaudit-18] — 2026-11-08 — FIGURE SYNC TO THE V2 DUAL-CONVENTION DATASET
+
+Figure-content update driven by the v2 dataset convention (empty-portfolio
+project: `rtas` = NaN in the primary column, 0 only in `rtas_zero_sensitivity`);
+no statistics beyond the already-audited 123-check ledger. 10_generate_figures.py
+now reads `table5_project_dataset_n3714_full_v2_rtasfix.csv`. Regenerated from
+03_CODE/10_generate_figures.py and synced to both tracked figure sets
+(manuscript/figures/ and 02_FIGURES/).
+
+- Figure 1 (Roadmap): RQ1 box updated to F(2,3710)=35.4, eta2=1.87%, d=0.351;
+  HLM box notes 39 academic units; RQ4 box shows Top5% share 31.0%.
+- Figure 3 (FundingLevel, from fig4_project_level): regenerated on the 3,713
+  defined-RTAS sample; y-axis now reads "3,713 observations".
+- Figure 7 (MatthewEffect): regenerated on v2 data; Gini=0.746, top-5% share
+  31.0% unchanged in value.
+- FigS5 (college RTAS ranking): 39-unit version (the empty-portfolio unit is
+  absent), English labels verified by the CJK gate (scan-cjk: no violations).
+
+---
+
 ## [v1.2-public-snapshot] — 2026-10-17 — PRIVACY REVIEWED PUBLIC SNAPSHOT
 
 - Removed the internal identifier for the convention-coded empty-portfolio observation from the manuscript, supplement, numerical ledger, and audit code. The observation count and RTAS=0 convention are unchanged.

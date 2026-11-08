@@ -14,7 +14,7 @@ Figures generated (v1.0-cand.5 final freeze — 7 main + 4 supplementary):
   MAIN (7):
   Figure 2  Technical Roadmap      <-- FINAL_ANALYSIS_PROTOCOL §2 (rho_s=.405 in Embedding box; Heterogeneity fed from RTAS Frozen, not raw corpus) --(10_generate_figures.py)--> Figure2_Roadmap.pdf
   Figure 3  4-Quadrant Scatter     <-- topic_info.csv (zoom inset + bubble legend) --(10_generate_figures.py)--> Figure3_QuadrantScatter.pdf
-  Figure 4  Project-Level Dist.    <-- project_level_summary.csv + table5_project_dataset_n3714_full.csv (box+jitter; ex-Fig4b; old 4a DELETED as redundant) --(10_generate_figures.py)--> Figure4_Distribution.pdf
+  Figure 4  Project-Level Dist.    <-- project_level_summary.csv + table5_project_dataset_n3714_full_v2_rtasfix.csv (box+jitter; ex-Fig4b; old 4a DELETED as redundant) --(10_generate_figures.py)--> Figure4_Distribution.pdf
   Figure 5  College Caterpillar    <-- hlm_v2b_college_random_effects.csv (BLUPs, ICC=0.738) --(10_generate_figures.py)--> Figure5_CollegeCaterpillar.pdf
   Figure 6  HLM Forest Plot        <-- hlm_mixedlm_v2b_primary_coefficients.csv (SAME source as HLM results table; sig defs moved to caption) --(10_generate_figures.py)--> Figure6_HLM_Forest.pdf
   Figure 8  Diffusion-Lag split    <-- diffusion_lag_histogram_bins.csv + topic_first_year_adoption.csv (v1.0-cand.6 split into TWO files: 8a legend outside-right; 8b red-border value box DELETED, taller canvas) --(10_generate_figures.py)--> Figure8a_LagDistribution.pdf + Figure8b_LagByQuadrant.pdf
@@ -202,7 +202,7 @@ def fig2_roadmap():
         #   directly under Embedding, so the embeddings branch feeds it with a straight
         #   vertical; the three RTAS-fed analyses (Het/Matthew/HLM) all hang off RTAS
         #   Frozen. Left column = text-mining branch, right columns = RTAS analyses.)
-        (3.40, 1.50, BW2, BH2, 'Heterogeneity (RQ1)\nF(2,3711)=35.7\neta2=1.89%\nd=0.352', COLORS['blue']),
+        (3.40, 1.50, BW2, BH2, 'Heterogeneity (RQ1)\nF(2,3710)=35.4\neta2=1.87%\nd=0.351', COLORS['blue']),
         (0.60, 1.50, BW2, BH2, 'BERTopic (RQ2)\nUMAP+HDBSCAN\nK=886 topics\n4-quadrant', COLORS['orange']),
         (6.30, 1.50, BW2, BH2, 'Concentration &\npersistence (RQ4)\nGini=0.746\nTop5%=31.0%\nlag-OR=2.06***', COLORS['red']),
         (9.10, 1.50, BW2, BH2, 'HLM (RQ3)\nMixedLM RE\nICC=0.738, 39 academic units\nclean prior supervision', COLORS['purple']),
@@ -368,7 +368,7 @@ def _fig4_load():
     level_en = {'校级': 'University-level', '省级': 'Provincial-level', '国家级': 'National-level'}
     d['_level_en'] = d['_level_label'].map(level_en).fillna(d['_level_label'])
     d = d.sort_values('mean')
-    raw = pd.read_csv(ROOT / '01_DATA' / 'final_analysis' / 'table5_project_dataset_n3714_full.csv')
+    raw = pd.read_csv(ROOT / '01_DATA' / 'final_analysis' / 'table5_project_dataset_n3714_full_v2_rtasfix.csv')
     raw['level_en'] = raw['_level_label'] if '_level_label' in raw.columns else raw['项目等级']
     raw['level_en'] = raw['level_en'].map(level_en).fillna(raw['level_en'])
     order = d['_level_en'].tolist()  # University < Provincial < National by mean
@@ -406,7 +406,7 @@ def fig4_project_level():
     Chart-only: element definitions (box = IQR, diamond = mean, whiskers = 1.5*IQR,
     jitter = individual projects, brackets = Tukey HSD verdicts) live in the
     manuscript figure caption, per reviewer verdict to shorten the teaching title."""
-    inp = 'heterogeneity/project_level_summary.csv + tukey_project_level_pairwise.csv + table5_project_dataset_n3714_full.csv'
+    inp = 'heterogeneity/project_level_summary.csv + tukey_project_level_pairwise.csv + table5_project_dataset_n3714_full_v2_rtasfix.csv'
     provenance(4, 'Figure 4 Project-Level RTAS Distribution (box+jitter, chart-only; ex-Fig4b, 4a deleted)', inp)
     d, raw, order, data_box = _fig4_load()
     colors = [COLORS['blue'], COLORS['orange'], COLORS['red']]
@@ -450,7 +450,7 @@ def fig4_project_level():
                 ha='center', va='bottom', fontsize=11, fontweight='bold', color=col)
     ax.set_ylim(allmin - yrange * 0.06, y0 + 5.3 * bracket_h)
     ax.set_xticks(x); ax.set_xticklabels(order, fontsize=11.5)
-    ax.set_ylabel('RTAS (per project, 3,714 observations)', fontweight='bold', fontsize=10.5)
+    ax.set_ylabel('RTAS (per project, 3,713 observations)', fontweight='bold', fontsize=10.5)
     ax.set_xlabel('Administrative project tier', fontweight='bold', fontsize=10.5)
     # v1.1: in-figure suptitle removed; the LaTeX caption carries the title.
 
@@ -805,7 +805,7 @@ def fig10_matthew_effect():
         if not isinstance(s, str): return []
         parts = _re.split(r'[、，,;；]', s)
         return [p.strip() for p in parts if p.strip()]
-    proj = pd.read_csv(ROOT / '01_DATA' / 'final_analysis' / 'table5_project_dataset_n3714_full.csv')
+    proj = pd.read_csv(ROOT / '01_DATA' / 'final_analysis' / 'table5_project_dataset_n3714_full_v2_rtasfix.csv')
     proj['is_national'] = proj['项目等级'].astype(str).str.contains('国家级').astype(int)
     edge_rows = []
     for idx, row in proj.iterrows():
@@ -950,13 +950,11 @@ def fig12_college_rtas_ranking():
     inp = 'heterogeneity/college_rtas_summary_all.csv'
     provenance(12, 'College RTAS Full Ranking (39 units excluding single-project, Appendix Fig S5)', inp)
     d = pd.read_csv(DATA / 'heterogeneity' / 'college_rtas_summary_all.csv')
-    # v1.2 (postaudit-11): exclude the single-project unit (n=1) — the same unit
-    # is naturally absent from the mixed-model complete-case sample and cannot
-    # contribute a within-group variance estimate to the descriptive ANOVA.
-    # The frozen convention stores its empty-portfolio RTAS as 0.0, so it would
-    # otherwise appear as a degenerate rank-40 bar. Removing it here keeps
-    # the supplement consistent with the main text, ANOVA denominator (39),
-    # and mixed-model denominator (39 units).
+    # v1.2 (postaudit-11): exclude units with fewer than two projects — such a
+    # unit cannot contribute a within-group variance estimate to the descriptive
+    # ANOVA. In the v2 table the single-project unit has no defined RTAS at all
+    # (empty reference portfolio -> NaN), so it is already absent from the
+    # summary; this filter is kept as an explicit denominator guard.
     excluded = d[d['n_projects'] < 2]
     d = d[d['n_projects'] >= 2].copy()
     d = d.sort_values('rtas_mean')  # ascending for horizontal bar (rank 39 top → rank 1 bottom)
