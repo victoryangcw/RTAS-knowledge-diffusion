@@ -189,7 +189,7 @@ def fig2_roadmap():
     #   3) RTAS Frozen box now shows variant SELECTION (5 variants, mean chosen by
     #      composite score .742) instead of the validity number;
     #   4) RI-CLPM "future work" box REMOVED from the method figure (never estimated).
-    BW2, BH2 = 2.4, 1.05        # standard box size (height tightened: font 7.2 in boxes 1.05 high)
+    BW2, BH2 = 2.4, 1.15        # standard box size; increased to support font 8.4 in-box text (previously 1.05 with font 7.2)
     boxes = [
         # Row 1 (y=5.4): the two corpora
         (0.60, 5.40, 5.45, 1.15, 'Main RTAS corpus\n3,714 UIETP projects (predominantly Chinese titles;\ninnovation + entrepreneurship tracks)  +  56,901 OpenAlex papers, 2020-2024\nRTAS reference portfolios: 33,312 academic-unit-assigned papers (58.5%)', COLORS['blue']),
@@ -218,7 +218,7 @@ def fig2_roadmap():
                                         edgecolor=('#888888' if aux else color),
                                         linewidth=1.4, linestyle=('--' if aux else '-'))
         ax.add_patch(rect)
-        ax.text(x + w/2, y + h/2, text, ha='center', va='center', fontsize=7.2, fontweight='bold',
+        ax.text(x + w/2, y + h/2, text, ha='center', va='center', fontsize=8.4, fontweight='bold',
                 color=('#444444' if aux else color), linespacing=1.4)
         edges[(x, y, w, h)] = {
             'top': (x + w/2, y + h), 'bottom': (x + w/2, y),
@@ -834,20 +834,20 @@ def fig10_matthew_effect():
     nB_cells = audit['lagged_logit']['sample_B']['n_cells']
     nB_adv = audit['lagged_logit']['sample_B']['n_advisors']
 
-    fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(14.2, 5.0),
-                                        gridspec_kw=dict(width_ratios=[1.0, 0.85, 1.0], wspace=0.44))
+    fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(15.5, 6.2),
+                                        gridspec_kw=dict(width_ratios=[1.0, 0.85, 1.0], wspace=0.48))
     # (a) Lorenz curve
-    ax1.plot(lorenz_x, lorenz_y, color=COLORS['red'], linewidth=2, label=f'National-level projects (Gini={gini_nat:.3f})')
+    ax1.plot(lorenz_x, lorenz_y, color=COLORS['red'], linewidth=2.2, label=f'National-level projects (Gini={gini_nat:.3f})')
     ax1.plot([0, 1], [0, 1], '--', color=COLORS['gray'], linewidth=1, label='Perfect equality')
     ax1.fill_between(lorenz_x, lorenz_x, lorenz_y, alpha=0.1, color=COLORS['red'])
-    ax1.set_xlabel('Cumulative share of advisors (sorted)', fontweight='bold')
-    ax1.set_ylabel('Cumulative share of national projects', fontweight='bold')
-    ax1.set_title('(a) Lorenz curve', fontweight='bold', fontsize=9.5)
+    ax1.set_xlabel('Cumulative share of advisors (sorted)', fontweight='bold', fontsize=9)
+    ax1.set_ylabel('Cumulative share of national projects', fontweight='bold', fontsize=9)
+    ax1.set_title('(a) Lorenz curve', fontweight='bold', fontsize=10.5)
     # Lorenz curves conventionally run 0..1 with axes meeting at the origin;
     # default matplotlib margins left (0,0) floating inside the frame.
     ax1.set_xlim(0, 1.04)
     ax1.set_ylim(0, 1.06)
-    ax1.legend(fontsize=7.5, loc='upper left')
+    ax1.legend(fontsize=8.5, loc='upper left')
 
     # (b) Pareto bar
     pareto_data = ind['pareto_shares']
@@ -863,11 +863,11 @@ def fig10_matthew_effect():
     ax2.plot(range(4), [1, 5, 10, 20], '--', color=COLORS['gray'], linewidth=1,
              label='Equal share (top N% hold N%)')
     for bar, v in zip(bars, vals_p):
-        ax2.text(bar.get_x() + bar.get_width()/2, v + 1, f'{v:.1f}%', ha='center', fontsize=8, fontweight='bold')
-    ax2.set_xlabel('Top N% advisors', fontweight='bold')
-    ax2.set_ylabel('Share of national projects (%)', fontweight='bold')
-    ax2.set_title('(b) Concentration by advisor percentile', fontweight='bold', fontsize=9.5)
-    ax2.legend(fontsize=7.5)
+        ax2.text(bar.get_x() + bar.get_width()/2, v + 1, f'{v:.1f}%', ha='center', fontsize=9, fontweight='bold')
+    ax2.set_xlabel('Top N% advisors', fontweight='bold', fontsize=9)
+    ax2.set_ylabel('Share of national projects (%)', fontweight='bold', fontsize=9)
+    ax2.set_title('(b) Concentration by advisor percentile', fontweight='bold', fontsize=10.5)
+    ax2.legend(fontsize=8.5)
 
     # (c) Lagged path-dependence OR forest (two samples).
     rows = [(f"Sample A: active t-1 & t\n(n={nA_cells} cells / {nA_adv} advisors)",
@@ -882,8 +882,8 @@ def fig10_matthew_effect():
         ax3.plot([hi, hi], [yi - 0.06, yi + 0.06], color='#444444', linewidth=1.6, zorder=2)
         ax3.scatter([OR], [yi], s=90, color=COLORS['navy'], zorder=3)
         ax3.text(hi + 0.10, yi + 0.10, f'OR = {OR:.2f} [{lo:.2f}, {hi:.2f}] {mark}',
-                 va='center', fontsize=8.5, fontweight='bold', color='#111')
-        ax3.text(hi + 0.10, yi - 0.22, f'{ptxt}', va='center', fontsize=7.2, color='#555')
+                 va='center', fontsize=9.5, fontweight='bold', color='#111')
+        ax3.text(hi + 0.10, yi - 0.22, f'{ptxt}', va='center', fontsize=8, color='#555')
     ax3.axvline(x=1, color='#333', linestyle='--', linewidth=1.1, alpha=0.7)
     # x-axis starts BELOW 1 so the null reference line sits clearly inside the
     # plotting region (previously xlim 0.9 put the line on top of the left spine
@@ -893,12 +893,12 @@ def fig10_matthew_effect():
              fontsize=7.5, color='#555', linespacing=1.3)
     ax3.set_yticks([0, 1])
     ax3.set_yticklabels(['Sample A\nactive t-1 & t', 'Sample B\nexpanded risk set'],
-                        fontsize=8.5)
+                        fontsize=9)
     ax3.set_xlim(0.5, 4.3)
     ax3.set_ylim(-0.75, 1.85)
     ax3.set_xlabel("Odds ratio of a national project in year t\ngiven one in t-1 (logit, year FE, SE clustered by advisor)",
-                   fontweight='bold', fontsize=8.5)
-    ax3.set_title('(c) Lagged national-project persistence', fontweight='bold', fontsize=9.5)
+                   fontweight='bold', fontsize=9)
+    ax3.set_title('(c) Lagged national-project persistence', fontweight='bold', fontsize=10.5)
     ax3.grid(axis='x', alpha=0.25, linewidth=0.5)
 
     # v1.1: suptitle removed (theory-laden "Matthew Effect" wording and the
