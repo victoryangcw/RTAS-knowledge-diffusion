@@ -5,6 +5,24 @@ config, data, or code that could affect downstream numbers.
 
 ---
 
+## [v1.1-postaudit-20] — 2026-11-09 — FIGURE TYPOGRAPHY AND PANEL-SIZE REFINEMENT
+
+Presentation-only; no data, statistics, or ledger impact. Regenerated from
+03_CODE/10_generate_figures.py and synced to both tracked figure sets.
+
+- Figure 1 (Roadmap): in-box text font size 7.2 → 8.4; standard box height
+  1.05 → 1.15 to accommodate the larger type so labels no longer crowd the
+  padding or arrow endpoints.
+- Figure 7 (Matthew Effect three-panel): figure size 14.2×5.0 → 15.5×6.2,
+  panel spacing widened 0.44 → 0.48. Across the three panels: title 9.5 → 10.5,
+  axis label bold font added size 8.5→9, tick labels 8.5→9, OR annotation 8.5→9.5,
+  p-value annotation 7.2→8, legend 7.5→8.5. All numbers, line positions, and
+  data markers unchanged — only the rendering and layout.
+
+CJK gate (scan-cjk): NONE across both tracked figure directories.
+
+---
+
 ## [v1.1-postaudit-19] — 2026-11-08 — RQ4 LOAD COVARIATE DEFINITION CLARIFIED
 
 Wording only; no analysis, number, table, figure, or ledger change. The RQ4
