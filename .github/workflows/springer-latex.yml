@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - springer-submission-format
+      - prior-study-disclosure
   workflow_dispatch:
 
 jobs:
